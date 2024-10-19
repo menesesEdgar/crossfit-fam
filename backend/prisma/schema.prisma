@@ -1,0 +1,108 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String      @unique
+  phone     String?
+  password  String
+  status    Boolean?
+  roleId    Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  enabled   Boolean     @default(true)
+  // photo     UserImage[] @relation("UserImages")
+  role      Role        @relation(fields: [roleId], references: [id])
+
+  image Image[] @relation("UserImage")
+  Score Score[]
+}
+// admin, competitor
+model Role {
+  id         Int             @id @default(autoincrement())
+  name       String
+  users      User[]
+}
+
+model Exercise {
+  id         Int             @id @default(autoincrement())
+  name       String
+  set         Set[]
+}
+// Intermedio varonil, avanzado Femenil
+model Category {
+    id         Int             @id @default(autoincrement())
+    name       String
+    division   String
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+    set Set[]
+}
+// Competencia (Pacific Games)
+model Contest {
+  id         Int             @id @default(autoincrement())
+  name       String
+  location   String
+  organizer  String
+  startDate  DateTime
+  endDate    DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  set Set[]
+  image Image[] @relation("ContestImage")
+}
+// Score1, Score2 (Cada Score es un ejercicio a realizar)
+model Set {
+  id         Int             @id @default(autoincrement())
+  name       String
+  contestId  Int
+  categoryId Int
+  exerciseId Int
+  exercise    Exercise @relation(fields: [exerciseId], references: [id])
+  contest    Contest @relation(fields: [contestId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  @@index([categoryId], map: "Score_categoryId_fkey")
+  @@index([contestId], map: "Score_contestId_fkey")
+  score Score []
+}
+// Edgar M, Pacific Games, Score1, 170 puntos, 6min
+model Score {
+  id         Int             @id @default(autoincrement())
+  userId     Int
+  setId      Int
+  score      Decimal
+  time       String
+  user       User @relation(fields: [userId], references: [id])
+  set       Set @relation(fields: [setId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  @@index([userId], map: "Score_userId_fkey")
+  @@index([userId], map: "Score_setId_fkey")
+}
+model Image {
+  id        String   @id @default(uuid())
+  url       String
+  thumbnail String?
+  type      String
+  metadata  Json?
+  enabled   Boolean   @default(true)
+  createdAt DateTime @default(now())
+  userId    Int?
+  user      User?    @relation("UserImage", fields: [userId], references: [id])
+  contestId Int?
+  contest   Contest?    @relation("ContestImage", fields: [contestId], references: [id])
+  @@index([userId])
+  @@index([contestId])
+
+}
