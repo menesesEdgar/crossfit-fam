@@ -18,7 +18,9 @@ npx prisma generate
 
 npx prisma db push
 
-# Create mysql schema using docker
+# Run a prisma script to seed a table
+
+node scripts/seed.ts
 
 # Create mysql schema using docker
 
