@@ -36,7 +36,6 @@ model Role {
 model Exercise {
   id         Int             @id @default(autoincrement())
   name       String
-  set         Set[]
 }
 // Intermedio varonil, avanzado Femenil
 model Category {
@@ -45,7 +44,7 @@ model Category {
     division   String
     createdAt DateTime    @default(now())
     updatedAt DateTime    @updatedAt
-    set Set[]
+    score Score[]
 }
 // Competencia (Pacific Games)
 model Contest {
@@ -57,38 +56,35 @@ model Contest {
   endDate    DateTime?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  set Set[]
+  wod Wod[]
   image Image[] @relation("ContestImage")
 }
-// Score1, Score2 (Cada Score es un ejercicio a realizar)
-model Set {
+// Score1, Score2 (Cada Score es un WOD  (cada WOD es una serie de ejercicios))
+model Wod {
   id         Int             @id @default(autoincrement())
   name       String
   contestId  Int
-  categoryId Int
-  exerciseId Int
-  exercise    Exercise @relation(fields: [exerciseId], references: [id])
   contest    Contest @relation(fields: [contestId], references: [id])
-  category   Category @relation(fields: [categoryId], references: [id])
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  @@index([categoryId], map: "Score_categoryId_fkey")
   @@index([contestId], map: "Score_contestId_fkey")
   score Score []
 }
-// Edgar M, Pacific Games, Score1, 170 puntos, 6min
+// Edgar M, Pacific Games, Score1 (WOD Jumper), 170 puntos o 6min
 model Score {
   id         Int             @id @default(autoincrement())
   userId     Int
-  setId      Int
-  score      Decimal
-  time       String
+  wodId      Int
+  score      String
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
   user       User @relation(fields: [userId], references: [id])
-  set       Set @relation(fields: [setId], references: [id])
+  wod       Wod @relation(fields: [wodId], references: [id])
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  @@index([categoryId], map: "Score_categoryId_fkey")
   @@index([userId], map: "Score_userId_fkey")
-  @@index([userId], map: "Score_setId_fkey")
+  @@index([wodId], map: "Score_wodId_fkey")
 }
 model Image {
   id        String   @id @default(uuid())
