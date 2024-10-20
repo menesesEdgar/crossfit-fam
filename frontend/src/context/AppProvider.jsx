@@ -13,9 +13,7 @@ import LoadingProvider from "./LoadingProvider";
 const AppProvider = ({ children }) => (
     <LoadingProvider>
       <AuthProvider>
-        {/* <DataProvider> */}
           <BreadcrumbProvider>{children}</BreadcrumbProvider>
-        {/* </DataProvider> */}
       </AuthProvider>
     </LoadingProvider>
   );

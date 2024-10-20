@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 const database = new PrismaClient();
 
 async function main() {
+  const roles = await database.role.findMany();
   if (roles.length === 0) {
     const rootRole = await database.role.create({
         data: {

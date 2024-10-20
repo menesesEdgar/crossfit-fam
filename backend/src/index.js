@@ -3,7 +3,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-
+import authRoutes from "./routes/authRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors([APP_URL]));
 app.use(express.json());
 
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 // app.use("/api/users", userRoutes);
 // app.use("/api/vehicles", vehicleRoutes);
 // app.use("/api/permissions", permissionRoutes);

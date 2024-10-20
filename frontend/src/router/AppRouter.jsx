@@ -11,6 +11,7 @@ import AuthContext from '../context/AuthContext';
 import ProtectedRoute from './ProtectedRoute';
 import LoadingModal from '../components/loadingModal/LoadingModal';
 import Login from '../pages/login/Login';
+import Dashboard from '../pages/dashboard/Dashboard';
   const AppRouter = () => {
     const { user } = useContext(AuthContext);
   
@@ -31,7 +32,7 @@ import Login from '../pages/login/Login';
                 <Sidebar>
                     <Routes>
                     <Route element={<ProtectedRoute user={user} />}>
-                        {/* <Route path="/" element={<Dashboard />} /> */}
+                        <Route path="/" element={<Dashboard />} />
                         <Route
                         path="/login"
                         element={

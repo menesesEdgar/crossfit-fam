@@ -9,11 +9,12 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(uuid())
   firstName String
   lastName  String
   email     String      @unique
   phone     String?
+  age       Int?
   password  String
   status    Boolean?
   roleId    Int
@@ -23,7 +24,7 @@ model User {
   // photo     UserImage[] @relation("UserImages")
   role      Role        @relation(fields: [roleId], references: [id])
 
-  image Image[] @relation("UserImage")
+  photo Image[] @relation("UserImage")
   Score Score[]
 }
 // admin, competitor
@@ -73,7 +74,7 @@ model Wod {
 // Edgar M, Pacific Games, Score1 (WOD Jumper), 170 puntos o 6min
 model Score {
   id         Int             @id @default(autoincrement())
-  userId     Int
+  userId     String
   wodId      Int
   score      String
   categoryId Int
@@ -94,7 +95,7 @@ model Image {
   metadata  Json?
   enabled   Boolean   @default(true)
   createdAt DateTime @default(now())
-  userId    Int?
+  userId    String?
   user      User?    @relation("UserImage", fields: [userId], references: [id])
   contestId Int?
   contest   Contest?    @relation("ContestImage", fields: [contestId], references: [id])

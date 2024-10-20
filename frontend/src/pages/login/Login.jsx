@@ -27,6 +27,7 @@ const Login = () => {
       password: Yup.string().required('La contraseña es invalida'),
     }),
     onSubmit: async (values) => {
+      console.log("values ", values)
       await login(values);
       navigate('/dashboard');
     },
