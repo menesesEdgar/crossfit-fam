@@ -2,9 +2,8 @@ import axios from 'axios';
 // import { saveAs } from 'file-saver';
 
 export const BASE_API_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:4000';
-export const API_URL = `${BASE_API_URL}api` || 'http://localhost:4000/api';
-
+  import.meta.env.VITE_API_URL || 'http://localhost:4000/';
+export const API_URL = `${BASE_API_URL}/api` || 'http://localhost:4000/api';
 const api = axios.create({
   baseURL: API_URL,
 });
@@ -41,7 +40,6 @@ const headerFormData = {
 
 export const login = async (credentials) => {
     try {
-      console.log("credentials ", credentials)
       const response = await api.post('/auth/login', credentials);
       return response.data;
     } catch (error) {

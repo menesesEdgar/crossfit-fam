@@ -9,7 +9,11 @@ const defaultAuthCtx = {
     loading: false,
   }
 const AuthProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(authReducer, defaultAuthCtx);
+    const [state, dispatch] = useReducer(authReducer, {
+      user: JSON.parse(localStorage.getItem('user')) || null,
+      token: localStorage.getItem('token') || null,
+      loading: true,
+    });
     const {
         login,
         logout,

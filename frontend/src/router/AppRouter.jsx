@@ -9,7 +9,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import { Suspense, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import ProtectedRoute from './ProtectedRoute';
-import LoadingModal from '../components/loadingModal/LoadingModal';
+// import LoadingModal from '../components/loadingModal/LoadingModal';
 import Login from '../pages/login/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
   const AppRouter = () => {
@@ -17,7 +17,7 @@ import Dashboard from '../pages/dashboard/Dashboard';
   
     return (
         <Router>
-          <Suspense fallback={<LoadingModal loading={true} />}>
+          <Suspense fallback={<div>hola</div>}>
             {user ? <AuthorizedRoute user={user} /> : <UnauthorizedRoute />}
           </Suspense>
         </Router>

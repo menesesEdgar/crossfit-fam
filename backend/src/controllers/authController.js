@@ -35,20 +35,14 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log("email ", email)
-
+  console.log("req ", req.body)
   try {
     const user = await db.user.findUnique({
       where: { email },
-      include: {
-        photo: {
-          where: { enabled: true },
-        },
-      },
     });
     if (user && (await bcrypt.compare(password, user.password))) {
       user.password = undefined;
-      user.photo = user?.photo?.[0] || null;
+      // user.photo = user?.photo?.[0] || null;
       res.json({
         user,
         token: generateToken(user.id),
