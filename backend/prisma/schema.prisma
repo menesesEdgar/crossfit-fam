@@ -67,7 +67,7 @@ model Contest {
   id         Int             @id @default(autoincrement())
   name       String
   location   String
-  organizer  String
+  organizer  String // Pendiente de relacionar con un usuario
   startDate  DateTime
   endDate    DateTime?
   createdAt  DateTime    @default(now())
@@ -93,6 +93,7 @@ model ContestCategory {
 model Wod {
   id         Int             @id @default(autoincrement())
   name       String
+  description String? // Wod details
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   contestWod ContestWod[]
@@ -113,11 +114,11 @@ model ContestWod {
 }
 // A una categoria de la competencia, se le pueden asignar diferentes wods de la competencia 
 model ConCateConWod {
-  id         Int             @id @default(autoincrement())
+  id                Int             @id @default(autoincrement())
   contestCategoryId Int
   contestCategory   ContestCategory @relation(fields: [contestCategoryId], references: [id])
-  contestWodId Int
-  contestWod    ContestWod @relation(fields: [contestWodId], references: [id])
+  contestWodId      Int
+  contestWod        ContestWod @relation(fields: [contestWodId], references: [id])
   @@index([contestWodId], map: "ConCateConWod_contestWodId_fkey")
   @@index([contestCategoryId], map: "ConCateConWod_contestCategoryId_fkey")
   score Score[]

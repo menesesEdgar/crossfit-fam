@@ -19,7 +19,7 @@ import { MdOutlineLeaderboard } from "react-icons/md";
 import { TbCategory } from "react-icons/tb";
 import { useAuthContext } from "../../context/AuthContext";
 import AccountSidebar from "./AccountSidebar";
-import BgPattern from "../../assets/bg/bg_pattern_dark.png";
+import BgPattern from "../../assets/bg/bg-cross.svg";
 import { Button } from "flowbite-react";
 import Navbar from "../Navbar/Navbar";
 import MainLayout from "../../Layout/MainLayout";

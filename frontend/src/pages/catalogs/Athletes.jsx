@@ -18,7 +18,7 @@ import ModelFormFields from '../../../components/VehicleComponents/ModelForm/Mod
 import ModalFormikForm from '../../../components/Modals/ModalFormikForm';
 import { ModelFormSchema } from '../../../components/VehicleComponents/ModelForm/ModelFormSchema';
 import { HiCubeTransparent } from 'react-icons/hi';
-import withPermission from '../../../utils/withPermissions';
+import withPermission from '../../utils/withPermissions';
 import useCheckPermissions from '../../../hooks/useCheckPermissions';
 const Card = lazy(() => import('../../../components/Card/Card'));
 const TableHeader = lazy(() => import('../../../components/Table/TableHeader'));

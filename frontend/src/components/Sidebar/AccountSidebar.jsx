@@ -23,7 +23,7 @@ const AccountSidebar = ({ name, role }) => {
       >
         <img src={MyCAD_ICON} alt="MyCAD ICON" className={logoClasses} />
         <span
-          className={`text-2xl text-orange-500 font-extrabold mb-2 truncate`}
+          className={`text-2xl text-white font-extrabold mb-2 truncate`}
         >
           MyCAD
         </span>
