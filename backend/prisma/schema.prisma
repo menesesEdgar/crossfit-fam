@@ -16,7 +16,7 @@ model User {
   phone     String?
   age       Int?
   password  String
-  status    Boolean?
+  status    Boolean?   @default(true)
   roleId    Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -25,19 +25,34 @@ model User {
   role      Role        @relation(fields: [roleId], references: [id])
 
   photo Image[] @relation("UserImage")
-  Score Score[]
+  contestCategoryAthlete ContestCategoryAthlete[]
 }
+// create category, update category, create user, etc.
+model Permission {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String?
+  roles       RolePermission[]
+}
+// user -permission
+model RolePermission {
+  id           Int         @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         Role        @relation(fields: [roleId], references: [id])
+  permission   Permission  @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+}
+
 // admin, competitor
 model Role {
   id         Int             @id @default(autoincrement())
   name       String
   users      User[]
+  permissions RolePermission[]
 }
 
-model Exercise {
-  id         Int             @id @default(autoincrement())
-  name       String
-}
 // Intermedio varonil, avanzado Femenil
 model Category {
     id         Int             @id @default(autoincrement())
@@ -45,7 +60,7 @@ model Category {
     division   String
     createdAt DateTime    @default(now())
     updatedAt DateTime    @updatedAt
-    score Score[]
+    contestCategory ContestCategory[]
 }
 // Competencia (Pacific Games)
 model Contest {
@@ -57,35 +72,84 @@ model Contest {
   endDate    DateTime?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  wod Wod[]
+  contestWod ContestWod[]
+  contestCategory ContestCategory[]
+  contestAthletes ContestCategoryAthlete[]
   image Image[] @relation("ContestImage")
+}
+// A una competencia se le pueden asignar diferentes categorias
+model ContestCategory {
+  id         Int             @id @default(autoincrement())
+  contestId Int
+  contest  Contest @relation(fields: [contestId], references: [id])
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id])
+  @@index([contestId], map: "ContestCategory_contestId_fkey")
+  @@index([categoryId], map: "ContestCategory_categoryId_fkey")
+  conCateConWod ConCateConWod []
+  contestCategoryAthlete ContestCategoryAthlete[]
 }
 // Score1, Score2 (Cada Score es un WOD  (cada WOD es una serie de ejercicios))
 model Wod {
   id         Int             @id @default(autoincrement())
   name       String
-  contestId  Int
-  contest    Contest @relation(fields: [contestId], references: [id])
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  @@index([contestId], map: "Score_contestId_fkey")
+  contestWod ContestWod[]
+}
+// A una competencia se le pueden asignar diferentes WODS
+model ContestWod {
+  id         Int             @id @default(autoincrement())
+  contestId Int
+  contest  Contest @relation(fields: [contestId], references: [id])
+  wodId  Int
+  wod    Wod @relation(fields: [wodId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  @@index([wodId], map: "ContestWod_wodId_fkey")
+  @@index([contestId], map: "ContestWod_contestIdId_fkey")
+  conCateConWod ConCateConWod[]
+
+}
+// A una categoria de la competencia, se le pueden asignar diferentes wods de la competencia 
+model ConCateConWod {
+  id         Int             @id @default(autoincrement())
+  contestCategoryId Int
+  contestCategory   ContestCategory @relation(fields: [contestCategoryId], references: [id])
+  contestWodId Int
+  contestWod    ContestWod @relation(fields: [contestWodId], references: [id])
+  @@index([contestWodId], map: "ConCateConWod_contestWodId_fkey")
+  @@index([contestCategoryId], map: "ConCateConWod_contestCategoryId_fkey")
+  score Score[]
+}
+
+model ContestCategoryAthlete {
+  id         Int             @id @default(autoincrement())
+  contestId Int
+  contest  Contest @relation(fields: [contestId], references: [id])
+  userId     String
+  user       User @relation(fields: [userId], references: [id])
+  contestCategoryId Int
+  contestCategory ContestCategory @relation(fields: [contestCategoryId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  @@index([contestId], map: "ContestAthletes_contestId_fkey")
+  @@index([userId], map: "ContestAthletes_userId_fkey")
+  @@index([contestCategoryId], map: "ContestAthletes_contestCategoryId_fkey")
   score Score []
 }
 // Edgar M, Pacific Games, Score1 (WOD Jumper), 170 puntos o 6min
 model Score {
   id         Int             @id @default(autoincrement())
-  userId     String
-  wodId      Int
+  contestCategoryAthleteId     Int
+  contestCategoryAthlete       ContestCategoryAthlete @relation(fields: [contestCategoryAthleteId], references: [id])
   score      String
-  categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id])
-  user       User @relation(fields: [userId], references: [id])
-  wod       Wod @relation(fields: [wodId], references: [id])
+  contestCategoryWodId Int // It's a WOD for an specific category
+  contestCategoryWod       ConCateConWod @relation(fields: [contestCategoryWodId], references: [id])
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  @@index([categoryId], map: "Score_categoryId_fkey")
-  @@index([userId], map: "Score_userId_fkey")
-  @@index([wodId], map: "Score_wodId_fkey")
+  @@index([contestCategoryWodId], map: "Score_contestCategoryWodId_fkey")
+  @@index([contestCategoryAthleteId], map: "Score_contestCategoryAthleteId_fkey")
 }
 model Image {
   id        String   @id @default(uuid())

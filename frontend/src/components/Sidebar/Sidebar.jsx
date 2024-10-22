@@ -9,21 +9,22 @@ import {
 } from "react-pro-sidebar";
 import {
   FaTachometerAlt,
-  FaCar,
   FaUserCircle,
   FaSignOutAlt,
   FaUserCog,
   FaUserShield,
+  FaTrophy,
 } from "react-icons/fa";
+import { MdOutlineLeaderboard } from "react-icons/md";
+import { TbCategory } from "react-icons/tb";
 import { useAuthContext } from "../../context/AuthContext";
 import AccountSidebar from "./AccountSidebar";
 import BgPattern from "../../assets/bg/bg_pattern_dark.png";
 import { Button } from "flowbite-react";
 import Navbar from "../Navbar/Navbar";
 import MainLayout from "../../Layout/MainLayout";
-import { BiCategory } from "react-icons/bi";
 import { MdAdminPanelSettings, MdGarage } from "react-icons/md";
-
+import useCheckPermissions from "../../hooks/useCheckPermissions";
 const themes = {
   light: {
     sidebar: {
@@ -152,7 +153,15 @@ const Sidebar = ({ children }) => {
     const currentPath = path === "/" ? "/dashboard" : path;
     return location.pathname?.includes(currentPath);
   };
-
+  const isDashBoardPermission = useCheckPermissions("view_dashboard");
+  const isUsersPermission = useCheckPermissions("view_users");
+  const isAccountPermission = useCheckPermissions("view_account");
+  const isRolesPermission = useCheckPermissions("view_roles");
+  const isCategoriesPermission = useCheckPermissions("view_categories");
+  const isWodsPermission = useCheckPermissions("view_wods");
+  const isAthletesPermission = useCheckPermissions("view_athletes");
+  const isScoresPermission = useCheckPermissions("view_scores");
+  const isContestPermission = useCheckPermissions("view_contest");
   return (
     <div
       style={{
@@ -194,61 +203,77 @@ const Sidebar = ({ children }) => {
             />
             <div className="border-t border-gray-300 py-1" />
             <Menu menuItemStyles={menuItemStyles}>
+              {isDashBoardPermission.hasPermission && (
+                <MenuItem
+                  component={<Link to={"/dashboard"} />}
+                  active={isActivePath("/dashboard")}
+                  icon={<FaTachometerAlt size={23} />}
+                >
+                  Dashboard
+                </MenuItem>
+              )}
+              {isContestPermission.hasPermission && (
+                <MenuItem
+                  component={<Link to={"/contest"} />}
+                  active={isActivePath("/contest")}
+                  icon={<FaTrophy size={23} />}
+                >
+                  Competencias
+                </MenuItem>
+              )}
+              {isContestPermission.hasPermission && (
+                <MenuItem
+                  component={<Link to={"/scores"} />}
+                  active={isActivePath("/scores")}
+                  icon={<MdOutlineLeaderboard size={23} />}
+                >
+                  Puntajes
+                </MenuItem>
+              )}
+              {isCategoriesPermission.hasPermission && (
               <MenuItem
-                component={<Link to={"/dashboard"} />}
-                active={isActivePath("/dashboard")}
-                icon={<FaTachometerAlt size={23} />}
+                component={<Link to={"/catalogs"} />}
+                active={isActivePath("/catalogs")}
+                icon={<TbCategory size={23} />}
               >
-                Dashboard
+                Catálogos
               </MenuItem>
-              <SubMenu label="Vehículos" icon={<MdGarage size={23} />}>
-                <MenuItem
-                  icon={<FaCar size={23} />}
-                  active={isActivePath("/vehicles")}
-                  component={<Link to={"/vehicles"} />}
-                  onClick={() => {
-                    setToggled(false);
-                  }}
+              )}
+              {(isUsersPermission.hasPermission ||
+                isRolesPermission.hasPermission) && (
+                <SubMenu
+                  label="Usuarios"
+                  icon={<MdAdminPanelSettings size={23} />}
                 >
-                  Mis Vehículos
-                </MenuItem>
+                  {isUsersPermission.hasPermission && (
+                    <MenuItem
+                      component={<Link to={"/users"} />}
+                      active={isActivePath("/users")}
+                      icon={<FaUserCircle size={23} />}
+                    >
+                      Usuarios
+                    </MenuItem>
+                  )}
+                  {isRolesPermission.hasPermission && (
+                    <MenuItem
+                      component={<Link to={"/roles"} />}
+                      active={isActivePath("/roles")}
+                      icon={<FaUserShield size={23} />}
+                    >
+                      Roles
+                    </MenuItem>
+                  )}
+                </SubMenu>
+              )}
+              {isAccountPermission && (
                 <MenuItem
-                  icon={<BiCategory size={23} />}
-                  active={isActivePath("/catalogs")}
-                  component={<Link to={"/catalogs"} />}
-                  onClick={() => {
-                    setToggled(false);
-                  }}
+                  component={<Link to={"/account-settings"} />}
+                  active={isActivePath("/account-settings")}
+                  icon={<FaUserCog size={23} />}
                 >
-                  Catálogos
+                  Editar Perfil
                 </MenuItem>
-              </SubMenu>
-              <SubMenu
-                label="Usuarios"
-                icon={<MdAdminPanelSettings size={23} />}
-              >
-                <MenuItem
-                  component={<Link to={"/users"} />}
-                  active={isActivePath("/users")}
-                  icon={<FaUserCircle size={23} />}
-                >
-                  Usuarios
-                </MenuItem>
-                <MenuItem
-                  component={<Link to={"/roles"} />}
-                  active={isActivePath("/roles")}
-                  icon={<FaUserShield size={23} />}
-                >
-                  Roles
-                </MenuItem>
-              </SubMenu>
-              <MenuItem
-                component={<Link to={"/account-settings"} />}
-                active={isActivePath("/account-settings")}
-                icon={<FaUserCog size={23} />}
-              >
-                Editar Perfil
-              </MenuItem>
+              )}
             </Menu>
           </div>
           <div className="p-4">

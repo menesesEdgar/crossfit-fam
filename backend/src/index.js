@@ -4,6 +4,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
+import categoriesRoutes from "./routes/categoriesRoutes.js";
+import wodRoutes from "./routes/wodsRoutes.js";
+import athletesRoutes from "./routes/athletesRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -19,7 +22,9 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 // app.use("/api/users", userRoutes);
-// app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/categories", categoriesRoutes);
+app.use("/api/wods", wodRoutes);
+app.use("/api/athletes", athletesRoutes);
 // app.use("/api/permissions", permissionRoutes);
 // app.use("/api/roles", roleRoutes);
 // app.use("/api/role-permissions", rolePermissionRoutes);

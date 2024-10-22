@@ -28,35 +28,24 @@ const BreadcrumbsBuilder = (path) => {
       icon: LuPenSquare,
     },
     {
-      label: 'Categorías',
-      href: '/categories',
+      label: 'Puntajes',
+      href: '/scores',
       icon: FaCar,
     },
     {
-      label: 'Crear Categoría',
-      href: '/categories/create',
+      label: 'Nuevo puntaje',
+      href: '/scores/create',
       icon: PiStackPlusFill,
     },
     {
-      label: 'Editar Categoría',
-      href: '/categories/edit',
+      label: 'Editar puntaje',
+      href: '/scores/edit',
       icon: LuPenSquare,
     },
-
     {
-      label: 'Atletas',
-      href: '/athletes',
+      label: 'Catalogos',
+      href: '/catalogs',
       icon: BiCategory,
-    },
-    {
-      label: 'Registrar Atleta',
-      href: '/athletes/create',
-      icon: null,
-    },
-    {
-      label: 'Editar Atleta',
-      href: '/athletes/edit',
-      icon: null,
     },
     {
       label: 'Usuarios',

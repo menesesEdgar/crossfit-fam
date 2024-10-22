@@ -35,14 +35,36 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log("req ", req.body)
+
   try {
     const user = await db.user.findUnique({
       where: { email },
+      include: {
+        role: {
+          include: {
+            permissions: {
+              include: {
+                permission: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        photo: {
+          where: { enabled: true },
+        },
+      },
     });
+
     if (user && (await bcrypt.compare(password, user.password))) {
       user.password = undefined;
-      // user.photo = user?.photo?.[0] || null;
+      user.photo = user?.photo?.[0] || null;
+      user.authPermissions = user.role.permissions.map(
+        (rolePermission) => rolePermission.permission.name
+      );
       res.json({
         user,
         token: generateToken(user.id),
@@ -57,12 +79,25 @@ export const login = async (req, res) => {
 
 export const loadUser = async (req, res) => {
   const { user } = req;
-  console.log("user ", user)
+
   try {
     if (user) {
       const loadedUser = await db.user.findFirst({
         where: { id: user.id },
         include: {
+          role: {
+            include: {
+              permissions: {
+                include: {
+                  permission: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           photo: {
             where: { enabled: true },
           },
@@ -72,6 +107,10 @@ export const loadUser = async (req, res) => {
       if (!loadedUser) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      loadedUser.authPermissions = loadedUser.role.permissions.map(
+        (rolePermission) => rolePermission.permission.name
+      );
 
       loadedUser.password = undefined;
       loadedUser.photo = loadedUser?.photo?.[0] || null;

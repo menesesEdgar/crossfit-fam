@@ -12,6 +12,7 @@ import ProtectedRoute from './ProtectedRoute';
 // import LoadingModal from '../components/loadingModal/LoadingModal';
 import Login from '../pages/login/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
+import Catalogs from '../pages/catalogs/Catalogs';
   const AppRouter = () => {
     const { user } = useContext(AuthContext);
   
@@ -33,6 +34,7 @@ import Dashboard from '../pages/dashboard/Dashboard';
                     <Routes>
                     <Route element={<ProtectedRoute user={user} />}>
                         <Route path="/" element={<Dashboard />} />
+                        <Route path="/catalogs" element={<Catalogs />} />
                         <Route
                         path="/login"
                         element={

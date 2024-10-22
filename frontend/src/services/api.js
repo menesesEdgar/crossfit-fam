@@ -37,7 +37,7 @@ const headerFormData = {
   },
 };
 
-
+// Auth
 export const login = async (credentials) => {
     try {
       const response = await api.post('/auth/login', credentials);
@@ -111,3 +111,259 @@ export const updateProfile = async (profile) => {
       throw error;
     }
 };
+// Catalogs
+export const getAthletes = async () => {
+  try {
+    const response = await api.get('/athletes');
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const getAthlete = async ({ id: athleteId, signal }) => {
+  try {
+    const response = await api.get(`/athletes/${athleteId}`, { signal });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const createAthlete = async (athlete) => {
+  try {
+    let data = new FormData();
+
+    const image = athlete?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+
+    data.append(
+      'userData',
+      JSON.stringify({
+        firstName: athlete.firstName,
+        lastName: athlete.lastName,
+        email: athlete.email,
+        phone: athlete.phone,
+        role: athlete.role,
+        password: athlete.password,
+        repeatPassword: athlete.repeatPassword,
+      }),
+    );
+    const response = await api.post(`/athletes`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const updateAthlete = async (athlete) => {
+  try {
+    let data = new FormData();
+    const image = athlete?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+    data.append(
+      'athleteData',
+      JSON.stringify({
+        id: athlete.id,
+        firstName: athlete.firstName,
+        lastName: athlete.lastName,
+        email: athlete.email,
+        phone: athlete.phone,
+        role: athlete.role,
+        status: athlete.status,
+        password: athlete.password,
+        repeatPassword: athlete.repeatPassword,
+      }),
+    );
+    const response = await api.put(`/athlete/${user.id}`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const deleteAthlete = async () => {
+  try {
+    const response = await api.delete(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const getCategories = async () => {
+  try {
+    const response = await api.put('/auth/updateProfile', profile);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const getCategory = async () => {
+  try {
+    const response = await api.put('/auth/updateProfile', profile);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const createCategory = async () => {
+  try {
+    let data = new FormData();
+
+    const image = user?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+
+    data.append(
+      'userData',
+      JSON.stringify({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        password: user.password,
+        repeatPassword: user.repeatPassword,
+      }),
+    );
+    const response = await api.post(`/users`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const deleteCategory = async () => {
+  try {
+    const response = await api.delete(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const updateCategory = async () => {
+  try {
+    let data = new FormData();
+    const image = user?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+    data.append(
+      'userData',
+      JSON.stringify({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        status: user.status,
+        password: user.password,
+        repeatPassword: user.repeatPassword,
+      }),
+    );
+    const response = await api.put(`/users/${user.id}`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const getWod = async () => {
+  try {
+    const response = await api.put('/auth/updateProfile', profile);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const getWods = async () => {
+  try {
+    const response = await api.put('/auth/updateProfile', profile);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const createWod = async (wod) => {
+  try {
+    let data = new FormData();
+
+    const image = user?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+
+    data.append(
+      'userData',
+      JSON.stringify({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        password: user.password,
+        repeatPassword: user.repeatPassword,
+      }),
+    );
+    const response = await api.post(`/users`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const updateWod = async (wod) => {
+  try {
+    let data = new FormData();
+    const image = user?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+    data.append(
+      'userData',
+      JSON.stringify({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        status: user.status,
+        password: user.password,
+        repeatPassword: user.repeatPassword,
+      }),
+    );
+    const response = await api.put(`/wods/${wod.id}`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const deleteWod = async (wodId) => {
+  try {
+    const response = await api.delete(`/wods/${wodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
