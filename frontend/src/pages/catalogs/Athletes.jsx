@@ -1,78 +1,103 @@
-import React, { useCallback, useEffect, useRef, useState, lazy } from 'react';
+import React, { useCallback, useEffect, useRef, useState, lazy } from "react";
 
-import Skeleton from 'react-loading-skeleton';
-import { useQuery } from '@tanstack/react-query';
-import { IoMdAdd } from 'react-icons/io';
-import { MdOutlineFileUpload } from 'react-icons/md';
-import { Table as T } from 'flowbite-react';
-
-import { useCatalogContext } from '../../../context/CatalogContext';
-import ModalForm from '../../../components/Modals/ModalForm';
-import ModalRemove from '../../../components/Modals/ModalRemove';
-import { searchModels } from '../../../services/api';
-import { modelColumns } from '../../../utils/CatalogsFields';
-import ActionButtons from '../../../components/ActionButtons/ActionButtons';
-import CreateMultipleModels from './CreateMultipleModels';
-import Notifies from '../../../components/Notifies/Notifies';
-import ModelFormFields from '../../../components/VehicleComponents/ModelForm/ModelFormFields';
-import ModalFormikForm from '../../../components/Modals/ModalFormikForm';
-import { ModelFormSchema } from '../../../components/VehicleComponents/ModelForm/ModelFormSchema';
-import { HiCubeTransparent } from 'react-icons/hi';
-import withPermission from '../../utils/withPermissions';
-import useCheckPermissions from '../../../hooks/useCheckPermissions';
-const Card = lazy(() => import('../../../components/Card/Card'));
-const TableHeader = lazy(() => import('../../../components/Table/TableHeader'));
-const TableFooter = lazy(() => import('../../../components/Table/TableFooter'));
-const TableActions = lazy(
-  () => import('../../../components/Table/TableActions'),
+import Skeleton from "react-loading-skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { IoMdAdd } from "react-icons/io";
+import { Table as T } from "flowbite-react";
+import { useCatalogContext } from "../../context/CatalogContext";
+import ModalRemove from "../../components/Modals/ModalRemove";
+import { searchUsers as searchAthletes } from "../../services/api";
+import ActionButtons from "../../components/ActionButtons/ActionButtons";
+import Notifies from "../../components/Notifies/Notifies";
+import AthleteFormFields from "../../components/athleteComponents/AthleteFormFields";
+import ModalFormikForm from "../../components/Modals/ModalFormikForm";
+import { AthleteFormSchema } from "../../components/AthleteComponents/AthleteFormSchema";
+import { HiCubeTransparent } from "react-icons/hi";
+import withPermission from "../../utils/withPermissions";
+import useCheckPermissions from "../../hooks/useCheckPermissions";
+const Card = lazy(() => import("../../components/Card/Card"));
+const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
+const TableFooter = lazy(() => import("../../components/Table/TableHeader"));
+const TableActions = lazy(() =>
+  import("../../components/Table/TableActions")
 );
-const TableResultsNotFound = lazy(
-  () => import('../../../components/Table/TableResultsNotFound'),
+const TableResultsNotFound = lazy(() =>
+  import("../../components/Table/TableResultsNotFound")
 );
-const Table = lazy(() => import('../../../components/Table/Table'));
-
+const Table = lazy(() => import("../../components/Table/Table"));
+export const athletesColumns = [
+  {
+    id: "firstName",
+    value: "Nombre",
+    order: "asc",
+    type: "text",
+  },
+  {
+    id: "lastName",
+    value: "Apellido",
+    order: "asc",
+    type: "text",
+  },
+  {
+    id: "email",
+    value: "Email",
+    order: "asc",
+    type: "text",
+  },
+  {
+    id: "age",
+    value: "edad",
+    order: "asc",
+    type: "number",
+  },
+  {
+    id: "gender",
+    value: "Género",
+    order: "asc",
+    type: "text",
+  },
+  {
+    id: "actions",
+    value: "Acciones",
+    type: "actions",
+    classes: "text-center",
+  },
+];
 const Athletes = () => {
-  const {
-    vehicleBrands,
-    vehicleTypes,
-    createVehicleModel,
-    updateVehicleModel,
-    deleteVehicleModel,
-  } = useCatalogContext();
-  const [columns, setColumns] = useState([...modelColumns]);
+  const { createAthlete, updateAthlete, deleteAthlete } = useCatalogContext();
+  const [columns, setColumns] = useState([...athletesColumns]);
   const lastChange = useRef();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [createMultipleModelsModal, setCreateMultipleModelsModal] =
-    useState(false);
   const [editMode, setEditMode] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [deleteModelId, setDeleteModelId] = useState(null);
+  const [deleteAthleteId, setDeleteAthleteId] = useState(null);
   const [initialValues, setInitialValues] = useState({
-    name: '',
-    brandId: '',
-    typeId: '',
-    year: '',
-    id: '',
+    firstName: "",
+    lastName: "",
+    age: "",
+    gender: "1",
+    email: "",
+    password: "",
+    id: "",
   });
-  // const [vehicleId, setVehicleId] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const [searchFilters, setSearchFilters] = useState({
-    searchTerm: '',
+    searchTerm: "",
     pageSize: 5,
     page: currentPageNumber,
-    sortBy: 'name',
-    order: 'asc',
+    sortBy: "firstName",
+    order: "asc",
   });
 
   const {
-    data: models,
+    data: athletes,
     refetch,
     isLoading,
     isPending,
   } = useQuery({
-    queryKey: ['models', { ...searchFilters }],
-    queryFn: ({ signal }) => searchModels({ ...searchFilters, signal }),
+    queryKey: ["athletes", { ...searchFilters }],
+    queryFn: ({ signal }) => searchAthletes({ ...searchFilters, signal }),
     staleTime: Infinity,
   });
 
@@ -124,7 +149,7 @@ const Athletes = () => {
         });
       }, 600);
     },
-    [searchFilters?.searchTerm],
+    [searchFilters?.searchTerm]
   );
 
   const changePageSize = (e) => {
@@ -143,7 +168,7 @@ const Athletes = () => {
       const selectedHeader = columns[selectedHeaderIndex];
       const updatedHeader = {
         ...selectedHeader,
-        order: selectedHeader?.order === 'asc' ? 'desc' : 'asc',
+        order: selectedHeader?.order === "asc" ? "desc" : "asc",
       };
       updatedHeaders = [...columns];
       updatedHeaders[selectedHeaderIndex] = updatedHeader;
@@ -158,32 +183,33 @@ const Athletes = () => {
     setColumns(updatedHeaders);
   };
 
-  const onEditModel = (model) => {
+  const onEditAthlete = (athlete) => {
     setEditMode(true);
     setInitialValues({
-      id: model.id,
-      name: model.name,
-      brandId: model.brandId,
-      typeId: model.typeId,
-      year: parseInt(model.year, 10),
+      id: athlete.id,
+      firstName: athlete.firstName,
+      lastName: athlete.lastName,
+      age: ~~Number(athlete.age),
+      email: athlete.email,
+      password: athlete.password,
     });
     setIsOpenModal(true);
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      editMode
-        ? await updateVehicleModel(values)
-        : await createVehicleModel(values);
+      editMode ? await updateAthlete(values) : await createAthlete(values);
       setSubmitting(false);
       resetForm();
       setEditMode(false);
       setInitialValues({
-        id: '',
-        name: '',
-        brandId: '',
-        typeId: '',
-        year: '',
+        id: "",
+        firstName: "",
+        lastName: "",
+        gender: "1",
+        age: "",
+        email: "",
+        password: "",
       });
       setIsOpenModal(false);
     } catch (error) {
@@ -196,24 +222,26 @@ const Athletes = () => {
     setIsOpenModal(false);
     setEditMode(false);
     setInitialValues({
-      id: '',
-      name: '',
-      brandId: '',
-      typeId: '',
-      year: '',
+      id: "",
+      firstName: "",
+      lastName: "",
+      gender: "1",
+      age: "",
+      email: "",
+      password: "",
     });
   };
 
-  const onDeleteModel = (id) => {
-    setDeleteModelId(id);
+  const onDeleteAthlete = (id) => {
+    setDeleteAthleteId(id);
     setIsRemoveModalOpen(true);
   };
 
-  const handleRemoveModel = async () => {
+  const handleRemoveAthlete = async () => {
     try {
-      await deleteVehicleModel(deleteModelId);
+      await deleteAthlete(deleteAthleteId);
       setIsRemoveModalOpen(false);
-      setDeleteModelId(null);
+      setDeleteAthleteId(null);
     } catch (error) {
       console.error(error);
     }
@@ -221,32 +249,24 @@ const Athletes = () => {
 
   const handleRefreshData = () => {
     setRefreshData(true);
-    Notifies('success', 'Datos actualizados correctamente');
+    Notifies("success", "Datos actualizados correctamente");
   };
 
-  const isEditpermissions = useCheckPermissions('edit_vehicles_models');
-  const isCreatepermissions = useCheckPermissions('create_vehicles_models');
-  const isDeletepermissions = useCheckPermissions('delete_vehicles_models');
+  const isEditpermissions = useCheckPermissions("edit_athlete");
+  const isCreatepermissions = useCheckPermissions("create_athlete");
+  const isDeletepermissions = useCheckPermissions("delete_athlete");
   return (
     <div className="flex min-h-[77dvh] h-full flex-col gap-3 bg-white shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
       <TableHeader
         icon={HiCubeTransparent}
-        title={'Modelos'}
+        title={"Atletas"}
         actions={[
           {
-            label: 'Cargar',
-            action: isCreatepermissions.hasPermission
-              ? () => setCreateMultipleModelsModal(true)
-              : null,
-            color: 'blue',
-            icon: MdOutlineFileUpload,
-          },
-          {
-            label: 'Nuevo',
+            label: "Nuevo",
             action: isCreatepermissions.hasPermission
               ? () => setIsOpenModal(true)
               : null,
-            color: 'mycad',
+            color: "mycad",
             icon: IoMdAdd,
             filled: true,
           },
@@ -257,8 +277,8 @@ const Athletes = () => {
         handleSearchTerm={handleSearch}
         headers={columns}
       />
-      {models && !isPending ? (
-        models?.data?.length > 0 ? (
+      {athletes && !isPending ? (
+        athletes?.data?.length > 0 ? (
           <>
             <div className="hidden md:block">
               <Table
@@ -266,27 +286,29 @@ const Athletes = () => {
                 sortBy={sortBy}
                 sortedBy={searchFilters.sortBy}
               >
-                {models &&
+                {athletes &&
                   !isPending &&
-                  models?.data?.map((model) => {
+                  athletes?.data?.map((athlete) => {
                     return (
-                      <T.Row key={model.id}>
+                      <T.Row key={athlete.id}>
                         {columns.map((column) => {
                           let cellValue;
-                          if (column.id === 'model') {
-                            cellValue = model.name;
-                          } else if (column.id === 'brand.name') {
-                            cellValue = model.brand?.name;
-                          } else if (column.id === 'type.name') {
-                            cellValue = `${model.type?.economicGroup || ''} ${model.type?.name || ''}`;
-                          } else if (column.id === 'year') {
-                            cellValue = model.year;
+                          if (column.id === "firstName") {
+                            cellValue = athlete.name;
+                          } else if (column.id === "lastName") {
+                            cellValue = athlete.lastName;
+                          } else if (column.id === "age") {
+                            cellValue = athlete.age;
+                          } else if (column.id === "gender") {
+                            cellValue = athlete.gender;
                           }
 
                           if (cellValue !== undefined) {
                             return (
                               <T.Cell
-                                className={`${column?.id === 'model' ? 'font-bold' : ''}`}
+                                className={`${
+                                  column?.id === "athlete" ? "font-bold" : ""
+                                }`}
                                 key={column.id}
                               >
                                 {cellValue}
@@ -300,12 +322,12 @@ const Athletes = () => {
                                 <ActionButtons
                                   onEdit={
                                     isEditpermissions.hasPermission
-                                      ? () => onEditModel(model)
+                                      ? () => onEditAthlete(athlete)
                                       : null
                                   }
                                   onRemove={
                                     isDeletepermissions.hasPermission
-                                      ? () => onDeleteModel(model.id)
+                                      ? () => onDeleteAthlete(athlete.id)
                                       : null
                                   }
                                 />
@@ -319,43 +341,43 @@ const Athletes = () => {
               </Table>
             </div>
             <div className="md:hidden py-2 flex flex-col gap-6">
-              {models?.data?.map((model, index) => {
-                const parseModel = {
-                  model: {
-                    key: 'Modelo',
-                    value: model.name,
+              {athletes?.data?.map((athlete, index) => {
+                const parseAthlete = {
+                  firstName: {
+                    key: "firstName",
+                    value: athlete.name,
                   },
-                  brand: {
-                    key: 'Marca',
-                    value: model.brand.name,
+                  lastName: {
+                    key: "lastName",
+                    value: athlete.lastName,
                   },
-                  type: {
-                    key: 'Tipo',
-                    value: `(${model.type.economicGroup}) ${model.type.name}`,
+                  gender: {
+                    key: "gender",
+                    value: athlete.gender,
                   },
-                  year: {
-                    key: 'Año',
-                    value: model.year,
+                  age: {
+                    key: "age",
+                    value: athlete.age,
                   },
                   actions: {
-                    key: 'Acciones',
+                    key: "Acciones",
                     value: (
                       <ActionButtons
                         onEdit={
                           isEditpermissions.hasPermission
-                            ? () => onEditModel(model)
+                            ? () => onEditAthlete(athlete)
                             : null
                         }
                         onRemove={
                           isDeletepermissions.hasPermission
-                            ? () => onDeleteModel(model.id)
+                            ? () => onDeleteAthlete(athlete.id)
                             : null
                         }
                       />
                     ),
                   },
                 };
-                return <Card key={model.id} data={parseModel} />;
+                return <Card key={athlete.id} data={parseAthlete} />;
               })}
             </div>
           </>
@@ -365,9 +387,9 @@ const Athletes = () => {
       ) : (
         <Skeleton count={10} className="h-10" />
       )}
-      {models?.pagination && (
+      {athletes?.pagination && (
         <TableFooter
-          pagination={models?.pagination}
+          pagination={athletes?.pagination}
           goOnNextPage={goOnNextPage}
           goOnPrevPage={goOnPrevPage}
           handleSelectChange={handleSelectChange}
@@ -379,42 +401,23 @@ const Athletes = () => {
           onClose={onCloseModal}
           isOpenModal={isOpenModal}
           dismissible
-          title={editMode ? 'Editar Modelo' : 'Crear Modelo'}
-          schema={ModelFormSchema}
+          title={editMode ? "Editar Atleta" : "Registra Atleta"}
+          schema={AthleteFormSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          formFields={
-            <ModelFormFields
-              vehicleBrands={vehicleBrands}
-              vehicleTypes={vehicleTypes?.map((type) => {
-                return {
-                  ...type,
-                  name: `${type.economicGroup} ${type.name}`,
-                };
-              })}
-            />
-          }
-          saveLabel={editMode ? 'Actualizar' : 'Guardar'}
+          formFields={<AthleteFormFields />}
+          saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
       <ModalRemove
         isOpenModal={isRemoveModalOpen}
         onCloseModal={() => setIsRemoveModalOpen(false)}
-        removeFunction={handleRemoveModel}
+        removeFunction={handleRemoveAthlete}
       />
-      {createMultipleModelsModal && (
-        <ModalForm
-          onClose={() => setCreateMultipleModelsModal(false)}
-          title="Cargar múltiples modelos"
-          isOpenModal={createMultipleModelsModal}
-        >
-          <CreateMultipleModels />
-        </ModalForm>
-      )}
     </div>
   );
 };
 
-const ProtectedAthletes = withPermission(Athletes, 'view_athletes');
+const ProtectedAthletes = withPermission(Athletes, "view_athletes");
 
 export default ProtectedAthletes;

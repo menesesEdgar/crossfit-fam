@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import MyCAD_ICON from '../../assets/logo/mycad_icon.webp';
+import FAM from '../../assets/logo/logo-famcross.png';
 // import ImageViewer from '../ImageViewer/ImageViewer';
 
 const AccountSidebar = ({ name, role }) => {
@@ -21,11 +21,11 @@ const AccountSidebar = ({ name, role }) => {
       <div
         className={`w-full overflow-hidden whitespace-nowrap text-nowrap flex justify-start gap-4 items-center`}
       >
-        <img src={MyCAD_ICON} alt="MyCAD ICON" className={logoClasses} />
+        <img src={FAM} alt="FamCross Icon" className={logoClasses}/>
         <span
           className={`text-2xl text-white font-extrabold mb-2 truncate`}
         >
-          MyCAD
+          Family <br/> Crossfit
         </span>
       </div>
       <div

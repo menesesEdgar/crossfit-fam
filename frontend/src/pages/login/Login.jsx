@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Field, Form, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
 import AuthContext from '../../context/AuthContext';
-// import MyCADLogo from '../../assets/logo/CrossfitLogo.jpg';
 import BgPattern from '../../assets/bg/pattern-randomized.png';
 import { FaSignInAlt } from 'react-icons/fa';
 import TextInput from '../../components/Inputs/TextInput';
 import { MdOutlineAlternateEmail, MdOutlinePassword } from 'react-icons/md';
 import ActionButtons from '../../components/ActionButtons/ActionButtons';
-
+import CrossfitFamLogo from '../../assets/logo/logo-famcross-scaled.png';
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -40,7 +39,7 @@ const Login = () => {
       >
         <div className="bg-white/70 p-8 m-4 rounded shadow-lg w-full max-w-md">
           <div className="flex flex-col items-center justify-center">
-            {/* <img src={MyCADLogo} alt="MyCAD Logo" className="h-16 mb-4" /> */}
+            <img src={CrossfitFamLogo} alt="Crossfit Fam Logo" className="h-16 mb-4" />
             <h1 className="text-xl 2xl:text-3xl font-bold text-gray-800 mb-4">
               Family Crossfit
             </h1>

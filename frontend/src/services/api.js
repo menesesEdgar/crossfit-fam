@@ -111,6 +111,34 @@ export const updateProfile = async (profile) => {
       throw error;
     }
 };
+export const searchUsers = async ({
+  searchTerm,
+  sortBy,
+  order,
+  page,
+  pageSize,
+  signal,
+}) => {
+  try {
+    const response = await api.get('/users/search', {
+      params: {
+        searchTerm,
+        sortBy,
+        order,
+        page,
+        pageSize,
+      },
+      signal: signal,
+    });
+    if (response.status !== 200) {
+      throw new Error(response.message || 'Hubo un error al hacer la busqueda');
+    }
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 // Catalogs
 export const getAthletes = async () => {
   try {
