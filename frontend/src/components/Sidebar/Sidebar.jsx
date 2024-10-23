@@ -25,6 +25,9 @@ import Navbar from "../Navbar/Navbar";
 import MainLayout from "../../Layout/MainLayout";
 import { MdAdminPanelSettings, MdGarage } from "react-icons/md";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
+import FamCrossLogo from "../../assets/logo/logo-pink-filled.svg";
+import classNames from "classnames";
+
 const themes = {
   light: {
     sidebar: {
@@ -35,7 +38,7 @@ const themes = {
       menuContent: "#0D0D0D",
       icon: "#ffffff",
       hover: {
-        backgroundColor: "#f43f5e",
+        backgroundColor: "#fc0689",
         color: "#fff",
       },
       disabled: {
@@ -43,7 +46,7 @@ const themes = {
       },
       active: {
         color: "#FFF",
-        backgroundColor: "#f43f5e",
+        backgroundColor: "#fc0689",
       },
     },
   },
@@ -195,6 +198,26 @@ const Sidebar = ({ children }) => {
           }}
         >
           <div>
+            <div className="p-2">
+              <div
+                className={`w-full overflow-hidden whitespace-nowrap text-nowrap flex justify-start gap-4 items-center p-2 bg-black/50 rounded-lg`}
+              >
+                <img
+                  src={FamCrossLogo}
+                  alt="Familia Crossfit ICON"
+                  className={classNames(
+                    "h-12 w-auto min-w-10 transition-all duration-300 ease-in-out",
+                    collapsed && "scale-90"
+                  )}
+                />
+                <span
+                  className={`text-xl text-white truncate tracking-wider font-black`}
+                >
+                  Familia
+                  <br /> Crossfit
+                </span>
+              </div>
+            </div>
             <AccountSidebar
               role={user.email}
               name={user.firstName + " " + user.lastName}
@@ -231,13 +254,13 @@ const Sidebar = ({ children }) => {
                 </MenuItem>
               )}
               {isCategoriesPermission.hasPermission && (
-              <MenuItem
-                component={<Link to={"/catalogs"} />}
-                active={isActivePath("/catalogs")}
-                icon={<TbCategory size={23} />}
-              >
-                Catálogos
-              </MenuItem>
+                <MenuItem
+                  component={<Link to={"/catalogs"} />}
+                  active={isActivePath("/catalogs")}
+                  icon={<TbCategory size={23} />}
+                >
+                  Catálogos
+                </MenuItem>
               )}
               {(isUsersPermission.hasPermission ||
                 isRolesPermission.hasPermission) && (
