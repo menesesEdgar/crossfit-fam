@@ -1,47 +1,29 @@
-import React from 'react';
-import classNames from 'classnames';
-import FAM from '../../assets/logo/logo-famcross.png';
+import React from "react";
+import classNames from "classnames";
+
+import { MdAccountCircle } from "react-icons/md";
 // import ImageViewer from '../ImageViewer/ImageViewer';
 
 const AccountSidebar = ({ name, role }) => {
-  const logoClasses = classNames(
-    'w-auto',
-    'min-w-10',
-    'h-10',
-    'flex',
-    'items-center',
-    'justify-center',
-    'rounded-full',
-    'text-white',
-    'text-2xl',
-    'font-bold',
-  );
   return (
     <div className="p-4 h-fit space-y-5">
       <div
-        className={`w-full overflow-hidden whitespace-nowrap text-nowrap flex justify-start gap-4 items-center`}
-      >
-        <img src={FAM} alt="FamCross Icon" className={logoClasses}/>
-        <span
-          className={`text-2xl text-white font-extrabold mb-2 truncate`}
-        >
-          Family <br/> Crossfit
-        </span>
-      </div>
-      <div
         className={classNames(
-          'w-full whitespace-nowrap overflow-hidden flex justify-start gap-4 items-center',
+          "w-full whitespace-nowrap overflow-hidden flex justify-start gap-4 items-center"
         )}
       >
-        <div className={'truncate whitespace-nowrap text-nowrap'}>
+        <div className="flex justify-center items-center h-10 w-10 min-w-10 min-h-10 overflow-hidden rounded-full">
+          <MdAccountCircle size={32} className={"text-white"} />
+        </div>
+        <div className={"truncate whitespace-nowrap text-nowrap"}>
           <h2
             className={classNames(
-              'text-sm font-bold text-orange-500 w-full truncate',
+              "text-sm font-bold text-pink-500 w-full truncate"
             )}
           >
             {name}
           </h2>
-          <p className={classNames('text-white w-full truncate text-xs')}>
+          <p className={classNames("text-white w-full truncate text-xs")}>
             {role}
           </p>
         </div>
