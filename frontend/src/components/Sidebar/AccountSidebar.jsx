@@ -18,7 +18,7 @@ const AccountSidebar = ({ name, role }) => {
         <div className={"truncate whitespace-nowrap text-nowrap"}>
           <h2
             className={classNames(
-              "text-sm font-bold text-orange-500 w-full truncate"
+              "text-sm font-bold text-pink-500 w-full truncate"
             )}
           >
             {name}

@@ -16,7 +16,7 @@ const Navbar = ({
         onClick={broken ? setToggled : setCollapsed}
         color="light"
         style={{ borderStyle: "none" }}
-        className="h-8 w-8 flex items-center justify-center rounded-md transition-colors duration-100 ease-in-out text-orange-500 hover:text-orange-600"
+        className="h-8 w-8 flex items-center justify-center rounded-md transition-colors duration-100 ease-in-out text-pink-500 hover:text-pink-600"
       >
         <HiOutlineMenuAlt1 className="text-2xl cursor-pointer" />
       </Button>

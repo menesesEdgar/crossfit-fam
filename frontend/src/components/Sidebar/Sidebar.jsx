@@ -302,7 +302,7 @@ const Sidebar = ({ children }) => {
           <div className="p-4">
             <Button
               type="button"
-              gradientDuoTone="pinkToOrange"
+              gradientDuoTone="purpleToPink"
               className="w-full border-none truncate flex justify-start items-center"
               onClick={logout}
             >
