@@ -13,6 +13,9 @@ import ProtectedRoute from './ProtectedRoute';
 import Login from '../pages/login/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
 import Catalogs from '../pages/catalogs/Catalogs';
+import Users from '../pages/users/Users';
+import Account from '../pages/account/Account';
+import Roles from '../pages/roles/Roles';
   const AppRouter = () => {
     const { user } = useContext(AuthContext);
   
@@ -35,6 +38,9 @@ import Catalogs from '../pages/catalogs/Catalogs';
                     <Route element={<ProtectedRoute user={user} />}>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/catalogs" element={<Catalogs />} />
+                        <Route path="/users" element={<Users />} />
+                        <Route path="/account-settings" element={<Account />} />
+                        <Route path="/roles" element={<Roles />} />
                         <Route
                         path="/login"
                         element={

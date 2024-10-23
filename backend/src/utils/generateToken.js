@@ -7,3 +7,5 @@ const generateToken = (id) => {
 };
 
 export default generateToken;
+
+export const parseStatus = (status) => status == "true" || status == true;

@@ -8,6 +8,10 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import wodRoutes from "./routes/wodRoutes.js";
 import contestRoutes from "./routes/contestRoutes.js";
 import athletesRoutes from "./routes/athletesRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import permissionRoutes from "./routes/permissionRoutes.js";
+import roleRoutes from "./routes/roleRoutes.js";
+import rolePermissionRoutes from "./routes/rolePermissionRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -22,16 +26,14 @@ app.use(cors([APP_URL]));
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-// app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/wods", wodRoutes);
 app.use("/api/contests", contestRoutes);
 app.use("/api/athletes", athletesRoutes);
-// app.use("/api/permissions", permissionRoutes);
-// app.use("/api/roles", roleRoutes);
-// app.use("/api/role-permissions", rolePermissionRoutes);
-// app.use("/api/ping", pingRoutes);
-// app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/permissions", permissionRoutes);
+app.use("/api/roles", roleRoutes);
+app.use("/api/role-permissions", rolePermissionRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
