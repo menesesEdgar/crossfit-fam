@@ -136,6 +136,7 @@ export const searchUsers = async ({
   order,
   page,
   pageSize,
+  role,
   signal,
 }) => {
   try {
@@ -146,6 +147,7 @@ export const searchUsers = async ({
         order,
         page,
         pageSize,
+        role
       },
       signal: signal,
     });
@@ -188,27 +190,27 @@ export const getUsers = async () => {
 };
 export const createUser = async (user) => {
   try {
-    let data = new FormData();
+    // let data = new FormData();
 
-    const image = user?.photo[0] || null;
+    // const image = user?.photo[0] || null;
 
-    if (image instanceof File) {
-      data.append('profileImage', image);
+    // if (image instanceof File) {
+    //   data.append('profileImage', image);
+    // }
+    const obj = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      password: user.password,
+      repeatPassword: user.repeatPassword,
     }
-
-    data.append(
-      'userData',
-      JSON.stringify({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        password: user.password,
-        repeatPassword: user.repeatPassword,
-      }),
-    );
-    const response = await api.post(`/users`, data , headerFormData);
+    // data.append(
+    //   'userData',
+    //   JSON.stringify(),
+    // );
+    const response = await api.post(`/users`, obj);
     return response.data;
   } catch (error) {
     console.error(error);

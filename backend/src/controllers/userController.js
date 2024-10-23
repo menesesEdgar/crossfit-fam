@@ -39,12 +39,10 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
+  console.log("req ", req)
   try {
-    const { userData } = req.body;
-    const { profileImage } = req;
 
-    const { firstName, lastName, email, password, phone, role } =
-      JSON.parse(userData);
+    const { firstName, lastName, email, password, phone, role } =  req.body
 
     const userExists = await db.user.findFirst({
       where: { email, enabled: true },
@@ -66,19 +64,6 @@ export const createUser = async (req, res) => {
         status: true,
       },
     });
-
-    if (profileImage) {
-      await db.userImage.create({
-        data: {
-          url: profileImage.url,
-          thumbnail: profileImage.thumbnailUrl,
-          type: profileImage.type,
-          metadata: profileImage.metadata,
-          enabled: true,
-          userId: createdUser.id,
-        },
-      });
-    }
 
     const newUser = await db.user.findUnique({
       where: { id: createdUser.id },
@@ -232,6 +217,7 @@ export const searchUsers = async (req, res) => {
       order = "asc",
       page = 1,
       pageSize = 10,
+      role
     } = req.query;
     const { user: currentUser } = req;
     const validSortColumns = [
@@ -241,7 +227,8 @@ export const searchUsers = async (req, res) => {
       "phone",
       "role",
     ];
-    const textSearchConditions = searchTerm
+     
+     const textSearchConditions = searchTerm
       ? {
           OR: [
             { firstName: { contains: searchTerm } },
@@ -252,6 +239,7 @@ export const searchUsers = async (req, res) => {
           ],
         }
       : {};
+
 
     const formSortBy = (value, order) => {
       let arr = value.split(".");
@@ -282,13 +270,13 @@ export const searchUsers = async (req, res) => {
     const orderDirection = order === "asc" ? "asc" : "desc";
     const skip = (page - 1) * pageSize;
     const take = parseInt(pageSize);
-
+    const athleteRol = role ? { name: { not: "Root", equals: "Athlete"}} :  { name: { not: "Root" }}
     const whereConditions = {
       ...textSearchConditions,
       enabled: true,
-      role: { name: { not: "Root" } },
+      role: athleteRol
     };
-
+    
     const users = await db.user.findMany({
       where: whereConditions,
       include: {

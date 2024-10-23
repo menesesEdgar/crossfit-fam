@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { ErrorMessage } from "formik";
-import { TextInput as Input, Label } from "flowbite-react";
-import classNames from "classnames";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import React, { useState } from 'react';
+import { ErrorMessage } from 'formik';
+import { TextInput as Input, Label } from 'flowbite-react';
+import classNames from 'classnames';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const TextInput = ({
   className,
@@ -17,14 +17,14 @@ const TextInput = ({
   };
 
   const inputType =
-    props.type === "password" && showPassword ? "text" : props.type;
+    props.type === 'password' && showPassword ? 'text' : props.type;
 
   return (
-    <div className={classNames("relative w-full")}>
+    <div className={classNames('relative w-full', className)}>
       <Label
         htmlFor={props.id || props.name}
-        className={"block text-sm font-medium"}
-        color={touched[field.name] && errors[field.name] ? "failure" : ""}
+        className={'block text-sm font-medium'}
+        color={touched[field.name] && errors[field.name] ? 'failure' : ''}
         value={props.label}
       />
       <div className="relative">
@@ -32,10 +32,10 @@ const TextInput = ({
           {...field}
           {...props}
           type={inputType}
-          color={touched[field.name] && errors[field.name] ? "failure" : ""}
-          className={classNames("mt-1", props.className)}
+          color={touched[field.name] && errors[field.name] ? 'failure' : ''}
+          className="mt-1" // Espacio extra a la derecha para el icono
         />
-        {props.type === "password" && (
+        {props.type === 'password' && (
           <button
             type="button"
             onClick={togglePasswordVisibility}

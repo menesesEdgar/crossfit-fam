@@ -88,8 +88,9 @@ const Athletes = () => {
     page: currentPageNumber,
     sortBy: "firstName",
     order: "asc",
+    role: "Athlete"
   });
-
+  console.log("searchFilters ", searchFilters)
   const {
     data: athletes,
     refetch,
@@ -294,11 +295,13 @@ const Athletes = () => {
                         {columns.map((column) => {
                           let cellValue;
                           if (column.id === "firstName") {
-                            cellValue = athlete.name;
+                            cellValue = athlete.firstName;
                           } else if (column.id === "lastName") {
                             cellValue = athlete.lastName;
+                          } else if (column.id === "email") {
+                            cellValue = athlete.email;
                           } else if (column.id === "age") {
-                            cellValue = athlete.age;
+                            cellValue = athlete.gender;
                           } else if (column.id === "gender") {
                             cellValue = athlete.gender;
                           }

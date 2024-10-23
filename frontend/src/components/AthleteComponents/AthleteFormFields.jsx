@@ -37,6 +37,7 @@ const AthleteFormFields = () => {
       <Field
         name="age"
         id="age"
+        component={TextInput}
         label="Edad"
         type="number"
         icon={PiTrademarkRegisteredBold}
@@ -56,6 +57,7 @@ const AthleteFormFields = () => {
       <Field
         name="email"
         id="email"
+        component={TextInput}
         label="Correo electrónico"
         type="text"
         icon={PiTrademarkRegisteredBold}
@@ -63,6 +65,7 @@ const AthleteFormFields = () => {
       <Field
         name="password"
         id="password"
+        component={TextInput}
         label="Contraseña"
         icon={BiCategory}
       />
