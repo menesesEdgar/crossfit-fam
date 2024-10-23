@@ -68,7 +68,7 @@ const Users = () => {
     searchTerm: '',
     pageSize: 5,
     page: currentPageNumber,
-    sortBy: 'name',
+    sortBy: 'firstName',
     order: 'asc',
   });
 

@@ -3,10 +3,9 @@ export const PermissionsByGroup = {
     name: 'Atletas',
     permissions: [
       'view_athletes',
-      'create_athletes',
-      ,
-      'edit_athletes',
-      'delete_athletes',
+      'create_athlete',
+      'edit_athlete',
+      'delete_athlete',
     ],
   },
   contest: {
@@ -22,9 +21,9 @@ export const PermissionsByGroup = {
     name: 'WODS',
     permissions: [
       'view_wods',
-      'create_wods',
-      'edit_wods',
-      'delete_wods',
+      'create_wod',
+      'edit_wod',
+      'delete_wod',
     ],
   },
   categories: {

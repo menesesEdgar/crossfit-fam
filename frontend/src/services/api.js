@@ -77,6 +77,7 @@ export const loadUser = async () => {
         throw error;
     }
 };
+
 export const updatePassword = async (passwords) => {
     try {
         const response = await api.put('/auth/updatePassword', passwords);
@@ -110,6 +111,24 @@ export const updateProfile = async (profile) => {
       console.error(error);
       throw error;
     }
+};
+export const changePasswordUser = async (user) => {
+  try {
+    const response = await api.put(`/users/changePassword/${user.id}`, user);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const deleteUser = async (userId) => {
+  try {
+    const response = await api.delete(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 export const searchUsers = async ({
   searchTerm,
@@ -158,6 +177,73 @@ export const getAthlete = async ({ id: athleteId, signal }) => {
     throw error;
   }
 }
+export const getUsers = async () => {
+  try {
+    const response = await api.get(`/users`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const createUser = async (user) => {
+  try {
+    let data = new FormData();
+
+    const image = user?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+
+    data.append(
+      'userData',
+      JSON.stringify({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        password: user.password,
+        repeatPassword: user.repeatPassword,
+      }),
+    );
+    const response = await api.post(`/users`, data , headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const updateUser = async (user) => {
+  try {
+    let data = new FormData();
+    const image = user?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+    data.append(
+      'userData',
+      JSON.stringify({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        status: user.status,
+        password: user.password,
+        repeatPassword: user.repeatPassword,
+      }),
+    );
+    const response = await api.put(`/users/${user.id}`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 export const createAthlete = async (athlete) => {
   try {
     let data = new FormData();
@@ -225,7 +311,7 @@ export const deleteAthlete = async () => {
     throw error;
   }
 }
-export const getCategories = async () => {
+export const getCategories = async (profile) => {
   try {
     const response = await api.put('/auth/updateProfile', profile);
     return response.data;
@@ -234,7 +320,7 @@ export const getCategories = async () => {
     throw error;
   }
 }
-export const getCategory = async () => {
+export const getCategory = async (profile) => {
   try {
     const response = await api.put('/auth/updateProfile', profile);
     return response.data;
@@ -310,7 +396,7 @@ export const updateCategory = async () => {
     throw error;
   }
 }
-export const getWod = async () => {
+export const getWod = async (profile) => {
   try {
     const response = await api.put('/auth/updateProfile', profile);
     return response.data;
@@ -319,7 +405,7 @@ export const getWod = async () => {
     throw error;
   }
 }
-export const getWods = async () => {
+export const getWods = async (profile) => {
   try {
     const response = await api.put('/auth/updateProfile', profile);
     return response.data;

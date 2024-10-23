@@ -36,6 +36,7 @@ const Roles = () => {
   const [activeTab, setActiveTab] = useState(
     roles?.length > 0 ? roles[0]?.id : null,
   );
+  console.log("roles ", roles)
   const [isDisabled, setIsDisabled] = useState(false);
   const [groupedPermissions, setGroupedPermissions] = useState({});
   const [roleName, setRoleName] = useState();
@@ -252,7 +253,7 @@ const Roles = () => {
                 >
                   <div className="flex gap-4 items-center">
                     <IoShieldSharp size={20} />
-                    <h3 className="text-sm lg:text-lg font-semibold">
+                    <h3 className="text-sm lg:text-lg font-semibold capitalize">
                       {role.name}
                     </h3>
                   </div>

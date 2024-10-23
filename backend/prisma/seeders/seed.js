@@ -9,17 +9,17 @@ async function main() {
   if (roles.length === 0) {
     const rootRole = await database.role.create({
         data: {
-          name: "root",
+          name: "Root",
         },
     });
     const adminRole = await database.role.create({
       data: {
-        name: "admin",
+        name: "Admin",
       },
     });
     await database.role.createMany({
         data: [
-          { name: "athlete" },
+          { name: "Athlete" },
         ],
     });
     const permissions = [
