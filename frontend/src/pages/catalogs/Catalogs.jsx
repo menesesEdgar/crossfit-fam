@@ -1,33 +1,31 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Tabs } from 'flowbite-react';
-import { HiCubeTransparent } from 'react-icons/hi';
-import { BiCategory } from 'react-icons/bi';
-import { PiTrademarkRegisteredBold } from 'react-icons/pi';
-import { FaListAlt, FaUsers } from 'react-icons/fa';
-import useCheckPermissions from '../../hooks/useCheckPermissions';
-import NotFound from '../notFound/NotFound';
-import { IoIosFitness } from 'react-icons/io';
-const Categories = React.lazy(() => import('./Categories'));
-const Wods = React.lazy(() => import('./Wods'));
-const Athletes = React.lazy(() => import('./Athletes'));
+import React, { useEffect, useRef } from "react";
+import { Tabs } from "flowbite-react";
+import { BiCategory } from "react-icons/bi";
+import { FaUsers } from "react-icons/fa";
+import useCheckPermissions from "../../hooks/useCheckPermissions";
+import NotFound from "../notFound/NotFound";
+import { IoIosFitness } from "react-icons/io";
+const Categories = React.lazy(() => import("./Categories"));
+const Wods = React.lazy(() => import("./Wods"));
+const Athletes = React.lazy(() => import("./Athletes"));
 
 const Catalogs = () => {
   const tabsRef = useRef(null);
 
   useEffect(() => {
-    const tab = localStorage.getItem('selectedTab');
+    const tab = localStorage.getItem("selectedTab");
     if (tab) {
       tabsRef.current.setActiveTab(parseInt(tab));
     }
   }, []);
 
   const handleTabChange = (tabIndex) => {
-    localStorage.setItem('selectedTab', tabIndex);
+    localStorage.setItem("selectedTab", tabIndex);
   };
 
-  const isViewCategoriesPermission = useCheckPermissions('view_categories');
-  const isViewWodsPermission = useCheckPermissions('view_wods');
-  const isViewAthletesPermission = useCheckPermissions('view_athletes');
+  const isViewCategoriesPermission = useCheckPermissions("view_categories");
+  const isViewWodsPermission = useCheckPermissions("view_wods");
+  const isViewAthletesPermission = useCheckPermissions("view_athletes");
 
   return (
     <Tabs

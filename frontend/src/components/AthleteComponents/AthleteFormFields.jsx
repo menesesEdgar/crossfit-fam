@@ -1,20 +1,29 @@
-import React from 'react';
-import { Field } from 'formik';
-import TextInput from '../Inputs/TextInput';
-import { BiCategory } from 'react-icons/bi';
-import { PiTrademarkRegisteredBold } from 'react-icons/pi';
-import { MdOutlineDirectionsCar } from 'react-icons/md';
-import { FaCalendar } from 'react-icons/fa';
-import SelectInput from '../Inputs/SelectInput';
-const genderOptions = [{
+import React from "react";
+import { Field } from "formik";
+import TextInput from "../Inputs/TextInput";
+import { MdEmail } from "react-icons/md";
+import {
+  FaCalendarAlt,
+  FaPhoneSquareAlt,
+  FaUser,
+  FaUserTag,
+  FaVenusMars,
+} from "react-icons/fa";
+import SelectInput from "../Inputs/SelectInput";
+const genderOptions = [
+  {
     id: "1",
-    name: "Masculino"
-},
-{
+    name: "Masculino",
+  },
+  {
     id: "2",
-    name: "Femenino"
-}
-]
+    name: "Femenino",
+  },
+  {
+    id: "3",
+    name: "Otro",
+  },
+];
 const AthleteFormFields = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -22,52 +31,55 @@ const AthleteFormFields = () => {
         name="firstName"
         id="firstName"
         component={TextInput}
-        label="Nombre"
+        label="* Nombre"
         type="text"
-        icon={MdOutlineDirectionsCar}
+        icon={FaUser}
       />
       <Field
         name="lastName"
         id="lastName"
         component={TextInput}
-        label="Apellidos"
+        label="* Apellidos"
         type="text"
-        icon={FaCalendar}
+        icon={FaUserTag}
       />
       <Field
-        name="age"
-        id="age"
+        name="birthDate"
+        id="birthDate"
         component={TextInput}
-        label="Edad"
-        type="number"
-        icon={PiTrademarkRegisteredBold}
+        label="* Fecha de nacimiento"
+        type="date"
+        icon={FaCalendarAlt}
       />
       <Field
         name="gender"
         id="gender"
         component={SelectInput}
-        label="Género"
+        label="* Género"
         type="number"
         options={genderOptions.map((gender) => ({
-            label: gender.name,
-            value: gender.id,
-          }))}
-        icon={PiTrademarkRegisteredBold}
+          label: gender.name,
+          value: gender.id,
+        }))}
+        icon={FaVenusMars}
       />
       <Field
         name="email"
         id="email"
         component={TextInput}
-        label="Correo electrónico"
+        label="* Correo electrónico"
         type="text"
-        icon={PiTrademarkRegisteredBold}
+        icon={MdEmail}
+        placeholder="example@mail.com"
       />
       <Field
-        name="password"
-        id="password"
+        name="phone"
+        id="phone"
         component={TextInput}
-        label="Contraseña"
-        icon={BiCategory}
+        label="Teléfono"
+        type="tel"
+        icon={FaPhoneSquareAlt}
+        placeholder="123-456-7890"
       />
       <Field
         className="hidden"

@@ -1,6 +1,7 @@
 import { db } from "../lib/db.js";
 import bcrypt from "bcryptjs";
 import { parseStatus } from "../utils/generateToken.js";
+import { generateRandomPassword } from "../utils/generatePassword.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -39,10 +40,9 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  console.log("req ", req)
   try {
-
-    const { firstName, lastName, email, password, phone, role } =  req.body
+    const { firstName, lastName, email, phone, role, birthDate, gender } =
+      req.body;
 
     const userExists = await db.user.findFirst({
       where: { email, enabled: true },
@@ -51,15 +51,27 @@ export const createUser = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: "El email ya está registrado." });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newPassword = generateRandomPassword();
+
+    let athleteRol;
+    if (role === "Athlete") {
+      athleteRol = await db.role.findFirst({
+        where: { name: "Athlete" },
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     const createdUser = await db.user.create({
       data: {
         firstName,
         lastName,
         email,
         phone,
+        birthdate: new Date(birthDate),
+        gender,
         password: hashedPassword,
-        roleId: parseInt(role),
+        roleId: role === "Athlete" ? athleteRol.id : parseInt(role),
         enabled: true,
         status: true,
       },
@@ -69,13 +81,10 @@ export const createUser = async (req, res) => {
       where: { id: createdUser.id },
       include: {
         role: true,
-        photo: {
-          where: { enabled: true },
-        },
       },
     });
 
-    newUser.password = undefined;
+    newUser.password = newPassword;
 
     res.status(201).json(newUser);
   } catch (error) {
@@ -87,10 +96,18 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { userData } = req.body;
-    const { profileImage } = req;
 
-    const { id, firstName, lastName, email, phone, role, status } =
-      JSON.parse(userData);
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      phone,
+      role,
+      status,
+      birthDate,
+      gender,
+    } = JSON.parse(userData);
 
     const userExists = await db.user.findFirst({ where: { id } });
 
@@ -112,34 +129,15 @@ export const updateUser = async (req, res) => {
         lastName,
         email,
         phone,
+        birthDate,
+        gender,
         status: parseStatus(status),
         roleId: parseInt(role),
       },
       include: {
         role: true,
-        photo: {
-          where: { enabled: true },
-        },
       },
     });
-
-    if (profileImage) {
-      await db.userImage.updateMany({
-        where: { userId: id, enabled: true },
-        data: { enabled: false },
-      });
-
-      await db.userImage.create({
-        data: {
-          url: profileImage.url,
-          thumbnail: profileImage.thumbnailUrl,
-          type: profileImage.type,
-          metadata: profileImage.metadata,
-          enabled: true,
-          userId: updatedUser.id,
-        },
-      });
-    }
 
     const newUser = await db.user.findUnique({
       where: { id: updatedUser.id },
@@ -150,6 +148,16 @@ export const updateUser = async (req, res) => {
         },
       },
     });
+
+    const today = new Date();
+    const birthDateParts = newUser.birthDate.split("-");
+    const birthDateObj = new Date(
+      birthDateParts[0],
+      birthDateParts[1] - 1,
+      birthDateParts[2]
+    );
+    const age = today.getFullYear() - birthDateObj.getFullYear();
+    newUser.age = age;
 
     newUser.password = undefined;
 
@@ -217,7 +225,7 @@ export const searchUsers = async (req, res) => {
       order = "asc",
       page = 1,
       pageSize = 10,
-      role
+      role,
     } = req.query;
     const { user: currentUser } = req;
     const validSortColumns = [
@@ -227,8 +235,8 @@ export const searchUsers = async (req, res) => {
       "phone",
       "role",
     ];
-     
-     const textSearchConditions = searchTerm
+
+    const textSearchConditions = searchTerm
       ? {
           OR: [
             { firstName: { contains: searchTerm } },
@@ -239,7 +247,6 @@ export const searchUsers = async (req, res) => {
           ],
         }
       : {};
-
 
     const formSortBy = (value, order) => {
       let arr = value.split(".");
@@ -270,13 +277,15 @@ export const searchUsers = async (req, res) => {
     const orderDirection = order === "asc" ? "asc" : "desc";
     const skip = (page - 1) * pageSize;
     const take = parseInt(pageSize);
-    const athleteRol = role ? { name: { not: "Root", equals: "Athlete"}} :  { name: { not: "Root" }}
+    const athleteRol = role
+      ? { name: { not: "Root", equals: "Athlete" } }
+      : { name: { not: "Root" } };
     const whereConditions = {
       ...textSearchConditions,
       enabled: true,
-      role: athleteRol
+      role: athleteRol,
     };
-    
+
     const users = await db.user.findMany({
       where: whereConditions,
       include: {

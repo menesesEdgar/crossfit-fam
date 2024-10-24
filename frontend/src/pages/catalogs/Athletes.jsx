@@ -12,15 +12,13 @@ import Notifies from "../../components/Notifies/Notifies";
 import AthleteFormFields from "../../components/athleteComponents/AthleteFormFields";
 import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import { AthleteFormSchema } from "../../components/AthleteComponents/AthleteFormSchema";
-import { HiCubeTransparent } from "react-icons/hi";
 import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
+import { FaUsers } from "react-icons/fa";
 const Card = lazy(() => import("../../components/Card/Card"));
 const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
-const TableFooter = lazy(() => import("../../components/Table/TableHeader"));
-const TableActions = lazy(() =>
-  import("../../components/Table/TableActions")
-);
+const TableFooter = lazy(() => import("../../components/Table/TableFooter"));
+const TableActions = lazy(() => import("../../components/Table/TableActions"));
 const TableResultsNotFound = lazy(() =>
   import("../../components/Table/TableResultsNotFound")
 );
@@ -74,10 +72,11 @@ const Athletes = () => {
   const [initialValues, setInitialValues] = useState({
     firstName: "",
     lastName: "",
-    age: "",
-    gender: "1",
+    birthDate: "",
+    gender: "",
     email: "",
-    password: "",
+    phone: "",
+    role: "Athlete",
     id: "",
   });
   const [refreshData, setRefreshData] = useState(false);
@@ -88,9 +87,9 @@ const Athletes = () => {
     page: currentPageNumber,
     sortBy: "firstName",
     order: "asc",
-    role: "Athlete"
+    role: "Athlete",
   });
-  console.log("searchFilters ", searchFilters)
+
   const {
     data: athletes,
     refetch,
@@ -190,9 +189,9 @@ const Athletes = () => {
       id: athlete.id,
       firstName: athlete.firstName,
       lastName: athlete.lastName,
-      age: ~~Number(athlete.age),
+      birthDate: athlete.birthDate,
       email: athlete.email,
-      password: athlete.password,
+      phone: athlete.phone,
     });
     setIsOpenModal(true);
   };
@@ -207,10 +206,11 @@ const Athletes = () => {
         id: "",
         firstName: "",
         lastName: "",
-        gender: "1",
-        age: "",
+        gender: "",
+        birthDate: "",
         email: "",
-        password: "",
+        phone: "",
+        role: "Athlete",
       });
       setIsOpenModal(false);
     } catch (error) {
@@ -226,10 +226,11 @@ const Athletes = () => {
       id: "",
       firstName: "",
       lastName: "",
-      gender: "1",
-      age: "",
+      gender: "",
+      birthDate: "",
       email: "",
-      password: "",
+      phone: "",
+      role: "Athlete",
     });
   };
 
@@ -259,7 +260,7 @@ const Athletes = () => {
   return (
     <div className="flex min-h-[77dvh] h-full flex-col gap-3 bg-white shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
       <TableHeader
-        icon={HiCubeTransparent}
+        icon={FaUsers}
         title={"Atletas"}
         actions={[
           {
@@ -412,11 +413,13 @@ const Athletes = () => {
           saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
-      <ModalRemove
-        isOpenModal={isRemoveModalOpen}
-        onCloseModal={() => setIsRemoveModalOpen(false)}
-        removeFunction={handleRemoveAthlete}
-      />
+      {isRemoveModalOpen && (
+        <ModalRemove
+          isOpenModal={isRemoveModalOpen}
+          onCloseModal={() => setIsRemoveModalOpen(false)}
+          removeFunction={handleRemoveAthlete}
+        />
+      )}
     </div>
   );
 };

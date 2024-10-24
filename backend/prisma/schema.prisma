@@ -14,8 +14,11 @@ model User {
   lastName  String
   email     String      @unique
   phone     String?
-  age       Int?
+  birthdate DateTime?
   gender    String?
+
+  athleteCharacteristics AthleteCharacteristics?
+
   password  String
   status    Boolean?   @default(true)
   roleId    Int
@@ -28,6 +31,35 @@ model User {
   photo Image[] @relation("UserImage")
   contestCategoryAthlete ContestCategoryAthlete[]
 }
+
+model AthleteCharacteristics {
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id])
+  
+  weight           Float?  
+  weightUnit       Unit?  
+  height           Float?   
+  heightUnit       Unit?   
+  bodyFatPercentage Float? 
+  bmi              Float?    
+  activityLevel    String?   
+  medicalConditions String?  
+  startDate        DateTime?
+  endDate          DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+
+enum Unit {
+  KG     
+  LB      
+  METER   
+  FOOT    
+}
+
+
 // create category, update category, create user, etc.
 model Permission {
   id          Int    @id @default(autoincrement())
