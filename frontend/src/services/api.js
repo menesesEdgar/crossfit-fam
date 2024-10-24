@@ -130,6 +130,34 @@ export const deleteUser = async (userId) => {
     throw error;
   }
 };
+export const searchContest  = async ({
+  searchTerm,
+  sortBy,
+  order,
+  page,
+  pageSize,
+  signal,
+}) => {
+  try {
+    const response = await api.get('/contests/search', {
+      params: {
+        searchTerm,
+        sortBy,
+        order,
+        page,
+        pageSize,
+      },
+      signal: signal,
+    });
+    if (response.status !== 200) {
+      throw new Error(response.message || 'Hubo un error al hacer la busqueda');
+    }
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 export const searchUsers = async ({
   searchTerm,
   sortBy,
@@ -273,26 +301,26 @@ export const deleteAthlete = async () => {
     console.error(error);
     throw error;
   }
-};
-export const getCategories = async (profile) => {
+}
+export const getCategories = async () => {
   try {
-    const response = await api.put("/auth/updateProfile", profile);
+    const response = await api.get('/categories');
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
-};
-export const getCategory = async (profile) => {
+}
+export const getCategory = async ({ id: categoryId, signal }) => {
   try {
-    const response = await api.put("/auth/updateProfile", profile);
+    const response = await api.get(`/categories/${categoryId}`, { signal });
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
-};
-export const createCategory = async () => {
+}
+export const createCategory = async (category) => {
   try {
     let data = new FormData();
 
@@ -314,7 +342,7 @@ export const createCategory = async () => {
         repeatPassword: user.repeatPassword,
       })
     );
-    const response = await api.post(`/users`, data, headerFormData);
+    const response = await api.post(`/categories`, data, headerFormData);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -358,19 +386,19 @@ export const updateCategory = async () => {
     console.error(error);
     throw error;
   }
-};
-export const getWod = async (profile) => {
+}
+export const getWod = async ({id: wodId, signal}) => {
   try {
-    const response = await api.put("/auth/updateProfile", profile);
+    const response = await api.get(`/wods/${wodId}`, { signal });
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
-};
-export const getWods = async (profile) => {
+}
+export const getWods = async () => {
   try {
-    const response = await api.put("/auth/updateProfile", profile);
+    const response = await api.get('/wods');
     return response.data;
   } catch (error) {
     console.error(error);
@@ -443,4 +471,76 @@ export const deleteWod = async (wodId) => {
     console.error(error);
     throw error;
   }
-};
+}
+// Contest Endpoints
+export const getContest = async ({id: contestId, signal}) => {
+  try {
+    const response = await api.get(`/contests/${contestId}`, { signal });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+// Maybe It'll be a search later to apply pagination
+export const getContests = async () => {
+  try {
+    const response = await api.get('/contests');
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const createContest = async (contest) => {
+  try {
+
+
+    const newContest = {
+
+    }
+    const response = await api.post(`/contests`, newContest);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const updateContest = async (wod) => {
+  try {
+    let data = new FormData();
+    const image = user?.photo[0] || null;
+
+    if (image instanceof File) {
+      data.append('profileImage', image);
+    }
+    data.append(
+      'userData',
+      JSON.stringify({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        status: user.status,
+        password: user.password,
+        repeatPassword: user.repeatPassword,
+      }),
+    );
+    const response = await api.put(`/wods/${wod.id}`, data, headerFormData);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const deleteContest = async (wodId) => {
+  try {
+    const response = await api.delete(`/wods/${wodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

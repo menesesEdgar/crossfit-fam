@@ -103,6 +103,7 @@ model Contest {
   organizer  String // Pendiente de relacionar con un usuario
   startDate  DateTime
   endDate    DateTime?
+  status     String // Abierta, En proceso, cerrada
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   contestWod ContestWod[]

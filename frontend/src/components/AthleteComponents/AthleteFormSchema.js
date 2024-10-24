@@ -11,13 +11,13 @@ export const AthleteFormSchema = Yup.object().shape({
     "El teléfono debe tener el formato 123-456-7890"
   ),
   birthDate: Yup.date()
-    .min("1900-01-01", "La fecha de adquisición no puede ser menor a 1900")
+    .min("1900-01-01", "La fecha de nacimiento no puede ser menor a 1900")
     .max(
       new Date(),
-      "La fecha de adquisición no puede ser mayor a la fecha actual"
+      "Fecha de nacimiento inválida"
     )
-    .typeError("La fecha de adquisición debe ser una fecha")
-    .required("La fecha de adquisición es requerida"),
+    .typeError("Fecha de nacimiento debe ser una fecha")
+    .required("La fecha de nacimiento es requerida"),
   gender: Yup.string().required("Género requerido"),
   id: Yup.number(),
 });
