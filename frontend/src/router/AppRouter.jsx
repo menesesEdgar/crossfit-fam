@@ -16,6 +16,7 @@ import Catalogs from '../pages/catalogs/Catalogs';
 import Users from '../pages/users/Users';
 import Account from '../pages/account/Account';
 import Roles from '../pages/roles/Roles';
+import Contest from '../pages/contest/Contest';
   const AppRouter = () => {
     const { user } = useContext(AuthContext);
   
@@ -37,6 +38,7 @@ import Roles from '../pages/roles/Roles';
                     <Routes>
                     <Route element={<ProtectedRoute user={user} />}>
                         <Route path="/" element={<Dashboard />} />
+                        <Route path="/contest" element={<Contest />} />
                         <Route path="/catalogs" element={<Catalogs />} />
                         <Route path="/users" element={<Users />} />
                         <Route path="/account-settings" element={<Account />} />

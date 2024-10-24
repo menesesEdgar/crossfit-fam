@@ -11,11 +11,11 @@ export const getButtonClassNames = (
 
   let notFilledClasses = {
     "hover:bg-pink-600 hover:text-white": color === "mycad" && !disabled,
-    "hover:bg-mycad-danger hover:text-white": color === "danger" && !disabled,
-    "hover:bg-mycad-warning hover:text-white": color === "warning" && !disabled,
-    "hover:bg-mycad-success hover:text-white": color === "success" && !disabled,
-    "hover:bg-mycad-info hover:text-white": color === "info" && !disabled,
-    "hover:bg-mycad-dark hover:text-white": color === "dark" && !disabled,
+    "hover:bg-crossfit-danger hover:text-white": color === "danger" && !disabled,
+    "hover:bg-crossfit-warning hover:text-white": color === "warning" && !disabled,
+    "hover:bg-crossfit-success hover:text-white": color === "success" && !disabled,
+    "hover:bg-crossfit-info hover:text-white": color === "info" && !disabled,
+    "hover:bg-crossfit-dark hover:text-white": color === "dark" && !disabled,
     "hover:bg-red-500 hover:text-white": color === "red" && !disabled,
     "hover:bg-yellow-300 hover:text-white": color === "yellow" && !disabled,
     "hover:bg-cyan-500 hover:text-white": color === "cyan" && !disabled,
@@ -40,15 +40,15 @@ export const getButtonClassNames = (
   };
   let filledClasses = {
     "bg-pink-500 text-white border-mycad hover:bg-pink-600": color === "mycad",
-    "bg-mycad-danger text-white border-mycad-danger hover:bg-mycad-rose":
+    "bg-crossfit-danger text-white border-crossfit-danger hover:bg-mycad-rose":
       color === "danger",
-    "bg-mycad-warning text-white border-mycad-warning hover:bg-mycad-salmon":
+    "bg-crossfit-warning text-white border-crossfit-warning hover:bg-mycad-salmon":
       color === "warning",
-    "bg-mycad-success text-white border-mycad-success hover:bg-mycad-success":
+    "bg-crossfit-success text-white border-crossfit-success hover:bg-crossfit-success":
       color === "success",
-    "bg-mycad-info text-white border-mycad-info hover:bg-mycad-info":
+    "bg-crossfit-info text-white border-crossfit-info hover:bg-crossfit-info":
       color === "info",
-    "bg-mycad-dark text-white border-mycad-dark hover:bg-mycad-dark":
+    "bg-crossfit-dark text-white border-crossfit-dark hover:bg-crossfit-dark":
       color === "dark",
     "bg-red-500 text-white border-red-500 hover:bg-red-700": color === "red",
     "bg-yellow-300 text-white border-yellow-300 hover:bg-yellow-400":

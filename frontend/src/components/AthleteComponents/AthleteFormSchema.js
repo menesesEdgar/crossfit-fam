@@ -1,16 +1,23 @@
-import * as Yup from 'yup';
+import * as Yup from "yup";
 
 export const AthleteFormSchema = Yup.object().shape({
-  firstName: Yup.string().required('Nombre requerido'),
-  lastName: Yup.string().required('Apellido requerido'),
-  age: Yup.number()
-    .min(5, "Esta muy bebe")
-    .max(100, "Estas muy anciano para participar")
-    .integer()
-    .typeError('La edad es número')
-    .required('Edad requerida'),
-  gender: Yup.string().required('Género requerido'),
-  email: Yup.string().required('Correo requerido'),
-  password: Yup.string().required('Contraseña requerida'),
+  firstName: Yup.string().required("Nombre requerido"),
+  lastName: Yup.string().required("Apellido requerido"),
+  email: Yup.string()
+    .email("El correo electrónico no es válido")
+    .required("Correo requerido"),
+  phone: Yup.string().matches(
+    /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/,
+    "El teléfono debe tener el formato 123-456-7890"
+  ),
+  birthDate: Yup.date()
+    .min("1900-01-01", "La fecha de nacimiento no puede ser menor a 1900")
+    .max(
+      new Date(),
+      "Fecha de nacimiento inválida"
+    )
+    .typeError("Fecha de nacimiento debe ser una fecha")
+    .required("La fecha de nacimiento es requerida"),
+  gender: Yup.string().required("Género requerido"),
   id: Yup.number(),
 });
