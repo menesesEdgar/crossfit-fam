@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { Tabs } from "flowbite-react";
-import { BiCategory } from "react-icons/bi";
-import { FaUsers } from "react-icons/fa";
+import { FaDumbbell, FaUsers } from "react-icons/fa";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
-import { IoIosFitness } from "react-icons/io";
+import { GiMuscleUp } from "react-icons/gi";
 const Categories = React.lazy(() => import("./Categories"));
 const Wods = React.lazy(() => import("./Wods"));
 const Athletes = React.lazy(() => import("./Athletes"));
@@ -43,14 +42,14 @@ const Catalogs = () => {
         </Tabs.Item>
       )}
       {isViewCategoriesPermission.hasPermission && (
-        <Tabs.Item title="Categorías" icon={BiCategory}>
+        <Tabs.Item title="Categorías" icon={GiMuscleUp}>
           <div className="h-full overflow-hidden">
             <Categories />
           </div>
         </Tabs.Item>
       )}
       {isViewWodsPermission.hasPermission && (
-        <Tabs.Item title="WODs" icon={IoIosFitness}>
+        <Tabs.Item title="WODs" icon={FaDumbbell}>
           <div className="h-full overflow-hidden">
             <Wods />
           </div>
