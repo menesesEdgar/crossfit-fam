@@ -64,7 +64,7 @@ enum Unit {
 model Permission {
   id          Int    @id @default(autoincrement())
   name        String
-  description String?
+  description String?   @db.Text
   roles       RolePermission[]
 }
 // user -permission
@@ -90,7 +90,7 @@ model Role {
 model Category {
     id         Int          @id @default(autoincrement())
     name       String
-    division   String
+    description   String?   @db.Text
     isDeleted  Boolean      @default(false)
     createdAt DateTime      @default(now())
     updatedAt DateTime      @updatedAt
@@ -127,7 +127,7 @@ model ContestCategory {
 model Wod {
   id         Int          @id @default(autoincrement())
   name       String
-  description String? // Wod details
+  description String?     @db.Text// Wod details
   isDeleted  Boolean      @default(false)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt

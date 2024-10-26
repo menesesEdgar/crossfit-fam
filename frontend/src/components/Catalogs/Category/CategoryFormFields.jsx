@@ -3,6 +3,7 @@ import { Field } from "formik";
 import TextInput from "../../Inputs/TextInput";
 import { TbListNumbers } from "react-icons/tb";
 import { GiMuscleUp } from "react-icons/gi";
+import TextArea from "../../Inputs/TextArea";
 
 const CategoryFormFields = () => {
   return (
@@ -17,12 +18,11 @@ const CategoryFormFields = () => {
         className="col-span-2"
       />
       <Field
-        name="division"
-        id="division"
-        component={TextInput}
-        label="* División"
+        name="description"
+        id="description"
+        component={TextArea}
+        label="Descripción de la categoría"
         type="text"
-        icon={TbListNumbers}
         className="col-span-2"
       />
       <Field

@@ -40,13 +40,12 @@ export const createCategory = async (req, res) => {
   try {
     const { categoryData } = req.body;
 
-    const { name, division } =
-      JSON.parse(categoryData);
+    const { name, description } = JSON.parse(categoryData);
 
     const newCategory = await db.category.create({
       data: {
         name,
-        division,
+        description,
       },
     });
 
@@ -162,7 +161,6 @@ export const deleteCategory = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 export const searchCategories = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
-import classNames from 'classnames';
-import React from 'react';
-import { Select, Tooltip } from 'flowbite-react';
+import classNames from "classnames";
+import React from "react";
+import { Select, Tooltip } from "flowbite-react";
 
 const TableFooter = ({
   pagination,
@@ -14,11 +14,11 @@ const TableFooter = ({
   const paginationNumber = [];
 
   const activePagClass =
-    'flex items-center justify-center text-sm z-10 py-2 px-3 leading-tight text-orange-600 bg-orange-50 border border-orange-300 hover:bg-orange-100 hover:text-orange-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white';
+    "flex items-center justify-center text-sm z-10 py-2 px-3 leading-tight text-orange-600 bg-orange-50 border border-orange-300 hover:bg-orange-100 hover:text-orange-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white";
   const pagClass =
-    'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white';
+    "flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white";
   const disablePagClass =
-    'pointer-events-none opacity-60 flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white';
+    "pointer-events-none opacity-60 flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white";
   for (let i = 1; i <= totalPages; i++) {
     const pagC = (
       <li key={i} onClick={() => handleSelectChange(i)}>
@@ -29,14 +29,14 @@ const TableFooter = ({
           >
             {i}
           </a>
-        }{' '}
+        }{" "}
       </li>
     );
     paginationNumber.push(pagC);
   }
   return (
     <nav
-      className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+      className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4 pt-2"
       aria-label="Table navigation"
     >
       <div className="flex items-center gap-2">
@@ -45,7 +45,11 @@ const TableFooter = ({
           <span className="font-semibold text-gray-900 dark:text-white">
             {totalRecords === index
               ? totalRecords
-              : `${index} - ${pageSize + index - 1 >= totalRecords ? totalRecords : pageSize + index - 1}`}
+              : `${index} - ${
+                  pageSize + index - 1 >= totalRecords
+                    ? totalRecords
+                    : pageSize + index - 1
+                }`}
           </span>
           &nbsp;de&nbsp;
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -55,16 +59,16 @@ const TableFooter = ({
         </span>
         <Tooltip
           content={
-            totalRecords == 0 ? 'No hay resultados' : 'Resultados por pagina'
+            totalRecords == 0 ? "No hay resultados" : "Resultados por pagina"
           }
         >
           <Select
             className="font-semibold"
             style={{
-              backgroundColor: 'transparent',
-              borderRadius: '0',
+              backgroundColor: "transparent",
+              borderRadius: "0",
               border: 0,
-              borderBottom: '1px solid #e5e7eb',
+              borderBottom: "1px solid #e5e7eb",
             }}
             value={pageSize}
             onChange={changePageSize}
@@ -82,7 +86,7 @@ const TableFooter = ({
         <li
           key="prev"
           onClick={goOnPrevPage}
-          className={index === 1 ? 'pointer-events-none opacity-60' : ''}
+          className={index === 1 ? "pointer-events-none opacity-60" : ""}
         >
           <a
             href="#"
@@ -110,8 +114,8 @@ const TableFooter = ({
           onClick={goOnNextPage}
           className={
             pageSize + index - 1 >= totalRecords
-              ? 'pointer-events-none opacity-60'
-              : 'cursor-pointer'
+              ? "pointer-events-none opacity-60"
+              : "cursor-pointer"
           }
         >
           <a className="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">

@@ -1,18 +1,9 @@
-import React from 'react';
-import { Modal } from 'flowbite-react';
-import { FormikProvider, useFormik, Form } from 'formik';
-import ActionButtons from '../ActionButtons/ActionButtons';
-import { FaSave } from 'react-icons/fa';
-import { MdClose } from 'react-icons/md';
-
-const handleKeyDown = (event) => {
-  if (event.key === 'Enter') {
-    event.preventDefault(); // Prevenir comportamiento por defecto
-    event.target.form.dispatchEvent(
-      new Event('submit', { bubbles: true, cancelable: true }),
-    );
-  }
-};
+import React from "react";
+import { Modal } from "flowbite-react";
+import { FormikProvider, useFormik, Form } from "formik";
+import ActionButtons from "../ActionButtons/ActionButtons";
+import { FaSave } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
 
 const ModalForm = ({
   saveLabel,
@@ -38,8 +29,8 @@ const ModalForm = ({
 
   return (
     <Modal
-      position={position ?? 'center'}
-      size={size || '2xl'}
+      position={position ?? "center"}
+      size={size || "2xl"}
       show={isOpenModal}
       onClose={onClose}
       dismissible={dismissible}
@@ -47,27 +38,25 @@ const ModalForm = ({
       <Modal.Header>{title}</Modal.Header>
       <Modal.Body>
         <FormikProvider value={formik}>
-          <Form onSubmit={formik.handleSubmit} onKeyDown={handleKeyDown}>
-            {formFields}
-          </Form>
+          <Form onSubmit={formik.handleSubmit}>{formFields}</Form>
         </FormikProvider>
       </Modal.Body>
       <Modal.Footer className="flex justify-end gap-4">
         <ActionButtons
           extraActions={[
             {
-              label: 'Cancelar',
+              label: "Cancelar",
               action: onClose,
-              color: 'stone',
+              color: "stone",
               icon: MdClose,
             },
             {
-              label: saveLabel ? saveLabel : 'Guardar',
+              label: saveLabel ? saveLabel : "Guardar",
               action: formik.submitForm,
-              color: 'mycad',
+              color: "mycad",
               filled: true,
               icon: FaSave,
-              type: 'submit',
+              type: "submit",
             },
           ]}
         />

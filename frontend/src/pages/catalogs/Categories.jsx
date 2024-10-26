@@ -8,8 +8,7 @@ import CategoryFormFields from "../../components/Catalogs/Category/CategoryFormF
 import { CategoryFormSchema } from "../../components/Catalogs/Category/CategoryFormSchema";
 import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import ModalRemove from "../../components/Modals/ModalRemove";
-import { FaTags } from "react-icons/fa";
-import { GiMuscleUp } from "react-icons/gi";
+import { LiaDumbbellSolid } from "react-icons/lia";
 
 const Categories = () => {
   const isCreatePermission = useCheckPermissions("create_category");
@@ -30,7 +29,7 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [initialValues, setInitialValues] = useState({
     name: "",
-    division: "",
+    description: "",
     id: "",
   });
 
@@ -42,7 +41,7 @@ const Categories = () => {
     setEditMode(true);
     setInitialValues({
       name: category.name,
-      division: category.division,
+      description: category.description || "",
       id: category.id,
     });
     setIsOpenModal(true);
@@ -54,7 +53,7 @@ const Categories = () => {
       resetForm();
       setInitialValues({
         name: "",
-        division: "",
+        description: "",
         id: "",
       });
       setIsOpenModal(false);
@@ -70,7 +69,7 @@ const Categories = () => {
     setEditMode(false);
     setInitialValues({
       name: "",
-      division: "",
+      description: "",
       id: "",
     });
   };
@@ -97,13 +96,13 @@ const Categories = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <div className="h-full overflow-auto">
+    <div className="flex flex-col h-full flex-1 overflow-hidden">
+      <div className="h-fit md:h-full overflow-hidden">
         {categories && !loading ? (
           <CatalogCardList
-            icon={GiMuscleUp}
+            icon={LiaDumbbellSolid}
             data={categories}
-            title="Categories"
+            title="Categorias"
             onCreate={
               isCreatePermission.hasPermission
                 ? () => setIsOpenModal(true)

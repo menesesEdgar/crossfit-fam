@@ -7,13 +7,17 @@ export const getButtonClassNames = (
   className
 ) => {
   const baseClasses =
-    "w-full md:w-fit h-9 xl:h-10 text-sm xl:text-base transition ease-in-out duration-200 p-2 xl:p-4 flex items-center justify-center rounded-md border text-stone-800";
+    "w-full md:w-fit h-9 xl:h-10 text-sm xl:text-base cursor-pointer transition ease-in-out duration-200 p-2 xl:p-4 flex items-center justify-center rounded-md border text-stone-800";
 
   let notFilledClasses = {
-    "hover:bg-pink-600 hover:text-white": color === "mycad" && !disabled,
-    "hover:bg-crossfit-danger hover:text-white": color === "danger" && !disabled,
-    "hover:bg-crossfit-warning hover:text-white": color === "warning" && !disabled,
-    "hover:bg-crossfit-success hover:text-white": color === "success" && !disabled,
+    "hover:bg-crossfit-primary hover:text-white":
+      color === "crossfit" && !disabled,
+    "hover:bg-crossfit-danger hover:text-white":
+      color === "danger" && !disabled,
+    "hover:bg-crossfit-warning hover:text-white":
+      color === "warning" && !disabled,
+    "hover:bg-crossfit-success hover:text-white":
+      color === "success" && !disabled,
     "hover:bg-crossfit-info hover:text-white": color === "info" && !disabled,
     "hover:bg-crossfit-dark hover:text-white": color === "dark" && !disabled,
     "hover:bg-red-500 hover:text-white": color === "red" && !disabled,
@@ -39,7 +43,8 @@ export const getButtonClassNames = (
     "hover:bg-black hover:text-white": color === "black" && !disabled,
   };
   let filledClasses = {
-    "bg-pink-500 text-white border-mycad hover:bg-pink-600": color === "mycad",
+    "bg-crossfit-light-pink text-white border-crossfit-light-pink hover:bg-crossfit-primary":
+      color === "crossfit",
     "bg-crossfit-danger text-white border-crossfit-danger hover:bg-mycad-rose":
       color === "danger",
     "bg-crossfit-warning text-white border-crossfit-warning hover:bg-mycad-salmon":

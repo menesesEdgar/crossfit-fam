@@ -1,8 +1,8 @@
-import { useReducer, useEffect } from 'react';
-import { useAuthContext } from './AuthContext';
-import CatalogContext from './CatalogContext';
-import CatalogReducer from './CatalogReducer';
-import useCatalogs from '../hooks/useCatalogs';
+import { useReducer, useEffect } from "react";
+import { useAuthContext } from "./AuthContext";
+import CatalogContext from "./CatalogContext";
+import CatalogReducer from "./CatalogReducer";
+import useCatalogs from "../hooks/useCatalogs";
 
 const CatalogProvider = ({ children }) => {
   const [state, dispatch] = useReducer(CatalogReducer, {
@@ -32,11 +32,11 @@ const CatalogProvider = ({ children }) => {
     fetchWods,
     updateAthlete,
     updateCategory,
-    updateWod
+    updateWod,
   } = useCatalogs(dispatch);
 
   const loadCatalogsData = () => {
-    fetchAthlete();
+    // fetchAthlete(); Al usar este metodo se extraen sin filtro todos los atletas y usuarios de la base de datos, es de corregir este error (RBM)
     fetchCategories();
     fetchWods();
   };

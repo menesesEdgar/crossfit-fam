@@ -32,14 +32,14 @@ export const getCategoryById = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   try {
-    const { name, division } = req.body;
+    const { name, description } = req.body;
 
     const ifExistCategory = db.category.findFirst({
       where: { name, isDeleted: false },
     });
 
     const category = await db.category.create({
-      data: { name, division },
+      data: { name, description },
     });
     res.json(category);
   } catch (error) {
@@ -50,7 +50,7 @@ export const createCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
   try {
-    const { name, division } = req.body;
+    const { name, description } = req.body;
     const ifExistCategory = db.category.findUnique({
       where: { id: parseInt(req.params.id), isDeleted: false },
     });
@@ -62,7 +62,7 @@ export const updateCategory = async (req, res) => {
 
     const category = await db.category.update({
       where: { id: parseInt(req.params.id) },
-      data: { name, division },
+      data: { name, description },
     });
     res.json(category);
   } catch (error) {

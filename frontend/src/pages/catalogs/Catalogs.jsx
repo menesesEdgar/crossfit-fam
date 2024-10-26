@@ -1,68 +1,96 @@
-import React, { useEffect, useRef } from "react";
-import { Tabs } from "flowbite-react";
-import { FaDumbbell, FaUsers } from "react-icons/fa";
+import React, { useEffect, useState, lazy } from "react";
+import { FaUsers } from "react-icons/fa";
+import { LiaDumbbellSolid } from "react-icons/lia";
+import { BiSolidZap } from "react-icons/bi";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
-import { GiMuscleUp } from "react-icons/gi";
-const Categories = React.lazy(() => import("./Categories"));
-const Wods = React.lazy(() => import("./Wods"));
-const Athletes = React.lazy(() => import("./Athletes"));
+import LoadingModal from "../../components/loadingModal/LoadingModal";
+
+const Categories = lazy(() => import("./Categories"));
+const Wods = lazy(() => import("./Wods"));
+const Athletes = lazy(() => import("./Athletes"));
 
 const Catalogs = () => {
-  const tabsRef = useRef(null);
-
-  useEffect(() => {
-    const tab = localStorage.getItem("selectedTab");
-    if (tab) {
-      tabsRef.current.setActiveTab(parseInt(tab));
-    }
-  }, []);
-
-  const handleTabChange = (tabIndex) => {
-    localStorage.setItem("selectedTab", tabIndex);
-  };
+  const [activeTab, setActiveTab] = useState(
+    parseInt(localStorage.getItem("selectedTab")) || 0
+  );
 
   const isViewCategoriesPermission = useCheckPermissions("view_categories");
   const isViewWodsPermission = useCheckPermissions("view_wods");
   const isViewAthletesPermission = useCheckPermissions("view_athletes");
 
+  const tabContent = [
+    {
+      id: 0,
+      title: "Atletas",
+      icon: <FaUsers size={24} />,
+      component: <Athletes />,
+      permission: isViewAthletesPermission,
+    },
+    {
+      id: 1,
+      title: "Categorías",
+      icon: <LiaDumbbellSolid size={24} />,
+      component: <Categories />,
+      permission: isViewCategoriesPermission,
+    },
+    {
+      id: 2,
+      title: "WODs",
+      icon: <BiSolidZap size={24} />,
+      component: <Wods />,
+      permission: isViewWodsPermission,
+    },
+  ];
+
+  useEffect(() => {
+    localStorage.setItem("selectedTab", activeTab);
+  }, [activeTab]);
+
   return (
-    <Tabs
-      aria-label="Default tabs"
-      variant="fullWidth"
-      ref={tabsRef}
-      onActiveTabChange={(tab) => handleTabChange(tab)}
-      className="text-nowrap overflow-x-auto"
-    >
-      {isViewAthletesPermission.hasPermission && (
-        <Tabs.Item title="Atletas" icon={FaUsers}>
-          <div className="h-full overflow-hidden">
-            <Athletes />
-          </div>
-        </Tabs.Item>
-      )}
-      {isViewCategoriesPermission.hasPermission && (
-        <Tabs.Item title="Categorías" icon={GiMuscleUp}>
-          <div className="h-full overflow-hidden">
-            <Categories />
-          </div>
-        </Tabs.Item>
-      )}
-      {isViewWodsPermission.hasPermission && (
-        <Tabs.Item title="WODs" icon={FaDumbbell}>
-          <div className="h-full overflow-hidden">
-            <Wods />
-          </div>
-        </Tabs.Item>
-      )}
-      {!isViewCategoriesPermission.hasPermission &&
-        !isViewWodsPermission.hasPermission &&
-        !isViewAthletesPermission && (
-          <Tabs.Item title="">
-            <NotFound />
-          </Tabs.Item>
+    <div className="w-full h-full flex flex-col">
+      <div className="grid grid-cols-3 max-h-16 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto">
+        {tabContent.map(
+          (tab, index) =>
+            tab.permission.hasPermission && (
+              <button
+                key={tab.id}
+                className={`flex items-center justify-center rounded-md text-sm md:text-lg gap-2 px-4 py-3 transition duration-200 ${
+                  activeTab === index
+                    ? "text-white font-semibold bg-crossfit-primary m-1"
+                    : "text-neutral-800 hover:text-crossfit-light-pink"
+                }`}
+                onClick={() => setActiveTab(index)}
+              >
+                <i>{tab.icon}</i>
+                {tab.title}
+              </button>
+            )
         )}
-    </Tabs>
+      </div>
+
+      <div className="relative bg-white rounded-md h-full max-h-[79dvh] shadow-md overflow-hidden mt-4">
+        <div className="h-full overflow-auto">
+          {tabContent.map((tab, index) => (
+            <div
+              key={tab.id}
+              className={`tab-content flex-1 h-full ${
+                activeTab === index ? "active" : "inactive"
+              }`}
+            >
+              {tab.permission.hasPermission ? (
+                <React.Suspense fallback={<LoadingModal loading={true} />}>
+                  {tab.component}
+                </React.Suspense>
+              ) : null}
+            </div>
+          ))}
+          {!isViewCategoriesPermission.hasPermission &&
+            !isViewWodsPermission.hasPermission &&
+            !isViewAthletesPermission.hasPermission && <NotFound />}
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -15,7 +15,7 @@ import { AthleteFormSchema } from "../../components/AthleteComponents/AthleteFor
 import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import { FaUsers } from "react-icons/fa";
-import { calculateAge, formatDate } from "../../utils/formatDates";
+import { calculateAge } from "../../utils/formatDates";
 const Card = lazy(() => import("../../components/Card/Card"));
 const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
 const TableFooter = lazy(() => import("../../components/Table/TableFooter"));
@@ -48,6 +48,7 @@ export const athletesColumns = [
     value: "Edad",
     order: "asc",
     type: "number",
+    classes: "text-center",
   },
   {
     id: "gender",
@@ -185,7 +186,7 @@ const Athletes = () => {
   };
 
   const onEditAthlete = (athlete) => {
-    console.log("first " , athlete)
+    console.log("first ", athlete);
     setEditMode(true);
     setInitialValues({
       id: athlete.id,
@@ -195,13 +196,13 @@ const Athletes = () => {
       birthDate: athlete?.birthdate ? athlete.birthdate.split("T")[0] : "",
       email: athlete.email,
       phone: athlete.phone,
-      role: athlete?.roleId
+      role: athlete?.roleId,
     });
     setIsOpenModal(true);
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    console.log("values ", values)
+    console.log("values ", values);
     try {
       editMode ? await updateAthlete(values) : await createAthlete(values);
       setSubmitting(false);
@@ -263,7 +264,7 @@ const Athletes = () => {
   const isCreatepermissions = useCheckPermissions("create_athlete");
   const isDeletepermissions = useCheckPermissions("delete_athlete");
   return (
-    <div className="flex min-h-[77dvh] h-full flex-col gap-3 bg-white shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
+    <div className="flex min-h-[77dvh] h-full flex-col gap-3 dark:bg-gray-900 p-3 antialiased">
       <TableHeader
         icon={FaUsers}
         title={"Atletas"}
@@ -273,7 +274,7 @@ const Athletes = () => {
             action: isCreatepermissions.hasPermission
               ? () => setIsOpenModal(true)
               : null,
-            color: "mycad",
+            color: "crossfit",
             icon: IoMdAdd,
             filled: true,
           },
@@ -307,7 +308,9 @@ const Athletes = () => {
                           } else if (column.id === "email") {
                             cellValue = athlete.email;
                           } else if (column.id === "birthdate") {
-                            cellValue = calculateAge(athlete.birthdate);
+                            cellValue = athlete?.birthdate
+                              ? calculateAge(athlete.birthdate) + " años"
+                              : "";
                           } else if (column.id === "gender") {
                             cellValue = athlete.gender;
                           }
@@ -349,24 +352,26 @@ const Athletes = () => {
                   })}
               </Table>
             </div>
-            <div className="md:hidden py-2 flex flex-col gap-6">
+            <div className="md:hidden h-fit overflow-y-auto py-2 flex flex-col gap-6">
               {athletes?.data?.map((athlete, index) => {
                 const parseAthlete = {
                   firstName: {
-                    key: "firstName",
-                    value: athlete.name,
+                    key: "Nombre",
+                    value: athlete.firstName,
                   },
                   lastName: {
-                    key: "lastName",
+                    key: "Apellidos",
                     value: athlete.lastName,
                   },
                   gender: {
-                    key: "gender",
+                    key: "Genero",
                     value: athlete.gender,
                   },
                   birthdate: {
-                    key: "birthdate",
-                    value: athlete.birthdate,
+                    key: "Edad",
+                    value: athlete?.birthdate
+                      ? calculateAge(athlete.birthdate) + " años"
+                      : "",
                   },
                   actions: {
                     key: "Acciones",

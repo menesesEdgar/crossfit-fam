@@ -8,7 +8,7 @@ import WodFormFields from "../../components/Catalogs/Wods/WodFormFields";
 import { WodFormSchema } from "../../components/Catalogs/Wods/WodFormSchema";
 import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import ModalRemove from "../../components/Modals/ModalRemove";
-import { FaDumbbell } from "react-icons/fa";
+import { BiSolidZap } from "react-icons/bi";
 
 const Wods = () => {
   const isCreatepermission = useCheckPermissions("create_wod");
@@ -99,7 +99,7 @@ const Wods = () => {
       <div className="h-full overflow-auto">
         {wods && !loading ? (
           <CatalogCardList
-            icon={FaDumbbell}
+            icon={BiSolidZap}
             data={wods}
             title="WODs"
             onCreate={
