@@ -88,11 +88,12 @@ model Role {
 
 // Intermedio varonil, avanzado Femenil
 model Category {
-    id         Int             @id @default(autoincrement())
+    id         Int          @id @default(autoincrement())
     name       String
     division   String
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
+    isDeleted  Boolean      @default(false)
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @updatedAt
     contestCategory ContestCategory[]
 }
 // Competencia (Pacific Games)
@@ -124,11 +125,12 @@ model ContestCategory {
 }
 // Score1, Score2 (Cada Score es un WOD  (cada WOD es una serie de ejercicios))
 model Wod {
-  id         Int             @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   name       String
   description String? // Wod details
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  isDeleted  Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
   contestWod ContestWod[]
 }
 // A una competencia se le pueden asignar diferentes WODS

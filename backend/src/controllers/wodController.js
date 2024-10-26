@@ -2,7 +2,7 @@ import { db } from "../lib/db.js";
 
 export const getWods = async (req, res) => {
   try {
-    const wods = await db.wod.findMany();
+    const wods = await db.wod.findMany({ where: { isDeleted: false } });
     res.json(wods);
   } catch (error) {
     console.log("error on getWods", error);
@@ -13,7 +13,7 @@ export const getWods = async (req, res) => {
 export const getWodById = async (req, res) => {
   try {
     const wod = await db.wod.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: parseInt(req.params.id), isDeleted: false },
     });
 
     if (!wod) {
@@ -31,6 +31,9 @@ export const getWodById = async (req, res) => {
 export const createWod = async (req, res) => {
   try {
     const { name, description } = req.body;
+
+    const ifExistWod = db.wod.findFirst({ where: { name, isDeleted: false } });
+
     const wod = await db.wod.create({
       data: { name, description },
     });
@@ -45,7 +48,7 @@ export const updateWod = async (req, res) => {
   try {
     const { name, description } = req.body;
     const ifExistWod = db.wod.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: parseInt(req.params.id), isDeleted: false },
     });
 
     if (!ifExistWod) {
@@ -75,8 +78,13 @@ export const deleteWod = async (req, res) => {
       return;
     }
 
-    await db.wod.delete({ where: { id: parseInt(req.params.id) } });
-    res.json({ message: "Wod deleted" });
+    await db.wod.update({
+      where: { id: parseInt(req.params.id) },
+      data: { isDeleted: true },
+    });
+
+    const allWods = await db.wod.findMany({ where: { isDeleted: false } });
+    res.json({ message: "Wod deleted", data: allWods });
   } catch (error) {
     console.log("error on deleteWod", error);
     res.status(500).json({ message: error.message });
