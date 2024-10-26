@@ -198,7 +198,15 @@ export const getUsers = async () => {
     throw error;
   }
 };
-export const createUser = async (user) => {
+export const getUser = async (userId) => {
+  try {
+    const response = await api.get("/users", userId);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};export const createUser = async (user) => {
   try {
 
     const obj = {
@@ -245,16 +253,16 @@ export const updateUser = async (user) => {
 
 export const getCategories = async () => {
   try {
-    const response = await api.put("/categories");
+    const response = await api.get("/categories");
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-export const getCategory = async (categoriId) => {
+export const getCategory = async (categoryId) => {
   try {
-    const response = await api.put("/categories", categoriId);
+    const response = await api.get("/categories", categoryId);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -291,7 +299,7 @@ export const deleteCategory = async (categoryId) => {
 };
 export const getWod = async (wodId) => {
   try {
-    const response = await api.put("/wods", wodId);
+    const response = await api.get("/wods", wodId);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getUsers as getAthletes,
-  getAthlete as getAthlete,
+  getUser as getAthlete,
   createUser as createAthlete,
   updateUser as updateAthlete,
   deleteUser as deleteAthlete,
