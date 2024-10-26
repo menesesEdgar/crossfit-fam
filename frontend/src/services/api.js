@@ -189,24 +189,6 @@ export const searchUsers = async ({
   }
 };
 // Catalogs
-export const getAthletes = async () => {
-  try {
-    const response = await api.get("/athletes");
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-export const getAthlete = async ({ id: athleteId, signal }) => {
-  try {
-    const response = await api.get(`/athletes/${athleteId}`, { signal });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
 export const getUsers = async () => {
   try {
     const response = await api.get(`/users`);
@@ -263,101 +245,63 @@ export const updateUser = async (user) => {
 
 export const getCategories = async () => {
   try {
-    const response = await api.get('/categories');
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-export const getCategory = async ({ id: categoryId, signal }) => {
-  try {
-    const response = await api.get(`/categories/${categoryId}`, { signal });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-export const createCategory = async (category) => {
-  try {
-    let data = new FormData();
-
-    const image = user?.photo[0] || null;
-
-    if (image instanceof File) {
-      data.append("profileImage", image);
-    }
-
-    data.append(
-      "userData",
-      JSON.stringify({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        password: user.password,
-        repeatPassword: user.repeatPassword,
-      })
-    );
-    const response = await api.post(`/categories`, data, headerFormData);
+    const response = await api.put("/categories");
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-export const deleteCategory = async () => {
+export const getCategory = async (categoriId) => {
   try {
-    const response = await api.delete(`/users/${userId}`);
+    const response = await api.put("/categories", categoriId);
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-export const updateCategory = async () => {
+export const createCategory = async (data) => {
   try {
-    let data = new FormData();
-    const image = user?.photo[0] || null;
+    const response = await api.post(`/categories`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const updateCategory = async (data) => {
+  try {
+    const response = await api.put(`/categories/${data.id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
-    if (image instanceof File) {
-      data.append("profileImage", image);
-    }
-    data.append(
-      "userData",
-      JSON.stringify({
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        status: user.status,
-        password: user.password,
-        repeatPassword: user.repeatPassword,
-      })
-    );
-    const response = await api.put(`/users/${user.id}`, data, headerFormData);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-export const getWod = async ({id: wodId, signal}) => {
+export const deleteCategory = async (categoryId) => {
   try {
-    const response = await api.get(`/wods/${wodId}`, { signal });
+    const response = await api.delete(`/categories/${categoryId}`);
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
-}
+};
+export const getWod = async (wodId) => {
+  try {
+    const response = await api.put("/wods", wodId);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const getWods = async () => {
   try {
-    const response = await api.get('/wods');
+    const response = await api.get("/wods");
     return response.data;
   } catch (error) {
     console.error(error);
@@ -366,56 +310,17 @@ export const getWods = async () => {
 };
 export const createWod = async (wod) => {
   try {
-    let data = new FormData();
-
-    const image = user?.photo[0] || null;
-
-    if (image instanceof File) {
-      data.append("profileImage", image);
-    }
-
-    data.append(
-      "userData",
-      JSON.stringify({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        password: user.password,
-        repeatPassword: user.repeatPassword,
-      })
-    );
-    const response = await api.post(`/users`, data, headerFormData);
+    const response = await api.post(`/wods`, wod);
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
 export const updateWod = async (wod) => {
   try {
-    let data = new FormData();
-    const image = user?.photo[0] || null;
-
-    if (image instanceof File) {
-      data.append("profileImage", image);
-    }
-    data.append(
-      "userData",
-      JSON.stringify({
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        status: user.status,
-        password: user.password,
-        repeatPassword: user.repeatPassword,
-      })
-    );
-    const response = await api.put(`/wods/${wod.id}`, data, headerFormData);
+    const response = await api.put(`/wods/${wod.id}`, wod);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -424,82 +329,11 @@ export const updateWod = async (wod) => {
 };
 export const deleteWod = async (wodId) => {
   try {
+    console.log(wodId);
     const response = await api.delete(`/wods/${wodId}`);
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
-}
-// Contest Endpoints
-export const getContest = async ({id: contestId, signal}) => {
-  try {
-    const response = await api.get(`/contests/${contestId}`, { signal });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-// Maybe It'll be a search later to apply pagination
-export const getContests = async () => {
-  try {
-    const response = await api.get('/contests');
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-export const createContest = async (contest) => {
-  try {
-
-
-    const newContest = {
-
-    }
-    const response = await api.post(`/contests`, newContest);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-export const updateContest = async (wod) => {
-  try {
-    let data = new FormData();
-    const image = user?.photo[0] || null;
-
-    if (image instanceof File) {
-      data.append('profileImage', image);
-    }
-    data.append(
-      'userData',
-      JSON.stringify({
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        status: user.status,
-        password: user.password,
-        repeatPassword: user.repeatPassword,
-      }),
-    );
-    const response = await api.put(`/wods/${wod.id}`, data, headerFormData);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-export const deleteContest = async (wodId) => {
-  try {
-    const response = await api.delete(`/wods/${wodId}`);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+};
