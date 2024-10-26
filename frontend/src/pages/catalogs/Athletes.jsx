@@ -15,6 +15,7 @@ import { AthleteFormSchema } from "../../components/AthleteComponents/AthleteFor
 import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import { FaUsers } from "react-icons/fa";
+import { calculateAge, formatDate } from "../../utils/formatDates";
 const Card = lazy(() => import("../../components/Card/Card"));
 const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
 const TableFooter = lazy(() => import("../../components/Table/TableFooter"));
@@ -43,8 +44,8 @@ export const athletesColumns = [
     type: "text",
   },
   {
-    id: "age",
-    value: "edad",
+    id: "birthdate",
+    value: "Edad",
     order: "asc",
     type: "number",
   },
@@ -184,19 +185,23 @@ const Athletes = () => {
   };
 
   const onEditAthlete = (athlete) => {
+    console.log("first " , athlete)
     setEditMode(true);
     setInitialValues({
       id: athlete.id,
       firstName: athlete.firstName,
       lastName: athlete.lastName,
-      birthDate: athlete.birthDate,
+      gender: athlete?.gender ? athlete.gender : "",
+      birthDate: athlete?.birthdate ? athlete.birthdate.split("T")[0] : "",
       email: athlete.email,
       phone: athlete.phone,
+      role: athlete?.roleId
     });
     setIsOpenModal(true);
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    console.log("values ", values)
     try {
       editMode ? await updateAthlete(values) : await createAthlete(values);
       setSubmitting(false);
@@ -301,8 +306,8 @@ const Athletes = () => {
                             cellValue = athlete.lastName;
                           } else if (column.id === "email") {
                             cellValue = athlete.email;
-                          } else if (column.id === "age") {
-                            cellValue = athlete.gender;
+                          } else if (column.id === "birthdate") {
+                            cellValue = calculateAge(athlete.birthdate);
                           } else if (column.id === "gender") {
                             cellValue = athlete.gender;
                           }
@@ -359,9 +364,9 @@ const Athletes = () => {
                     key: "gender",
                     value: athlete.gender,
                   },
-                  age: {
-                    key: "age",
-                    value: athlete.age,
+                  birthdate: {
+                    key: "birthdate",
+                    value: athlete.birthdate,
                   },
                   actions: {
                     key: "Acciones",

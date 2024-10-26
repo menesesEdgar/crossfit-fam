@@ -59,7 +59,7 @@ const AthleteFormFields = () => {
         type="number"
         options={genderOptions.map((gender) => ({
           label: gender.name,
-          value: gender.id,
+          value: gender.name,
         }))}
         icon={FaVenusMars}
       />

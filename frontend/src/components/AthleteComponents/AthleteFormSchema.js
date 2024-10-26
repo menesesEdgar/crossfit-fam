@@ -19,5 +19,5 @@ export const AthleteFormSchema = Yup.object().shape({
     .typeError("Fecha de nacimiento debe ser una fecha")
     .required("La fecha de nacimiento es requerida"),
   gender: Yup.string().required("Género requerido"),
-  id: Yup.number(),
+  id: Yup.string(),
 });

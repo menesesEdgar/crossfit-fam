@@ -218,13 +218,7 @@ export const getUsers = async () => {
 };
 export const createUser = async (user) => {
   try {
-    // let data = new FormData();
 
-    // const image = user?.photo[0] || null;
-
-    // if (image instanceof File) {
-    //   data.append('profileImage', image);
-    // }
     const obj = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -232,13 +226,11 @@ export const createUser = async (user) => {
       phone: user.phone,
       birthDate: user.birthDate,
       role: user.role,
+      gender: user.gender,
       password: user.password,
       repeatPassword: user.repeatPassword,
     };
-    // data.append(
-    //   'userData',
-    //   JSON.stringify(),
-    // );
+
     const response = await api.post(`/users`, obj);
     return response.data;
   } catch (error) {
@@ -248,60 +240,27 @@ export const createUser = async (user) => {
 };
 export const updateUser = async (user) => {
   try {
-    let data = new FormData();
-    const image = user?.photo[0] || null;
-
-    if (image instanceof File) {
-      data.append("profileImage", image);
+    const updateUser = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      birthDate: user.birthDate,
+      role: user.role,
+      gender: user.gender,
+      password: user.password,
+      repeatPassword: user.repeatPassword,
     }
-    data.append(
-      "userData",
-      JSON.stringify({
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        status: user.status,
-        password: user.password,
-        repeatPassword: user.repeatPassword,
-      })
-    );
-    const response = await api.put(`/users/${user.id}`, data, headerFormData);
+    console.log("update User ", updateUser)
+    const response = await api.put(`/users/${user.id}`, updateUser);
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-export const createAthlete = async (athlete) => {
-  try {
-    const response = await api.post(`/athletes`, athlete);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-export const updateAthlete = async (athlete) => {
-  try {
-    const response = await api.put(`/athlete/${user.id}`, athlete);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-export const deleteAthlete = async () => {
-  try {
-    const response = await api.delete(`/users/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+
 export const getCategories = async () => {
   try {
     const response = await api.get('/categories');

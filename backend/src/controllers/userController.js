@@ -95,19 +95,9 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { userData } = req.body;
+    const { id, firstName, lastName, email, phone, role, status, birthDate, gender } =
+      req.body;
 
-    const {
-      id,
-      firstName,
-      lastName,
-      email,
-      phone,
-      role,
-      status,
-      birthDate,
-      gender,
-    } = JSON.parse(userData);
 
     const userExists = await db.user.findFirst({ where: { id } });
 
@@ -129,7 +119,7 @@ export const updateUser = async (req, res) => {
         lastName,
         email,
         phone,
-        birthDate,
+        birthdate:  new Date(birthDate),
         gender,
         status: parseStatus(status),
         roleId: parseInt(role),
@@ -149,15 +139,15 @@ export const updateUser = async (req, res) => {
       },
     });
 
-    const today = new Date();
-    const birthDateParts = newUser.birthDate.split("-");
-    const birthDateObj = new Date(
-      birthDateParts[0],
-      birthDateParts[1] - 1,
-      birthDateParts[2]
-    );
-    const age = today.getFullYear() - birthDateObj.getFullYear();
-    newUser.age = age;
+    // const today = new Date();
+    // const birthDateParts = newUser.birthDate.split("-");
+    // const birthDateObj = new Date(
+    //   birthDateParts[0],
+    //   birthDateParts[1] - 1,
+    //   birthDateParts[2]
+    // );
+    // const age = today.getFullYear() - birthDateObj.getFullYear();
+    // newUser.age = age;
 
     newUser.password = undefined;
 
