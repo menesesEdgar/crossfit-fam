@@ -1,6 +1,7 @@
 import AuthProvider from "./AuthProvider";
 import { BreadcrumbProvider } from "./BreadcrumbContext";
 import CatalogProvider from "./CatalogProvider";
+import ContestProvider from "./ContestProvider";
 import LoadingProvider from "./LoadingProvider";
 import PermissionProvider from "./PermissionProvider";
 import RoleProvider from "./RoleProvider";
@@ -14,7 +15,10 @@ const SecurityProvider = ({ children }) => (
 );
   const DataProvider = ({ children }) => (
     <UserProvider>
-        <CatalogProvider>{children}</CatalogProvider>
+        <CatalogProvider>
+          {children}
+          {/* <ContestProvider>{children}</ContestProvider> */}
+        </CatalogProvider>
     </UserProvider>
   );
 const AppProvider = ({ children }) => (

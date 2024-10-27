@@ -15,6 +15,7 @@ import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import { formatDate, formatMxnDate } from "../../utils/formatDates";
 import { useNavigate } from "react-router-dom";
+import { useContestContext } from "../../context/ContestContext";
 const Card = lazy(() => import("../../components/Card/Card"));
 const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
 const TableFooter = lazy(() => import("../../components/Table/TableHeader"));
@@ -35,7 +36,8 @@ const initValues = {
   id: "",
 }
 const Contest = () => {
-  const { createContest, updateContest, deleteContest, contests: allContests, loading  } = useCatalogContext();
+  const { contests: allContests } = useCatalogContext();
+  const {createContest, updateContest, deleteContest, loading } = useContestContext()
   const isCreatePermissions = useCheckPermissions("create_contest");
   const isEditPermissions = useCheckPermissions("edit_contest");
   const isDeletePermissions = useCheckPermissions("delete_contest");

@@ -15,12 +15,6 @@ const contestReducer = (state, action) => {
           },
           loading: false,
         };
-      case 'FETCH_CONTESTS':
-        return {
-          ...state,
-          contests: action.payload,
-          loading: false,
-        };
       case 'CREATE_CONTEST':
         return {
           ...state,

@@ -1,13 +1,11 @@
 import { createContext, useContext } from 'react';
 
 const ContestContext = createContext({
-    contests: [],
     contest: {}, 
     categories: [],
     category: [],
     categoryWods: [],
     categoryWod: {},
-    fetchContests:  async () => {},
     fetchContest:  async () => {},
     createContest:  async () => {},
     updateContest:  async () => {},
