@@ -12,6 +12,8 @@ const CatalogProvider = ({ children }) => {
     category: {},
     wods: [],
     wod: {},
+    contests: [],
+    contest: {},
     loading: true,
   });
 
@@ -32,7 +34,7 @@ const CatalogProvider = ({ children }) => {
     fetchWods,
     updateAthlete,
     updateCategory,
-    updateWod,
+    updateWod
   } = useCatalogs(dispatch);
 
   const loadCatalogsData = () => {

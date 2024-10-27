@@ -6,6 +6,8 @@ import {
   getContestById,
   getContests,
   updateContest,
+  addCategory,
+  removeCategory
 } from "../controllers/contestController.js";
 
 const router = express.Router();
@@ -16,5 +18,9 @@ router
   .get(getContestById)
   .put(protect, updateContest)
   .delete(protect, deleteContest);
+// id for contestId, 
+router.route("/:id/:categoryId")
+.post(protect, addCategory)
+.delete(protect, removeCategory)
 
 export default router;

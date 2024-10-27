@@ -48,7 +48,7 @@ const Login = () => {
         <div
           className="h-dvh shadow-xl max-h-dvh overflow-hidden w-full flex items-center justify-center bg-gray-100 bg"
           style={{
-            backgroundImage: `url(${getRandomBg()})`,
+            backgroundImage: `url(${BgLogin3})`,
             backgroundSize: "cover",
           }}
         >

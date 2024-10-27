@@ -130,34 +130,7 @@ export const deleteUser = async (userId) => {
     throw error;
   }
 };
-export const searchContest  = async ({
-  searchTerm,
-  sortBy,
-  order,
-  page,
-  pageSize,
-  signal,
-}) => {
-  try {
-    const response = await api.get('/contests/search', {
-      params: {
-        searchTerm,
-        sortBy,
-        order,
-        page,
-        pageSize,
-      },
-      signal: signal,
-    });
-    if (response.status !== 200) {
-      throw new Error(response.message || 'Hubo un error al hacer la busqueda');
-    }
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+
 export const searchUsers = async ({
   searchTerm,
   sortBy,
@@ -339,6 +312,77 @@ export const deleteWod = async (wodId) => {
   try {
     console.log(wodId);
     const response = await api.delete(`/wods/${wodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+// Contest CRUD
+export const getContests = async () => {
+  try {
+    const response = await api.get("/contests");
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const getContest = async (contestId) => {
+  try {
+    const response = await api.get(`/contests/${contestId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const createContest = async (contest) => {
+  try {
+    const response = await api.post(`/contests`, contest);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const updateContest = async (contest) => {
+  try {
+    const response = await api.put(`/contests/${contest.id}`, contest);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deleteContest = async (contestId) => {
+  try {
+    const response = await api.delete(`/contests/${contestId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Assign/remove categories to contest
+export const addCategory = async (data) => {
+  const { contestId, categoryId} = data
+  try {
+    const response = await api.post(`/contests/${contestId}/${categoryId}` );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deleteContestCategory = async (data) => {
+  console.log("data ", data)
+  const { contestId, categoryId} = data
+  try {
+    const response = await api.delete(`/contests/${contestId}/${categoryId}`);
     return response.data;
   } catch (error) {
     console.error(error);

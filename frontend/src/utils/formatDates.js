@@ -26,3 +26,12 @@ export function formatDate(dateString) {
     return `${parts[1]}-${parts[2]}-${parts[0]}`;
   }
 }
+
+export function formatMxnDate(dateString) {
+  // Split the input date string
+  const date = dateString?.split("T")[0]
+  if (date) {
+    const parts = date.split('-');
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+}

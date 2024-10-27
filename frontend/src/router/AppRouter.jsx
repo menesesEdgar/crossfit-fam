@@ -17,6 +17,8 @@ import Users from '../pages/users/Users';
 import Account from '../pages/account/Account';
 import Roles from '../pages/roles/Roles';
 import Contest from '../pages/contest/Contest';
+import ContestView from '../pages/contest/ContestView'
+import ContestProvider from '../context/ContestProvider';
   const AppRouter = () => {
     const { user } = useContext(AuthContext);
   
@@ -39,6 +41,7 @@ import Contest from '../pages/contest/Contest';
                     <Route element={<ProtectedRoute user={user} />}>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/contest" element={<Contest />} />
+                        <Route path="/contest/:id" element={<ContestProvider><ContestView /></ContestProvider>} />
                         <Route path="/catalogs" element={<Catalogs />} />
                         <Route path="/users" element={<Users />} />
                         <Route path="/account-settings" element={<Account />} />

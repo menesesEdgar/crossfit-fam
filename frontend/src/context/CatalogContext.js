@@ -7,6 +7,8 @@ const CatalogContext = createContext({
   category: {},
   wods: [],
   wod: {},
+  contests: [],
+  contest: {},
   loading: true,
   fetchAthletes: async () => {},
   fetchAthlete: async () => {},
@@ -23,6 +25,11 @@ const CatalogContext = createContext({
   createWod: async () => {},
   updateWod: async () => {},
   deleteWod: async () => {},
+  fetchContests: async () => {},
+  fetchContest: async () => {},
+  createContest: async () => {},
+  updateContest: async () => {},
+  deleteContest: async () => {},
 });
 
 export const useCatalogContext = () => useContext(CatalogContext);

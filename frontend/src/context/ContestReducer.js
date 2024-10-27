@@ -1,15 +1,24 @@
 const contestReducer = (state, action) => {
+  console.log("reducer ", action)
+  console.log(action.payload)
     switch (action.type) {
       case 'FETCH_CONTEST':
         return {
           ...state,
-          contest: action.payload,
+          contest: {
+            ...action.payload,
+            contestCategory: action.payload?.contestCategory?.map(category => {
+              return {
+                ...category.category, ["conCatId"]: category.id
+              }
+            })
+          },
           loading: false,
         };
       case 'FETCH_CONTESTS':
         return {
           ...state,
-          contest: action.payload,
+          contests: action.payload,
           loading: false,
         };
       case 'CREATE_CONTEST':
@@ -31,6 +40,19 @@ const contestReducer = (state, action) => {
         return {
           ...state,
           contest: action.payload,
+          loading: false,
+        };
+      case 'ADD_CATEGORY':
+        return {
+          ...state,
+          category: action.payload,
+          categories: [...state.categories, action.payload],
+          loading: false,
+        };
+      case 'DELETE_CATEGORY':
+        return {
+          ...state,
+          categories: action.payload,
           loading: false,
         };
       default:

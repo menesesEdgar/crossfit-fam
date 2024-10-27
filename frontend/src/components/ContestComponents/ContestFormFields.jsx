@@ -4,19 +4,19 @@ import TextInput from '../Inputs/TextInput';
 import DateInput from "../Inputs/DateInput"
 import { BiCategory } from 'react-icons/bi';
 import { PiTrademarkRegisteredBold } from 'react-icons/pi';
-import { MdOutlineDirectionsCar } from 'react-icons/md';
-import { FaCalendar } from 'react-icons/fa';
+import { FaLocationDot } from "react-icons/fa6";
+import { FaCalendar, FaFlagCheckered, FaUser  } from 'react-icons/fa';
 import SelectInput from '../Inputs/SelectInput';
 const statusOptions = [{
-    id: "1",
+    id: "Abierta",
     name: "Abierta"
 },
 {
-    id: "2",
+    id: "En curso",
     name: "En curso"
 },
 {
-    id: "3",
+    id: "Finalizada",
     name: "Finalizada"
 }
 ]
@@ -29,7 +29,7 @@ const ContestFormFields = () => {
         component={TextInput}
         label="Nombre de la competencia"
         type="text"
-        icon={MdOutlineDirectionsCar}
+        icon={FaFlagCheckered}
       />
       <Field
         name="organizer"
@@ -37,24 +37,23 @@ const ContestFormFields = () => {
         component={TextInput}
         label="Organizador"
         type="text"
-        icon={FaCalendar}
+        icon={FaUser}
       />
       <Field
         name="startDate"
         id="startDate"
         component={DateInput}
         label="Fecha de inicio"
-        type="number"
-        icon={PiTrademarkRegisteredBold}
+        type="date"
+        icon={FaCalendar}
       />
       <Field
         name="endDate"
         id="endDate"
         component={DateInput}
         label="Fecha fin"
-        type="number"
-
-        icon={PiTrademarkRegisteredBold}
+        type="date"
+        icon={FaCalendar}
       />
       <Field
         name="status"
@@ -73,7 +72,7 @@ const ContestFormFields = () => {
         component={TextInput}
         label="Ubicación"
         type="text"
-        icon={PiTrademarkRegisteredBold}
+        icon={FaLocationDot}
       />
       <Field
         className="hidden"

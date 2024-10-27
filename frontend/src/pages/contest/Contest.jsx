@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { IoMdAdd } from "react-icons/io";
 import { useCatalogContext } from "../../context/CatalogContext";
 import ModalRemove from "../../components/Modals/ModalRemove";
-import { searchContest } from "../../services/api";
 import ActionButtons from "../../components/ActionButtons/ActionButtons";
 import Notifies from "../../components/Notifies/Notifies";
 import ContestFormFields from "../../components/ContestComponents/ContestFormFields";
@@ -14,6 +13,8 @@ import { ContestFormSchema } from "../../components/ContestComponents/ContestFor
 import { HiCubeTransparent } from "react-icons/hi";
 import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
+import { formatDate, formatMxnDate } from "../../utils/formatDates";
+import { useNavigate } from "react-router-dom";
 const Card = lazy(() => import("../../components/Card/Card"));
 const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
 const TableFooter = lazy(() => import("../../components/Table/TableHeader"));
@@ -23,113 +24,44 @@ const TableActions = lazy(() =>
 const TableResultsNotFound = lazy(() =>
   import("../../components/Table/TableResultsNotFound")
 );
+
+const initValues = {
+  name: "",
+  location: "",
+  organizer: "",
+  startDate: new Date().toISOString().split('T')[0],
+  endDate: "",
+  status: "Abierta",
+  id: "",
+}
 const Contest = () => {
-  const { createContest, updateContest, deleteContest } = useCatalogContext();
-//   const [columns, setColumns] = useState([...contestColumns]);
-  const lastChange = useRef();
+  const { createContest, updateContest, deleteContest, contests: allContests, loading  } = useCatalogContext();
+  const isCreatePermissions = useCheckPermissions("create_contest");
+  const isEditPermissions = useCheckPermissions("edit_contest");
+  const isDeletePermissions = useCheckPermissions("delete_contest");
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [deleteContestId, setDeleteContestId] = useState(null);
+  const [removeContestId, setRemoveContestId] = useState(null);
+  const [contests, setContests] = useState([]);
+  const [search, setSearch] = useState("");
   const [initialValues, setInitialValues] = useState({
-    name: "",
-    location: "",
-    organizer: "",
-    startDate: "1",
-    endDate: "",
-    status: "",
-    id: "",
+    ...initValues
   });
-  const [refreshData, setRefreshData] = useState(false);
-  const [currentPageNumber, setCurrentPageNumber] = useState(1);
-  const [searchFilters, setSearchFilters] = useState({
-    searchTerm: "",
-    pageSize: 10,
-    page: currentPageNumber,
-    sortBy: "name",
-    order: "asc",
-  });
-  const {
-    data: contest,
-    refetch,
-    isLoading,
-    isPending,
-  } = useQuery({
-    queryKey: ["contest", { ...searchFilters }],
-    queryFn: ({ signal }) => searchContest({ ...searchFilters, signal }),
-    staleTime: Infinity,
-  });
+  const navigate = useNavigate();
+  const filteredContests = contests?.filter((contest) => 
+    JSON.stringify(contest).toLowerCase().includes(search.toLowerCase()))
 
   useEffect(() => {
-    refetch();
-    setRefreshData(false);
-  }, [searchFilters, refreshData]);
-
-  const goOnPrevPage = useCallback(() => {
-    setSearchFilters((prevState) => {
-      return {
-        ...prevState,
-        page: prevState?.page - 1,
-      };
-    });
-  }, []);
-
-  const goOnNextPage = useCallback(() => {
-    setSearchFilters((prevState) => {
-      return {
-        ...prevState,
-        page: prevState?.page + 1,
-      };
-    });
-  }, []);
-
-  const handleSelectChange = useCallback((page) => {
-    setSearchFilters((prevState) => {
-      return {
-        ...prevState,
-        page,
-      };
-    });
-  }, []);
-
-  const handleSearch = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (lastChange.current) {
-        clearTimeout(lastChange.current);
-      }
-      lastChange.current = setTimeout(() => {
-        lastChange.current = null;
-        setSearchFilters((prevState) => {
-          return {
-            ...prevState,
-            searchTerm: e.target.value,
-          };
-        });
-      }, 600);
-    },
-    [searchFilters?.searchTerm]
-  );
-
-  const changePageSize = (e) => {
-    setSearchFilters((prevState) => {
-      return {
-        ...prevState,
-        pageSize: e.target.value,
-      };
-    });
-  };
+    setContests(allContests);
+  }, [allContests]);
 
   const onEditContest = (contest) => {
     setEditMode(true);
     setInitialValues({
-      id: contest.id,
-      name: contest.firstName,
-      organizer: contest.organizer,
-      location: contest.lastName,
-      startDate: contest.startDate,
-      endDate: contest.endDate,
-      status: contest.password,
+      ...contest,
+      startDate: contest?.startDate ? contest.startDate.split("T")[0] : "",
+      endDate: contest?.endDate ? contest.endDate.split("T")[0] : "",
     });
     setIsOpenModal(true);
   };
@@ -137,21 +69,14 @@ const Contest = () => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       editMode ? await updateContest(values) : await createContest(values);
-      setSubmitting(false);
       resetForm();
-      setEditMode(false);
       setInitialValues({
-        id: "",
-        name: "",
-        location: "",
-        organizer: "1",
-        startDate: "",
-        endDate: "",
-        status: "",
+        ...initValues
       });
       setIsOpenModal(false);
+      setEditMode(false);
     } catch (error) {
-      console.error(error);
+      console.log(error);
       setSubmitting(false);
     }
   };
@@ -160,39 +85,31 @@ const Contest = () => {
     setIsOpenModal(false);
     setEditMode(false);
     setInitialValues({
-      id: "",
-      firstName: "",
-      lastName: "",
-      gender: "1",
-      age: "",
-      email: "",
-      password: "",
+      ...initValues
     });
   };
 
-  const onDeleteContest = (id) => {
-    setDeleteContestId(id);
-    setIsRemoveModalOpen(true);
-  };
-
-  const handleRemoveContest = async () => {
+  const onDeleteContest = async () => {
     try {
-      await deleteContest(deleteContestId);
-      setIsRemoveModalOpen(false);
-      setDeleteContestId(null);
+      await deleteContest(removeContestId);
+      setIsOpenDeleteModal(false);
+      setRemoveContestId(null);
     } catch (error) {
       console.error(error);
+      setIsOpenDeleteModal(false);
     }
   };
 
-  const handleRefreshData = () => {
-    setRefreshData(true);
-    Notifies("success", "Datos actualizados correctamente");
+  const onCloseDeleteModal = () => {
+    setIsOpenDeleteModal(false);
+    setRemoveContestId(null);
   };
 
-  const isEditpermissions = useCheckPermissions("edit_contest");
-  const isCreatepermissions = useCheckPermissions("create_contest");
-  const isDeletepermissions = useCheckPermissions("delete_contest");
+  const onOpenDeleteModal = (contestId) => {
+    setIsOpenDeleteModal(true);
+    setRemoveContestId(contestId);
+  };
+
   return (
     <div className="flex min-h-[77dvh] h-full flex-col gap-3 bg-white shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
       <TableHeader
@@ -201,7 +118,7 @@ const Contest = () => {
         actions={[
           {
             label: "Nuevo",
-            action: isCreatepermissions.hasPermission
+            action: isCreatePermissions.hasPermission
               ? () => setIsOpenModal(true)
               : null,
             color: "mycad",
@@ -210,37 +127,34 @@ const Contest = () => {
           },
         ]}
       />
-      <TableActions
-        onRefreshData={handleRefreshData}
-        handleSearchTerm={handleSearch}
-      />
-      {contest && !isPending ? (
-        contest?.data?.length > 0 ? (
-            <div className="md:hidden py-2 flex flex-col gap-6">
-              {contest?.data?.map((contest, index) => {
+      <TableActions handleSearchTerm={(e) => setSearch(e.target.value)} />
+      {filteredContests && !loading ? (
+        filteredContests?.length > 0 ? (
+            <div className="py-2 flex flex-col flex-wrap sm:grid sm:grid-cols-2 md:grid-cols-3 gap-3 ">
+              {filteredContests?.map((contest, index) => {
                 const parseContest = {
                     name: {
-                    key: "name",
+                    key: "Nombre",
                     value: contest.name,
                   },
                   organizer: {
-                    key: "organizer",
+                    key: "Organizador",
                     value: contest.organizer,
                   },
                   startDate: {
-                    key: "startDate",
-                    value: contest.startDate,
+                    key: "Fecha de inicio",
+                    value: formatMxnDate(contest.startDate),
                   },
                   endDate: {
-                    key: "endDate",
-                    value: contest.endDate,
+                    key: "Fecha de cierre",
+                    value: formatMxnDate(contest.endDate),
                   },
                   location: {
-                    key: "location",
+                    key: "Ubicación",
                     value: contest.location,
                   },
                   status: {
-                    key: "status",
+                    key: "Estatus",
                     value: contest.status,
                   },
                   actions: {
@@ -248,15 +162,16 @@ const Contest = () => {
                     value: (
                       <ActionButtons
                         onEdit={
-                          isEditpermissions.hasPermission
+                          isEditPermissions.hasPermission
                             ? () => onEditContest(contest)
                             : null
                         }
                         onRemove={
-                          isDeletepermissions.hasPermission
-                            ? () => onDeleteContest(contest.id)
+                          isDeletePermissions.hasPermission
+                            ? () => onOpenDeleteModal(contest.id)
                             : null
                         }
+                        onShow={() => {navigate(`/contest/${contest.id}`)}}
                       />
                     ),
                   },
@@ -270,15 +185,7 @@ const Contest = () => {
       ) : (
         <Skeleton count={10} className="h-10" />
       )}
-      {contest?.pagination && (
-        <TableFooter
-          pagination={contest?.pagination}
-          goOnNextPage={goOnNextPage}
-          goOnPrevPage={goOnPrevPage}
-          handleSelectChange={handleSelectChange}
-          changePageSize={changePageSize}
-        />
-      )}
+
       {isOpenModal && (
         <ModalFormikForm
           onClose={onCloseModal}
@@ -292,11 +199,13 @@ const Contest = () => {
           saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
-      <ModalRemove
-        isOpenModal={isRemoveModalOpen}
-        onCloseModal={() => setIsRemoveModalOpen(false)}
-        removeFunction={handleRemoveContest}
-      />
+      {isOpenDeleteModal && (
+        <ModalRemove
+          isOpenModal={isOpenDeleteModal}
+          onCloseModal={onCloseDeleteModal}
+          removeFunction={onDeleteContest}
+        />
+      )}
     </div>
   );
 };

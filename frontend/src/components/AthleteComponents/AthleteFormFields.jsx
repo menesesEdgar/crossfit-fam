@@ -10,6 +10,7 @@ import {
   FaVenusMars,
 } from "react-icons/fa";
 import SelectInput from "../Inputs/SelectInput";
+import DateInput from "../Inputs/DateInput";
 const genderOptions = [
   {
     id: "1",
@@ -46,7 +47,7 @@ const AthleteFormFields = () => {
       <Field
         name="birthDate"
         id="birthDate"
-        component={TextInput}
+        component={DateInput}
         label="* Fecha de nacimiento"
         type="date"
         icon={FaCalendarAlt}

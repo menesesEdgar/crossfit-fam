@@ -68,7 +68,7 @@ const Card = ({ data = {}, showImage = false }) => {
           );
         })}
       </div>
-      <div className="flex flex-col justify-between gap-3">
+      <div className="flex flex-row justify-between gap-3">
         {data?.actions && <>{data.actions.value}</>}
       </div>
     </section>

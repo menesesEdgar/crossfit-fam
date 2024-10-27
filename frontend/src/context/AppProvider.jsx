@@ -5,7 +5,6 @@ import LoadingProvider from "./LoadingProvider";
 import PermissionProvider from "./PermissionProvider";
 import RoleProvider from "./RoleProvider";
 import UserProvider from "./UserProvider";
-
 const SecurityProvider = ({ children }) => (
   <AuthProvider>
     <RoleProvider>
