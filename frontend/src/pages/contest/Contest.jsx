@@ -123,7 +123,7 @@ const Contest = () => {
             action: isCreatePermissions.hasPermission
               ? () => setIsOpenModal(true)
               : null,
-            color: "mycad",
+            color: "crossfit",
             icon: IoMdAdd,
             filled: true,
           },

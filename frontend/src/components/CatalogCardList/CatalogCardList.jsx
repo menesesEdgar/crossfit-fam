@@ -148,7 +148,7 @@ CatalogCardList.Skeleton = () => {
                   {
                     label: "Nuevo",
                     action: () => {},
-                    color: "mycad",
+                    color: "crossfit",
                     icon: IoMdAdd,
                     filled: true,
                   },

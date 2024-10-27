@@ -2,7 +2,6 @@ import { useEffect, useReducer } from "react";
 import ContestContext from "./ContestContext";
 import contestReducer from "./ContestReducer";
 import useContest from "../hooks/useContest";
-import { useAuthContext } from "./AuthContext";
 const ContestProvider = ({children}) => {
 
     const [state, dispatch] = useReducer(contestReducer, {

@@ -12,11 +12,11 @@ import { FaDeleteLeft } from "react-icons/fa6";
 const ContestCategories = () => {
     // ContestId
     const { id } = useParams()
-    const { addCategory , fetchContest, contest, deleteCategory} = useContestContext()
+    const { addCategory , fetchContest, categories: contestCategories, deleteCategory} = useContestContext()
     const {categories} = useCatalogContext()
-    const { contestCategory } = contest
-    let contestCategories = []
-    console.log("contest ", contest)
+    // const { contestCategory } = contest
+    let contestCategoriesFiltered = []
+    console.log("contest ", contestCategories)
     const [activeTab, setActiveTab] = useState(
         categories?.length > 0 ? categories[0]?.id : null,
       );
@@ -24,9 +24,8 @@ const ContestCategories = () => {
         fetchContest(id)
       }, [])
     const isAddContestCategoriesPermission = useCheckPermissions('view_contest');
-      console.log("contestCategory ", contestCategory)
-    if (contestCategory && contestCategory?.length > 0) {
-      contestCategories = contestCategory?.map((c) => c.id)
+    if (contestCategories && contestCategories?.length > 0) {
+      contestCategoriesFiltered = contestCategories?.map((c) => c.id)
     }
     console.log("contestCategories  ", contestCategories)
     return (
@@ -49,10 +48,10 @@ const ContestCategories = () => {
                 .map((category) => (
                   <div
                     key={category.id}
-                    onClick={!contestCategories?.includes(category.id) ? async () => { await addCategory({contestId: id, categoryId: category.id})} : () => {}}
+                    onClick={!contestCategoriesFiltered?.includes(category.id) ? async () => { await addCategory({contestId: id, categoryId: category.id})} : () => {}}
                     className={classNames(
                       'group p-4   border-b border-neutral-100 flex justify-between items-center',
-                      contestCategories?.includes(category.id)
+                      contestCategoriesFiltered?.includes(category.id)
                         ? 'text-crossfit-light-purple cursor-not-allowed font-bold'
                         : 'text-neutral-700 hover:bg-neutral-100 cursor-pointer ',
                     )}
@@ -63,7 +62,7 @@ const ContestCategories = () => {
                         {category.name}
                       </h3>
                     </div>
-                    {!contestCategories?.includes(category.id) && (
+                    {!contestCategoriesFiltered?.includes(category.id) && (
                       <i
                       className={classNames(
                         'group-hover:text-neutral-800 transition-all duration-200',
@@ -87,8 +86,8 @@ const ContestCategories = () => {
                  Selecciona la que desees remover
                 </p>
               </div>
-              {contestCategory && contestCategory?.length > 0 &&
-                contestCategory?.sort((a, b) => a.name.localeCompare(b.name))
+              {contestCategories && contestCategories?.length > 0 &&
+                contestCategories?.sort((a, b) => a.name.localeCompare(b.name))
                 .map((category) => (
                   <div
                     key={category.id}

@@ -27,7 +27,7 @@ export const NotFound = () => {
                   {
                     label: "Volver al inicio",
                     href: "/",
-                    color: "mycad",
+                    color: "crossfit",
                     icon: FaHome,
                     filled: true,
                   },

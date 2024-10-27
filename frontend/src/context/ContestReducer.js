@@ -1,10 +1,14 @@
 const contestReducer = (state, action) => {
-  console.log("reducer ", action)
-  console.log(action.payload)
     switch (action.type) {
       case 'FETCH_CONTEST':
+        console.log("Entry aqui")
         return {
           ...state,
+          categories: action.payload?.contestCategory?.map(category => {
+            return {
+              ...category.category, ["conCatId"]: category.id
+            }
+          }),
           contest: {
             ...action.payload,
             contestCategory: action.payload?.contestCategory?.map(category => {
@@ -40,13 +44,21 @@ const contestReducer = (state, action) => {
         return {
           ...state,
           category: action.payload,
-          categories: [...state.categories, action.payload],
+          categories: [...state.categories, {
+            ...action.payload.category,
+            ["conCatId"]: action.payload.id
+          }],
           loading: false,
         };
       case 'DELETE_CATEGORY':
+        console.log("delete cate ", action.payload)
         return {
           ...state,
-          categories: action.payload,
+          categories: action.payload?.contestCat ? action.payload?.contestCat?.map(category => {
+            return {
+              ...category.category, ["conCatId"]: category.id
+            }
+          }) : [],
           loading: false,
         };
       default:

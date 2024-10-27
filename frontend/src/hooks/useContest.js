@@ -31,6 +31,7 @@ const useContest = (dispatch) => {
     mutationFn: getContest,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
+      console.log("FETCH_CONTEST data ", data )
       dispatch({ type: "FETCH_CONTEST", payload: data });
     },
     onSettled: () => setLoading(false),
@@ -101,7 +102,7 @@ const useContest = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'ADD_CONTEST_CATEGORY', payload: data });
+      dispatch({ type: 'ADD_CATEGORY', payload: data });
       Notifies('success', 'Categoría agregada correctamente');
     },
     onError: (error) => {

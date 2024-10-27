@@ -102,6 +102,14 @@ export const addCategory = async (req, res) => {
     const { id: contestId, categoryId } = req.params;
     const contest = await db.contestCategory.create({
       data: { contestId: parseInt(contestId), categoryId: parseInt(categoryId) },  
+      include: {
+        category: {
+          select: {
+            name:true,
+            id: true
+          }
+        }
+      }
     });
     res.json(contest);
   } catch (error) {
@@ -110,7 +118,7 @@ export const addCategory = async (req, res) => {
   }
 };
 export const removeCategory = async (req, res) => {
-  const {categoryId} = req.params
+  const {id, categoryId} = req.params
   try {
     const category = db.contestCategory.findUnique({
       where: { id: parseInt(categoryId) },
@@ -121,9 +129,21 @@ export const removeCategory = async (req, res) => {
       return;
     }
 
-    const newCategories = await db.contestCategory.delete({ where: { id: parseInt(categoryId) } });
+    await db.contestCategory.delete({ where: { id: parseInt(categoryId) } });
     
-    res.json({ message: "Contest category deleted", data: newCategories });
+    const contestCat = await db.contestCategory.findMany({
+      where: { contestId: parseInt(id) },
+      include: {
+        category: {
+          select: {
+            name:true,
+            id: true
+          }
+        }
+      }
+    });
+    console.log("contestCAt ", contestCat)
+    res.json({ message: "Contest category deleted", contestCat });
   } catch (error) {
     console.log("error on deleteContest", error);
     res.status(500).json({ message: error.message });

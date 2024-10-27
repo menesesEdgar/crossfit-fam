@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 const ContestContext = createContext({
     contest: {}, 
     categories: [],
-    category: [],
+    category: {},
     categoryWods: [],
     categoryWod: {},
     fetchContest:  async () => {},
