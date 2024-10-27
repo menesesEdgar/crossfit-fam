@@ -35,9 +35,12 @@ const CatalogProvider = ({ children }) => {
     fetchWods,
     updateAthlete,
     updateCategory,
-    updateWod
+    updateWod,
+    fetchContests,
+    createContest,
+    deleteContest,
+    updateContest
   } = useCatalogs(dispatch);
-  const {fetchContests} = useContest(dispatch)
   const loadCatalogsData = () => {
     // fetchAthlete(); Al usar este metodo se extraen sin filtro todos los atletas y usuarios de la base de datos, es de corregir este error (RBM)
     fetchContests()
@@ -71,6 +74,10 @@ const CatalogProvider = ({ children }) => {
         createWod,
         updateWod,
         deleteWod,
+        fetchContests,
+        createContest,
+        updateContest,
+        deleteContest
       }}
     >
       {children}

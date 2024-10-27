@@ -9,9 +9,6 @@ const ContestProvider = ({children}) => {
     })
     const { 
         fetchContest,
-        createContest,
-        updateContest,
-        deleteContest,
         addCategory,
         deleteCategory
       } = useContest(dispatch)
@@ -20,9 +17,6 @@ const ContestProvider = ({children}) => {
         <ContestContext.Provider value={{
             ...state,
             fetchContest,
-            createContest,
-            updateContest,
-            deleteContest,
             addCategory,
             deleteCategory
         }}>{children}</ContestContext.Provider>

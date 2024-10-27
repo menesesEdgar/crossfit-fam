@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import { createContest } from '../services/api';
 
 const CatalogContext = createContext({
   athletes: [],
@@ -26,6 +27,8 @@ const CatalogContext = createContext({
   createWod: async () => {},
   updateWod: async () => {},
   deleteWod: async () => {},
+  createContest: async () => {},
+  deleteContest: async () => {},
 });
 
 export const useCatalogContext = () => useContext(CatalogContext);

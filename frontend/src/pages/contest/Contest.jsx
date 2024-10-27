@@ -37,7 +37,7 @@ const initValues = {
 }
 const Contest = () => {
   const { contests: allContests } = useCatalogContext();
-  const {createContest, updateContest, deleteContest, loading } = useContestContext()
+  const {createContest, updateContest, deleteContest, loading } = useCatalogContext()
   const isCreatePermissions = useCheckPermissions("create_contest");
   const isEditPermissions = useCheckPermissions("edit_contest");
   const isDeletePermissions = useCheckPermissions("delete_contest");
