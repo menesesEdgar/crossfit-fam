@@ -16,7 +16,6 @@ const ContestCategories = () => {
     const {categories} = useCatalogContext()
     // const { contestCategory } = contest
     let contestCategoriesFiltered = []
-    console.log("contest ", contestCategories)
     const [activeTab, setActiveTab] = useState(
         categories?.length > 0 ? categories[0]?.id : null,
       );

@@ -203,20 +203,7 @@ export const getUser = async (userId) => {
 };
 export const updateUser = async (user) => {
   try {
-    const updateUser = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      birthDate: user.birthDate,
-      role: user.role,
-      gender: user.gender,
-      password: user.password,
-      repeatPassword: user.repeatPassword,
-    }
-    console.log("update User ", updateUser)
-    const response = await api.put(`/users/${user.id}`, updateUser);
+    const response = await api.put(`/users/${user.id}`, user);
     return response.data;
   } catch (error) {
     console.error(error);

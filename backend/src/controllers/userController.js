@@ -119,7 +119,7 @@ export const updateUser = async (req, res) => {
         lastName,
         email,
         phone,
-        birthdate:  new Date(birthDate),
+        birthdate:  birthDate ? new Date(birthDate) : null,
         gender,
         status: parseStatus(status),
         roleId: parseInt(role),
