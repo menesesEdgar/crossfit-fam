@@ -9,7 +9,7 @@ import LoadingModal from "../../components/loadingModal/LoadingModal";
 import withPermission from "../../utils/withPermissions";
 
 const ContestCategories = lazy(() => import("./Details/ContestCategories"));
-const CategorieWods = lazy(() => import("./Details/CategorieWods"));
+const CategoryWods = lazy(() => import("./Details/CategoryWods"));
 const CategorieAthletes = lazy(() => import("./Details/CategorieAthletes"));
 
 const ContestView = () => {
@@ -33,7 +33,7 @@ const ContestView = () => {
       id: 1,
       title: "WOD por categoría",
       icon: <BiSolidZap size={24} />,
-      component: <CategorieWods />,
+      component: <CategoryWods />,
       permission: isViewCategorieWodsPermission,
     },
     {

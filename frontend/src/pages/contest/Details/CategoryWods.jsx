@@ -8,8 +8,7 @@ import { useParams } from "react-router-dom";
 import { useContestContext } from "../../../context/ContestContext";
 import { useCatalogContext } from "../../../context/CatalogContext";
 import { FaDeleteLeft } from "react-icons/fa6";
-
-const ContestCategories = () => {
+const CategoryWods = () => {
     // ContestId
     const { id } = useParams()
     const { addCategory , fetchContest, categories: contestCategories, deleteCategory} = useContestContext()
@@ -119,5 +118,4 @@ const ContestCategories = () => {
         </>
     );
 }
- 
-export default ContestCategories;
+export default CategoryWods;

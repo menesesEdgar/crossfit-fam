@@ -10,6 +10,8 @@ const ContestContext = createContext({
     deleteCategory:  async () => {},
     addCategoryWod:  async () => {},
     deleteCategoryWod:  async () => {},
+    addWodToCategory:  async () => {},
+    deleteWodOfCategory:  async () => {},
 });
 
 export const useContestContext = () => useContext(ContestContext);

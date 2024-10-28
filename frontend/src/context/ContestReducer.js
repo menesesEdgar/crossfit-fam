@@ -29,10 +29,29 @@ const contestReducer = (state, action) => {
           loading: false,
         };
       case 'DELETE_CATEGORY':
-        console.log("delete cate ", action.payload)
         return {
           ...state,
           categories: action.payload?.contestCat ? action.payload?.contestCat?.map(category => {
+            return {
+              ...category.category, ["conCatId"]: category.id
+            }
+          }) : [],
+          loading: false,
+        };
+      case 'ADD_WOD_CATEGORY':
+        return {
+          ...state,
+          categoryWod: action.payload,
+          categoryWods: [...state.categories, {
+            ...action.payload.category,
+            ["conCatId"]: action.payload.id
+          }],
+          loading: false,
+        };
+      case 'DELETE_WOD_CATEGORY':
+        return {
+          ...state,
+          categoryWods: action.payload?.contestCat ? action.payload?.contestCat?.map(category => {
             return {
               ...category.category, ["conCatId"]: category.id
             }
