@@ -4,7 +4,7 @@ import { LiaDumbbellSolid } from "react-icons/lia";
 import { BiSolidZap } from "react-icons/bi";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
-import LoadingModal from "../../components/loadingModal/LoadingModal";
+import LoadingModal from "../../components/LoadingModal/LoadingModal";
 
 const Categories = lazy(() => import("./Categories"));
 const Wods = lazy(() => import("./Wods"));
