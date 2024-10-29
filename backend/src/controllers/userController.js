@@ -41,7 +41,7 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, role, birthDate, gender } =
+    const { firstName, lastName, email, phone, role, birthDate, gender, password } =
       req.body;
 
     const userExists = await db.user.findFirst({
@@ -52,7 +52,7 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ message: "El email ya está registrado." });
     }
 
-    const newPassword = generateRandomPassword();
+    const newPassword = role === "Athlete" ? generateRandomPassword() : password;
 
     let athleteRol;
     if (role === "Athlete") {
@@ -84,7 +84,7 @@ export const createUser = async (req, res) => {
       },
     });
 
-    newUser.password = newPassword;
+    newUser.password = role === "Athlete" ? newPassword : undefined;
 
     res.status(201).json(newUser);
   } catch (error) {
