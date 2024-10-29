@@ -5,7 +5,7 @@ import { BiSolidZap } from "react-icons/bi";
 import { GiBiceps } from "react-icons/gi";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
-import LoadingModal from "../../components/loadingModal/LoadingModal";
+import LoadingModal from "../../components/LoadingModal/LoadingModal";
 import withPermission from "../../utils/withPermissions";
 
 const ContestCategories = lazy(() => import("./Details/ContestCategories"));
