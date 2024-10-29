@@ -181,20 +181,7 @@ export const getUser = async (userId) => {
   }
 };export const createUser = async (user) => {
   try {
-
-    const obj = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      birthDate: user.birthDate,
-      role: user.role,
-      gender: user.gender,
-      password: user.password,
-      repeatPassword: user.repeatPassword,
-    };
-
-    const response = await api.post(`/users`, obj);
+    const response = await api.post(`/users`, user);
     return response.data;
   } catch (error) {
     console.error(error);

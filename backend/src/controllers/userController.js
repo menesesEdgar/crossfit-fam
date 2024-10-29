@@ -68,7 +68,7 @@ export const createUser = async (req, res) => {
         lastName,
         email,
         phone,
-        birthdate: new Date(birthDate),
+        birthdate: birthDate ? new Date(birthDate) : null,
         gender,
         password: hashedPassword,
         roleId: role === "Athlete" ? athleteRol.id : parseInt(role),
