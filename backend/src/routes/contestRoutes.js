@@ -7,7 +7,9 @@ import {
   getContests,
   updateContest,
   addCategory,
-  removeCategory
+  removeCategory,
+  addAllCategoriesToContest,
+  removeAllCategoriesFromContest,
 } from "../controllers/contestController.js";
 
 const router = express.Router();
@@ -18,9 +20,14 @@ router
   .get(getContestById)
   .put(protect, updateContest)
   .delete(protect, deleteContest);
-// id for contestId, 
-router.route("/:id/:categoryId")
-.post(protect, addCategory)
-.delete(protect, removeCategory)
+// id for contestId,
+router
+  .route("/:id/:categoryId")
+  .post(protect, addCategory)
+  .delete(protect, removeCategory);
+router.route("/:id/addAllCategories").put(protect, addAllCategoriesToContest);
+router
+  .route("/:id/removeAllCategories")
+  .put(protect, removeAllCategoriesFromContest);
 
 export default router;

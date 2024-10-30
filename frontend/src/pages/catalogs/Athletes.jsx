@@ -306,7 +306,7 @@ const Athletes = () => {
   };
 
   return (
-    <div className="flex h-full flex-col gap-3 dark:bg-gray-900 p-3 antialiased">
+    <div className="flex h-full flex-col gap-3 p-3 antialiased">
       <TableHeader
         icon={FaUsers}
         title={"Atletas"}

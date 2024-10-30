@@ -353,10 +353,30 @@ export const addCategory = async (data) => {
   }
 };
 
+export const addAllCategories = async (id) => {
+  try {
+    const response = await api.put(`/contests/${id}/addAllCategories`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const deleteContestCategory = async (data) => {
   const { contestId, categoryId } = data;
   try {
     const response = await api.delete(`/contests/${contestId}/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const removeAllContestCategories = async (id) => {
+  try {
+    const response = await api.put(`/contests/${id}/removeAllCategories`);
     return response.data;
   } catch (error) {
     console.error(error);

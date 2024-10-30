@@ -7,9 +7,11 @@ const TableHeader = ({ title, icon: Icon, actions }) => {
         {Icon && <Icon size={24} className="inline-block" />}
         <h1 className="text-xl xl:text-2xl font-bold">{title}</h1>
       </div>
-      <div className="w-full flex gap-2 justify-start md:justify-end">
-        <ActionButtons extraActions={actions} />
-      </div>
+      {actions && (
+        <div className="w-full flex gap-2 justify-start md:justify-end">
+          <ActionButtons extraActions={actions} />
+        </div>
+      )}
     </div>
   );
 };

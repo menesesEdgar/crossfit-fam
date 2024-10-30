@@ -13,7 +13,7 @@ const CategorieAthletes = lazy(() => import("./Details/CategorieAthletes"));
 
 const ContestView = () => {
   const [activeTab, setActiveTab] = useState(
-    parseInt(localStorage.getItem("selectedTab")) || 0
+    parseInt(localStorage.getItem("selectedContestTab")) || 0
   );
 
   const isViewContestCategoriesPermission = useCheckPermissions("view_contest");
@@ -45,7 +45,7 @@ const ContestView = () => {
   ];
 
   useEffect(() => {
-    localStorage.setItem("selectedTab", activeTab);
+    localStorage.setItem("selectedContestTab", activeTab);
   }, [activeTab]);
 
   return (
@@ -70,7 +70,7 @@ const ContestView = () => {
         )}
       </div>
 
-      <div className="relative bg-white rounded-md h-full max-h-[82dvh] shadow-md overflow-hidden mt-4">
+      <div className="relative bg-white rounded-md h-full max-h-[78dvh] md:max-h-[82dvh] shadow-md overflow-hidden mt-4">
         <div className="h-full overflow-auto">
           {tabContent.map((tab, index) => (
             <div

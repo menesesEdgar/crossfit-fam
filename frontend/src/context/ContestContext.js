@@ -1,17 +1,19 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
 const ContestContext = createContext({
-    contest: {}, 
-    categories: [],
-    category: {},
-    categoryWods: [],
-    categoryWod: {},
-    addCategory:  async () => {},
-    deleteCategory:  async () => {},
-    addCategoryWod:  async () => {},
-    deleteCategoryWod:  async () => {},
-    addWodToCategory:  async () => {},
-    deleteWodOfCategory:  async () => {},
+  contest: {},
+  categories: [],
+  category: {},
+  categoryWods: [],
+  categoryWod: {},
+  addCategory: async () => {},
+  deleteCategory: async () => {},
+  addCategoryWod: async () => {},
+  deleteCategoryWod: async () => {},
+  addWodToCategory: async () => {},
+  deleteWodOfCategory: async () => {},
+  removeAllContestCategories: async () => {},
+  addAllCategories: async () => {},
 });
 
 export const useContestContext = () => useContext(ContestContext);

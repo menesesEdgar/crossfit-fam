@@ -2,26 +2,33 @@ import { useEffect, useReducer } from "react";
 import ContestContext from "./ContestContext";
 import contestReducer from "./ContestReducer";
 import useContest from "../hooks/useContest";
-const ContestProvider = ({children}) => {
+const ContestProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(contestReducer, {
+    contest: {},
+  });
+  const {
+    fetchContest,
+    addCategory,
+    deleteCategory,
+    deleteWodOfCategory,
+    addAllCategories,
+    removeAllContestCategories,
+  } = useContest(dispatch);
 
-    const [state, dispatch] = useReducer(contestReducer, {
-        contest: {}
-    })
-    const { 
+  return (
+    <ContestContext.Provider
+      value={{
+        ...state,
         fetchContest,
         addCategory,
         deleteCategory,
-        deleteWodOfCategory,
-      } = useContest(dispatch)
+        removeAllContestCategories,
+        addAllCategories,
+      }}
+    >
+      {children}
+    </ContestContext.Provider>
+  );
+};
 
-    return (
-        <ContestContext.Provider value={{
-            ...state,
-            fetchContest,
-            addCategory,
-            deleteCategory
-        }}>{children}</ContestContext.Provider>
-    );
-}
- 
 export default ContestProvider;
