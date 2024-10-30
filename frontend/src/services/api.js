@@ -179,9 +179,9 @@ export const getUser = async (userId) => {
     console.error(error);
     throw error;
   }
-};export const createUser = async (user) => {
+};
+export const createUser = async (user) => {
   try {
-
     const obj = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -203,20 +203,7 @@ export const getUser = async (userId) => {
 };
 export const updateUser = async (user) => {
   try {
-    const updateUser = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      birthDate: user.birthDate,
-      role: user.role,
-      gender: user.gender,
-      password: user.password,
-      repeatPassword: user.repeatPassword,
-    }
-    console.log("update User ", updateUser)
-    const response = await api.put(`/users/${user.id}`, updateUser);
+    const response = await api.put(`/users/${user.id}`, user);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -368,9 +355,9 @@ export const deleteContest = async (contestId) => {
 
 // Assign/remove categories to contest
 export const addCategory = async (data) => {
-  const { contestId, categoryId} = data
+  const { contestId, categoryId } = data;
   try {
-    const response = await api.post(`/contests/${contestId}/${categoryId}` );
+    const response = await api.post(`/contests/${contestId}/${categoryId}`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -379,8 +366,7 @@ export const addCategory = async (data) => {
 };
 
 export const deleteContestCategory = async (data) => {
-  console.log("data ", data)
-  const { contestId, categoryId} = data
+  const { contestId, categoryId } = data;
   try {
     const response = await api.delete(`/contests/${contestId}/${categoryId}`);
     return response.data;

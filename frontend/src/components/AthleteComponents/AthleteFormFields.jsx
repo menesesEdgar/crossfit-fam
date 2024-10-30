@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import SelectInput from "../Inputs/SelectInput";
 import DateInput from "../Inputs/DateInput";
+import { PiUserCircleCheckBold } from "react-icons/pi";
 const genderOptions = [
   {
     id: "1",
@@ -25,7 +26,7 @@ const genderOptions = [
     name: "Otro",
   },
 ];
-const AthleteFormFields = () => {
+const AthleteFormFields = ({ editMode }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <Field
@@ -82,6 +83,19 @@ const AthleteFormFields = () => {
         icon={FaPhoneSquareAlt}
         placeholder="123-456-7890"
       />
+      {editMode && (
+        <Field
+          name="status"
+          id="status"
+          component={SelectInput}
+          label="Estado"
+          options={[
+            { value: true, label: "Habilitado" },
+            { value: false, label: "Deshabilitado" },
+          ]}
+          icon={PiUserCircleCheckBold}
+        />
+      )}
       <Field
         className="hidden"
         name="id"

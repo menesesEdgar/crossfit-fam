@@ -95,9 +95,17 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { id, firstName, lastName, email, phone, role, status, birthDate, gender } =
-      req.body;
-
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      phone,
+      role,
+      status,
+      birthDate,
+      gender,
+    } = req.body;
 
     const userExists = await db.user.findFirst({ where: { id } });
 
@@ -112,6 +120,7 @@ export const updateUser = async (req, res) => {
     if (emailExists) {
       return res.status(400).json({ message: "El email ya está registrado." });
     }
+
     const updatedUser = await db.user.update({
       where: { id },
       data: {
@@ -119,8 +128,8 @@ export const updateUser = async (req, res) => {
         lastName,
         email,
         phone,
-        birthdate:  new Date(birthDate),
-        gender,
+        birthdate: birthDate ? new Date(birthDate) : null,
+        gender: gender || null,
         status: parseStatus(status),
         roleId: parseInt(role),
       },
@@ -138,16 +147,6 @@ export const updateUser = async (req, res) => {
         },
       },
     });
-
-    // const today = new Date();
-    // const birthDateParts = newUser.birthDate.split("-");
-    // const birthDateObj = new Date(
-    //   birthDateParts[0],
-    //   birthDateParts[1] - 1,
-    //   birthDateParts[2]
-    // );
-    // const age = today.getFullYear() - birthDateObj.getFullYear();
-    // newUser.age = age;
 
     newUser.password = undefined;
 

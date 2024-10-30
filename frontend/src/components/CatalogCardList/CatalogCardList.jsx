@@ -24,8 +24,8 @@ const CatalogCardList = ({
   );
 
   return (
-    <div className="relative h-full flex-col gap-3 shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
-      <div className="absolute inset-x-0 top-0 p-3">
+    <div className="relative h-full max-h-full flex-col gap-3 shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
+      <div>
         <div className="flex flex-col gap-3">
           <TableHeader
             icon={Icon}
@@ -43,8 +43,8 @@ const CatalogCardList = ({
           <TableActions handleSearchTerm={(e) => setSearch(e.target.value)} />
         </div>
       </div>
-      <div className="mt-32 h-full overflow-y-auto">
-        <div className="h-full min-h-32 py-4 pb-32 overflow-y-auto overflow-x-hidden place-content-start grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] gap-4">
+      <div className="h-full overflow-hidden">
+        <div className="h-full min-h-32 max-h-[61dvh] pb-2 md:pt-4 overflow-y-auto overflow-x-hidden place-content-start grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] gap-4">
           {filteredData &&
             filteredData.length > 0 &&
             filteredData.map((item) => (

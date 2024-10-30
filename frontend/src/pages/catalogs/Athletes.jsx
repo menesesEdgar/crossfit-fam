@@ -14,8 +14,17 @@ import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import { AthleteFormSchema } from "../../components/AthleteComponents/AthleteFormSchema";
 import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
-import { FaUsers } from "react-icons/fa";
+import { FaEyeSlash, FaLock, FaUsers } from "react-icons/fa";
 import { calculateAge } from "../../utils/formatDates";
+import ModalViewer from "../../components/Modals/ModalViewer";
+import { MdContentCopy } from "react-icons/md";
+import ArmImage from "../../assets/images/arm.webp";
+import { FaEye } from "react-icons/fa6";
+import { useUserContext } from "../../context/UserContext";
+import { UserFormChangePasswordSchema } from "../../components/Users/UserFormSchema";
+import UserChangePasswordFormFields from "../../components/Users/UserChangePasswordFormFields";
+import classNames from "classnames";
+
 const Card = lazy(() => import("../../components/Card/Card"));
 const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
 const TableFooter = lazy(() => import("../../components/Table/TableFooter"));
@@ -57,13 +66,32 @@ export const athletesColumns = [
     type: "text",
   },
   {
+    id: "status",
+    value: "Estado",
+    order: "asc",
+  },
+  {
     id: "actions",
     value: "Acciones",
     type: "actions",
     classes: "text-center",
   },
 ];
+
+const initiValues = {
+  firstName: "",
+  lastName: "",
+  birthDate: "",
+  gender: "",
+  email: "",
+  phone: "",
+  role: "Athlete",
+  status: true,
+  id: "",
+};
+
 const Athletes = () => {
+  const { useChangePasswordUser } = useUserContext();
   const { createAthlete, updateAthlete, deleteAthlete } = useCatalogContext();
   const [columns, setColumns] = useState([...athletesColumns]);
   const lastChange = useRef();
@@ -71,15 +99,17 @@ const Athletes = () => {
   const [editMode, setEditMode] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [deleteAthleteId, setDeleteAthleteId] = useState(null);
-  const [initialValues, setInitialValues] = useState({
-    firstName: "",
-    lastName: "",
-    birthDate: "",
-    gender: "",
-    email: "",
-    phone: "",
-    role: "Athlete",
+  const [isOpenModalViewer, setIsOpenModalViewer] = useState(false);
+  const [newAtlhete, setNewAthlete] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [changePasswordModal, setChangePasswordModal] = useState(false);
+  const [initialPasswordValues, setInitialPasswordValues] = useState({
     id: "",
+    password: "",
+    repeatPassword: "",
+  });
+  const [initialValues, setInitialValues] = useState({
+    ...initiValues,
   });
   const [refreshData, setRefreshData] = useState(false);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
@@ -186,7 +216,6 @@ const Athletes = () => {
   };
 
   const onEditAthlete = (athlete) => {
-    console.log("first ", athlete);
     setEditMode(true);
     setInitialValues({
       id: athlete.id,
@@ -196,27 +225,26 @@ const Athletes = () => {
       birthDate: athlete?.birthdate ? athlete.birthdate.split("T")[0] : "",
       email: athlete.email,
       phone: athlete.phone,
+      status: athlete.status,
       role: athlete?.roleId,
     });
     setIsOpenModal(true);
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    console.log("values ", values);
     try {
-      editMode ? await updateAthlete(values) : await createAthlete(values);
+      const res = editMode
+        ? await updateAthlete(values)
+        : await createAthlete(values);
       setSubmitting(false);
       resetForm();
+      if (!editMode) {
+        setNewAthlete(res);
+        setIsOpenModalViewer(true);
+      }
       setEditMode(false);
       setInitialValues({
-        id: "",
-        firstName: "",
-        lastName: "",
-        gender: "",
-        birthDate: "",
-        email: "",
-        phone: "",
-        role: "Athlete",
+        ...initiValues,
       });
       setIsOpenModal(false);
     } catch (error) {
@@ -229,14 +257,7 @@ const Athletes = () => {
     setIsOpenModal(false);
     setEditMode(false);
     setInitialValues({
-      id: "",
-      firstName: "",
-      lastName: "",
-      gender: "",
-      birthDate: "",
-      email: "",
-      phone: "",
-      role: "Athlete",
+      ...initiValues,
     });
   };
 
@@ -263,8 +284,29 @@ const Athletes = () => {
   const isEditpermissions = useCheckPermissions("edit_athlete");
   const isCreatepermissions = useCheckPermissions("create_athlete");
   const isDeletepermissions = useCheckPermissions("delete_athlete");
+
+  const onChangeAthletePassword = async (
+    values,
+    { setSubmitting, resetForm }
+  ) => {
+    try {
+      await useChangePasswordUser(values);
+      setSubmitting(false);
+      resetForm();
+      setInitialValues({
+        id: "",
+        password: "",
+        repeatPassword: "",
+      });
+      setChangePasswordModal(false);
+    } catch (err) {
+      console.log("error on submit change password", err);
+      Notifies("error", "Error al cambiar la contraseña del usuario");
+    }
+  };
+
   return (
-    <div className="flex min-h-[77dvh] h-full flex-col gap-3 dark:bg-gray-900 p-3 antialiased">
+    <div className="flex h-full flex-col gap-3 dark:bg-gray-900 p-3 antialiased">
       <TableHeader
         icon={FaUsers}
         title={"Atletas"}
@@ -288,7 +330,7 @@ const Athletes = () => {
       {athletes && !isPending ? (
         athletes?.data?.length > 0 ? (
           <>
-            <div className="hidden md:block">
+            <div className="hidden md:block text-nowrap">
               <Table
                 columns={columns}
                 sortBy={sortBy}
@@ -313,6 +355,8 @@ const Athletes = () => {
                               : "";
                           } else if (column.id === "gender") {
                             cellValue = athlete.gender;
+                          } else if (column.id === "status") {
+                            cellValue = athlete.status;
                           }
 
                           if (cellValue !== undefined) {
@@ -323,7 +367,20 @@ const Athletes = () => {
                                 }`}
                                 key={column.id}
                               >
-                                {cellValue}
+                                {column?.id === "status" ? (
+                                  <span
+                                    className={classNames(
+                                      "text-xs font-bold px-4 py-2 rounded-full",
+                                      athlete?.status
+                                        ? "bg-green-500 text-white"
+                                        : "bg-red-500 text-white"
+                                    )}
+                                  >
+                                    {athlete?.status ? "Activo" : "Inactivo"}
+                                  </span>
+                                ) : (
+                                  cellValue
+                                )}
                               </T.Cell>
                             );
                           }
@@ -342,6 +399,23 @@ const Athletes = () => {
                                       ? () => onDeleteAthlete(athlete.id)
                                       : null
                                   }
+                                  extraActions={[
+                                    {
+                                      label: "Cambiar contraseña",
+                                      action: isEditpermissions.hasPermission
+                                        ? () => {
+                                            setInitialPasswordValues({
+                                              id: athlete?.id,
+                                              password: "",
+                                              repeatPassword: "",
+                                            });
+                                            setChangePasswordModal(true);
+                                          }
+                                        : null,
+                                      color: "indigo",
+                                      icon: FaLock,
+                                    },
+                                  ]}
                                 />
                               </div>
                             </T.Cell>
@@ -419,7 +493,7 @@ const Athletes = () => {
           schema={AthleteFormSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          formFields={<AthleteFormFields />}
+          formFields={<AthleteFormFields editMode={editMode} />}
           saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
@@ -428,6 +502,89 @@ const Athletes = () => {
           isOpenModal={isRemoveModalOpen}
           onCloseModal={() => setIsRemoveModalOpen(false)}
           removeFunction={handleRemoveAthlete}
+        />
+      )}
+      {isOpenModalViewer && (
+        <ModalViewer
+          isOpenModal={isOpenModalViewer}
+          onCloseModal={() => {
+            setIsOpenModalViewer(false);
+            setNewAthlete(null);
+          }}
+          title="Registro completado"
+          size="lg"
+        >
+          <div className="flex flex-col items-start justify-start w-full p-4 gap-4">
+            <div className="flex justify-center items-center flex-col-reverse gap-4 w-full ">
+              <p className="text-xl text-center font-semibold text-crossfit-primary">
+                El atleta ha sido registrado correctamente.
+              </p>
+              <img
+                src={ArmImage}
+                alt="Arm"
+                className="w-32 h-32 object-cover rounded-full ring-4 ring-crossfit-primary"
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <p>
+                <span className="font-bold">Nombre:</span>{" "}
+                {newAtlhete?.firstName} {newAtlhete?.lastName}
+              </p>
+              <p>
+                <span className="font-bold">Email:</span> {newAtlhete?.email}
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="font-bold">Contraseña:</span>{" "}
+                {showPassword ? newAtlhete?.password : "**********"}
+                <span
+                  onClick={() => {
+                    navigator.clipboard.writeText(newAtlhete?.password);
+                    Notifies("success", "Contraseña copiada al portapapeles");
+                  }}
+                  className="flex items-center justify-center cursor-pointer  rounded-md text-sm text-neutral-500 bg-neutral-200 p-2"
+                >
+                  <MdContentCopy size={18} />
+                </span>
+              </p>
+              <ActionButtons
+                extraActions={[
+                  {
+                    label: showPassword
+                      ? "Ocultar contraseña"
+                      : "Mostrar contraseña",
+                    action: showPassword
+                      ? () => setShowPassword(false)
+                      : () => setShowPassword(true),
+                    color: "crossfit",
+                    icon: showPassword ? FaEyeSlash : FaEye,
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </ModalViewer>
+      )}
+      {changePasswordModal && (
+        <ModalFormikForm
+          onClose={() => setChangePasswordModal(false)}
+          isOpenModal={changePasswordModal}
+          dismissible
+          title={`Cambiar contraseña de ${
+            athletes?.data?.find(
+              (user) => user?.id === initialPasswordValues?.id
+            )?.firstName
+          }
+          ${
+            athletes?.data?.find(
+              (user) => user?.id === initialPasswordValues?.id
+            )?.lastName
+          }`}
+          size={"xl"}
+          schema={UserFormChangePasswordSchema}
+          initialValues={initialPasswordValues}
+          onSubmit={onChangeAthletePassword}
+          formFields={<UserChangePasswordFormFields />}
+          saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
     </div>

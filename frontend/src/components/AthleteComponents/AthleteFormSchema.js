@@ -12,12 +12,10 @@ export const AthleteFormSchema = Yup.object().shape({
   ),
   birthDate: Yup.date()
     .min("1900-01-01", "La fecha de nacimiento no puede ser menor a 1900")
-    .max(
-      new Date(),
-      "Fecha de nacimiento inválida"
-    )
+    .max(new Date(), "Fecha de nacimiento inválida")
     .typeError("Fecha de nacimiento debe ser una fecha")
     .required("La fecha de nacimiento es requerida"),
   gender: Yup.string().required("Género requerido"),
+  status: Yup.boolean(),
   id: Yup.string(),
 });

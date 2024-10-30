@@ -49,13 +49,13 @@ const Catalogs = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="grid grid-cols-3 max-h-16 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto">
+      <div className="grid h-fit grid-cols-3 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto">
         {tabContent.map(
           (tab, index) =>
             tab.permission.hasPermission && (
               <button
                 key={tab.id}
-                className={`flex items-center justify-center rounded-md text-sm md:text-lg gap-2 px-4 py-3 transition duration-200 ${
+                className={`flex items-center justify-center rounded-md text-sm md:text-lg gap-2 px-4 py-2 transition duration-200 ${
                   activeTab === index
                     ? "text-white font-semibold bg-crossfit-primary m-1"
                     : "text-neutral-800 hover:text-crossfit-light-pink"
@@ -69,7 +69,7 @@ const Catalogs = () => {
         )}
       </div>
 
-      <div className="relative bg-white rounded-md h-full max-h-[79dvh] shadow-md overflow-hidden mt-4">
+      <div className="relative bg-white rounded-md h-full max-h-[80dvh] md:max-h-[82dvh] shadow-md overflow-hidden mt-4">
         <div className="h-full overflow-auto">
           {tabContent.map((tab, index) => (
             <div

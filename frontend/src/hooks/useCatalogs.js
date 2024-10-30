@@ -18,7 +18,7 @@ import {
   createContest,
   updateContest,
   deleteContest,
-  getContests
+  getContests,
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -56,6 +56,7 @@ const useCatalogs = (dispatch) => {
       queryClient.invalidateQueries("athletes");
       dispatch({ type: "CREATE_ATHLETE", payload: data });
       Notifies("success", "Atleta registrado exitosamente");
+      return data;
     },
     onError: (error) => {
       Notifies("error", "Error al registrar atleta");
@@ -70,6 +71,7 @@ const useCatalogs = (dispatch) => {
       queryClient.invalidateQueries("athletes");
       dispatch({ type: "UPDATE_ATHLETE", payload: data });
       Notifies("success", "Atleta actualizado exitosamente");
+      return data;
     },
     onError: (error) => {
       Notifies("error", "Error al actualizar el atleta");
@@ -226,16 +228,16 @@ const useCatalogs = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'CREATE_CONTEST', payload: data });
-      Notifies('success', 'Competencia creada correctamente');
+      dispatch({ type: "CREATE_CONTEST", payload: data });
+      Notifies("success", "Competencia creada correctamente");
     },
     onError: (error) => {
-      console.log('error on createContest', error);
-      Notifies('error', error?.response?.data?.message);
+      console.log("error on createContest", error);
+      Notifies("error", error?.response?.data?.message);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('contests');
+      queryClient.invalidateQueries("contests");
       setLoading(false);
     },
   });
@@ -246,19 +248,18 @@ const useCatalogs = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'UPDATE_CONTEST', payload: data });
-      Notifies('success', 'Competencia actualizada correctamente');
+      dispatch({ type: "UPDATE_CONTEST", payload: data });
+      Notifies("success", "Competencia actualizada correctamente");
     },
     onError: (error) => {
-      console.log('error on updateContest', error);
+      console.log("error on updateContest", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('contests');
+      queryClient.invalidateQueries("contests");
       setLoading(false);
     },
   });
-
 
   const useDeleteContest = useMutation({
     mutationFn: deleteContest,
@@ -266,15 +267,15 @@ const useCatalogs = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'DELETE_CONTEST', payload: data });
-      Notifies('success', 'Competencia eliminada correctamente');
+      dispatch({ type: "DELETE_CONTEST", payload: data });
+      Notifies("success", "Competencia eliminada correctamente");
     },
     onError: (error) => {
-      console.log('error on deleteContest', error);
+      console.log("error on deleteContest", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('contests');
+      queryClient.invalidateQueries("contests");
       setLoading(false);
     },
   });
