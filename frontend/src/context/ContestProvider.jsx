@@ -10,7 +10,8 @@ const ContestProvider = ({children}) => {
     const { 
         fetchContest,
         addCategory,
-        deleteCategory
+        deleteCategory,
+        deleteWodOfCategory,
       } = useContest(dispatch)
 
     return (

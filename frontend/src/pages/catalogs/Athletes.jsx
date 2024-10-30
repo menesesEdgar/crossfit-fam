@@ -9,7 +9,7 @@ import ModalRemove from "../../components/Modals/ModalRemove";
 import { searchUsers as searchAthletes } from "../../services/api";
 import ActionButtons from "../../components/ActionButtons/ActionButtons";
 import Notifies from "../../components/Notifies/Notifies";
-import AthleteFormFields from "../../components/athleteComponents/AthleteFormFields";
+import AthleteFormFields from "../../components/AthleteComponents/AthleteFormFields";
 import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import { AthleteFormSchema } from "../../components/AthleteComponents/AthleteFormSchema";
 import withPermission from "../../utils/withPermissions";

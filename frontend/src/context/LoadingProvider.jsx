@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect } from 'react';
 import LoadingContext from './LoadingContext';
 import loadingReducer from './LoadingReducer';
-import LoadingModal from '../components/loadingModal/LoadingModal';
+import LoadingModal from '../components/LoadingModal/LoadingModal';
 
 const LoadingProvider = ({ children }) => {
   const [state, dispatch] = useReducer(loadingReducer, {
