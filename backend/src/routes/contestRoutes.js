@@ -10,6 +10,10 @@ import {
   removeCategory,
   addAllCategoriesToContest,
   removeAllCategoriesFromContest,
+  addWod,
+  removeWod,
+  addAllWodsToContest,
+  removeAllWodsFromContest
 } from "../controllers/contestController.js";
 
 const router = express.Router();
@@ -29,5 +33,16 @@ router.route("/:id/addAllCategories").put(protect, addAllCategoriesToContest);
 router
   .route("/:id/removeAllCategories")
   .put(protect, removeAllCategoriesFromContest);
+// Contest Wods
+router
+  .route("/:id/wod/:wodId")
+  .post(protect, addWod)
+  .delete(protect, removeWod);
+router
+  .route("/:id/addAllwods")
+  .put(protect, addAllWodsToContest);
+router
+  .route("/:id/removeAllWods")
+  .put(protect, removeAllWodsFromContest);
 
 export default router;

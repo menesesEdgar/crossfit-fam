@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getContest,
-  getContests,
-  createContest,
-  updateContest,
-  deleteContest,
   addCategory,
   addAllCategories,
   deleteContestCategory,
   removeAllContestCategories,
+  addWod,
+  deleteContestWod,
+  addAllWods,
+  removeAllContestWods
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -108,7 +108,84 @@ const useContest = (dispatch) => {
       setLoading(false);
     },
   });
+// Contest Wods
+const useAddWod= useMutation({
+  mutationFn: addWod,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "ADD_WOD", payload: data });
+    Notifies("success", "Wod agregado correctamente");
+  },
+  onError: (error) => {
+    console.log("error adding wod", error);
+    Notifies("error", error?.response?.data?.message);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("contestsWods");
+    setLoading(false);
+  },
+});
+const useDeleteWod= useMutation({
+  mutationFn: deleteContestWod,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "DELETE_WOD", payload: data });
+    Notifies("success", "Wod eliminado correctamente");
+  },
+  onError: (error) => {
+    console.log("error on delete wod", error);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("contestsWods");
+    setLoading(false);
+  },
+});
 
+const useAddAllWods = useMutation({
+  mutationFn: addAllWods,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "ADD_ALL_WODS", payload: data?.data });
+    Notifies("success", "Wods agregados correctamente");
+  },
+  onError: (error) => {
+    console.log("error adding all wods", error);
+    Notifies("error", error?.response?.data?.message);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("contestsWods");
+    setLoading(false);
+  },
+});
+
+const useRemoveAllContestWods= useMutation({
+  mutationFn: removeAllContestWods,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "REMOVE_ALL_WODS", payload: data });
+    Notifies("success", "Wods eliminados correctamente");
+  },
+  onError: (error) => {
+    console.log("error removing all wods", error);
+    Notifies("error", error?.response?.data?.message);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("contestsWods");
+    setLoading(false);
+  },
+});
   return {
     fetchContest: fetchContest.mutate,
     addCategory: (values) => {
@@ -117,11 +194,23 @@ const useContest = (dispatch) => {
     deleteCategory: (values) => {
       return useDeleteCategory.mutateAsync(values);
     },
+    addWod: (values) => {
+      return useAddWod.mutateAsync(values);
+    },
+    deleteWod: (values) => {
+      return useDeleteWod.mutateAsync(values);
+    },
     addAllCategories: (values) => {
       return useAddAllCategories.mutateAsync(values);
     },
     removeAllContestCategories: (values) => {
       return useRemoveAllContestCategories.mutateAsync(values);
+    },
+    addAllWods: (values) => {
+      return useAddAllWods.mutateAsync(values);
+    },
+    removeAllContestWods: (values) => {
+      return useRemoveAllContestWods.mutateAsync(values);
     },
   };
 };

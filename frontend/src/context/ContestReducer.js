@@ -9,12 +9,24 @@ const contestReducer = (state, action) => {
             ["conCatId"]: category.id,
           };
         }),
+        wods: action.payload?.contestWod?.map((wod) => {
+          return {
+            ...wod.wod,
+            ["conWodId"]: wod.id,
+          };
+        }),
         contest: {
           ...action.payload,
           contestCategory: action.payload?.contestCategory?.map((category) => {
             return {
               ...category.category,
               ["conCatId"]: category.id,
+            };
+          }),
+          contestWod: action.payload?.contestWod?.map((wod) => {
+            return {
+              ...wod.wod,
+              ["conWodId"]: wod.id,
             };
           }),
         },
@@ -41,6 +53,32 @@ const contestReducer = (state, action) => {
               return {
                 ...category.category,
                 ["conCatId"]: category.id,
+              };
+            })
+          : [],
+        loading: false,
+      };
+    case "ADD_WOD":
+      return {
+        ...state,
+        wod: action.payload,
+        wods: [
+          ...state.wods,
+          {
+            ...action.payload.wod,
+            ["conWodId"]: action.payload.id,
+          },
+        ],
+        loading: false,
+      };
+    case "DELETE_WOD":
+      return {
+        ...state,
+        wods: action.payload?.contestWod
+          ? action.payload?.contestWod?.map((wod) => {
+              return {
+                ...wod.wod,
+                ["conWodId"]: wod.id,
               };
             })
           : [],
@@ -87,6 +125,23 @@ const contestReducer = (state, action) => {
       return {
         ...state,
         categories: [],
+        loading: false,
+      };
+    case "ADD_ALL_WODS":
+      return {
+        ...state,
+        wods: action.payload.map((wod) => {
+          return {
+            ...wod.wod,
+            ["conWodId"]: wod.id,
+          };
+        }),
+        loading: false,
+      };
+    case "REMOVE_ALL_WODS":
+      return {
+        ...state,
+        wods: [],
         loading: false,
       };
     default:

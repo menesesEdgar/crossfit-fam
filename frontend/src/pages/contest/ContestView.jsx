@@ -10,6 +10,7 @@ import withPermission from "../../utils/withPermissions";
 const ContestCategories = lazy(() => import("./Details/ContestCategories"));
 const CategoryWods = lazy(() => import("./Details/CategoryWods"));
 const CategorieAthletes = lazy(() => import("./Details/CategorieAthletes"));
+const ContestWods = lazy(() => import("./Details/ContestWods"));
 
 const ContestView = () => {
   const [activeTab, setActiveTab] = useState(
@@ -19,6 +20,7 @@ const ContestView = () => {
   const isViewContestCategoriesPermission = useCheckPermissions("view_contest");
   const isViewCategorieWodsPermission = useCheckPermissions("view_contest");
   const isViewCategorieAthletesPermission = useCheckPermissions("view_contest");
+  const isViewContestWodsPermission = useCheckPermissions("view_contest");
 
   const tabContent = [
     {
@@ -30,13 +32,20 @@ const ContestView = () => {
     },
     {
       id: 1,
+      title: "WODs",
+      icon: <LiaDumbbellSolid size={24} />,
+      component: <ContestWods />,
+      permission: isViewContestWodsPermission,
+    },
+    {
+      id: 2,
       title: "WOD por categoría",
       icon: <BiSolidZap size={24} />,
       component: <CategoryWods />,
       permission: isViewCategorieWodsPermission,
     },
     {
-      id: 2,
+      id: 3,
       title: "Atletas",
       icon: <GiBiceps size={24} />,
       component: <CategorieAthletes />,
@@ -50,7 +59,7 @@ const ContestView = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="grid grid-cols-3 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto">
+      <div className="grid grid-cols-4 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto">
         {tabContent.map(
           (tab, index) =>
             tab.permission.hasPermission && (
