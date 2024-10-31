@@ -3,7 +3,50 @@ import { db } from "../lib/db.js";
 export const getContests = async (req, res) => {
   try {
     const contests = await db.contest.findMany();
-    res.json(contests);
+
+    const contestsWithDetails = await Promise.all(
+      contests.map(async (contest) => {
+        const categories = await db.contestCategory.findMany({
+          where: { contestId: contest.id },
+          include: {
+            category: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+            contestCategoryAthlete: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    role: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const categoriesWithAthletes = categories.map((cat) => ({
+          ...cat,
+          athletes: cat.contestCategoryAthlete
+            .filter((athleteEntry) => athleteEntry.user.role === "athlete")
+            .map((athleteEntry) => athleteEntry.user),
+        }));
+
+        return {
+          ...contest,
+          categories: categoriesWithAthletes,
+        };
+      })
+    );
+
+    res.json(contestsWithDetails);
   } catch (error) {
     console.log("error on getContests", error);
     res.status(500).json({ message: error.message });

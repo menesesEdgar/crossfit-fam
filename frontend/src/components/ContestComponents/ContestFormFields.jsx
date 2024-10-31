@@ -1,25 +1,31 @@
-import React from 'react';
-import { Field } from 'formik';
-import TextInput from '../Inputs/TextInput';
-import DateInput from "../Inputs/DateInput"
-import { BiCategory } from 'react-icons/bi';
-import { PiTrademarkRegisteredBold } from 'react-icons/pi';
+import React from "react";
+import { Field } from "formik";
+import TextInput from "../Inputs/TextInput";
+import DateInput from "../Inputs/DateInput";
+import { BiCategory } from "react-icons/bi";
+import { PiTrademarkRegisteredBold } from "react-icons/pi";
 import { FaLocationDot } from "react-icons/fa6";
-import { FaCalendar, FaFlagCheckered, FaUser  } from 'react-icons/fa';
-import SelectInput from '../Inputs/SelectInput';
-const statusOptions = [{
+import { FaCalendar, FaFlagCheckered, FaUser } from "react-icons/fa";
+import SelectInput from "../Inputs/SelectInput";
+const statusOptions = [
+  {
     id: "Abierta",
-    name: "Abierta"
-},
-{
+    name: "Abierta",
+  },
+  {
     id: "En curso",
-    name: "En curso"
-},
-{
+    name: "En curso",
+  },
+  {
     id: "Finalizada",
-    name: "Finalizada"
-}
-]
+    name: "Finalizada",
+  },
+  {
+    id: "Cancelada",
+    name: "Cancelada",
+  },
+];
+
 const ContestFormFields = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

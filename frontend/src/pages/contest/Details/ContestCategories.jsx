@@ -1,10 +1,5 @@
 import TableHeader from "../../../components/Table/TableHeader";
-import {
-  FaCheckSquare,
-  FaChevronRight,
-  FaSquare,
-  FaUserShield,
-} from "react-icons/fa";
+import { FaChevronRight, FaUserShield } from "react-icons/fa";
 import useCheckPermissions from "../../../hooks/useCheckPermissions";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
