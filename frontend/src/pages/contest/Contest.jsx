@@ -13,6 +13,8 @@ import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import { formatMxnDate } from "../../utils/formatDates";
 import { useNavigate } from "react-router-dom";
+import { FaEdit, FaEye, FaTrash, FaTrophy } from "react-icons/fa";
+import CardContest from "../../components/Card/CardContest";
 const Card = lazy(() => import("../../components/Card/Card"));
 const TableHeader = lazy(() => import("../../components/Table/TableHeader"));
 const TableActions = lazy(() => import("../../components/Table/TableActions"));
@@ -108,75 +110,72 @@ const Contest = () => {
     setRemoveContestId(contestId);
   };
 
+  const extractAthletesFromCategories = (categories) => {
+    return categories?.reduce((acc, category) => {
+      return acc + category?.athletes?.length;
+    }, 0);
+  };
+
+  const extractCategoryNames = (categories) => {
+    return categories?.map((category) => category?.category?.name);
+  };
+
   return (
-    <div className="flex min-h-[77dvh] h-full flex-col gap-3 bg-white shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
-      <TableHeader
-        icon={HiCubeTransparent}
-        title={"Competencias"}
-        actions={[
-          {
-            label: "Nuevo",
-            action: isCreatePermissions.hasPermission
-              ? () => setIsOpenModal(true)
-              : null,
-            color: "crossfit",
-            icon: IoMdAdd,
-            filled: true,
-          },
-        ]}
-      />
-      <TableActions handleSearchTerm={(e) => setSearch(e.target.value)} />
+    <div className="flex min-h-[77dvh] h-full max-h-[90dvh] overflow-hidden flex-col gap-4 bg-white shadow-md rounded-md dark:bg-gray-900 antialiased">
+      <div className="px-2 pt-2 md:px-4 md:pt-4">
+        <TableHeader
+          icon={FaTrophy}
+          title={"Competencias"}
+          actions={[
+            {
+              label: "Nuevo",
+              action: isCreatePermissions.hasPermission
+                ? () => setIsOpenModal(true)
+                : null,
+              color: "crossfit",
+              icon: IoMdAdd,
+              filled: true,
+            },
+          ]}
+        />
+        <TableActions handleSearchTerm={(e) => setSearch(e.target.value)} />
+      </div>
       {filteredContests && !loading ? (
         filteredContests?.length > 0 ? (
-          <div className="py-2 flex flex-col flex-wrap sm:grid sm:grid-cols-2 md:grid-cols-3 gap-3 ">
+          <div className="px-2 md:px-4 pb-4 h-full max-h-[78.2dvh] overflow-auto grid gap-4 md:gap-6 xl:gap-8 grid-cols-[repeat(auto-fill,_minmax(330px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(350px,_1fr))]">
             {filteredContests?.map((contest, index) => {
               const parseContest = {
-                name: {
-                  key: "Nombre",
-                  value: contest.name,
-                },
-                organizer: {
-                  key: "Organizador",
-                  value: contest.organizer,
-                },
-                startDate: {
-                  key: "Fecha de inicio",
-                  value: formatMxnDate(contest.startDate),
-                },
-                endDate: {
-                  key: "Fecha de cierre",
-                  value: formatMxnDate(contest.endDate),
-                },
-                location: {
-                  key: "Ubicación",
-                  value: contest.location,
-                },
-                status: {
-                  key: "Estatus",
-                  value: contest.status,
-                },
-                actions: {
-                  key: "Acciones",
-                  value: (
-                    <ActionButtons
-                      onEdit={
-                        isEditPermissions.hasPermission
-                          ? () => onEditContest(contest)
-                          : null
-                      }
-                      onRemove={
-                        isDeletePermissions.hasPermission
-                          ? () => onOpenDeleteModal(contest.id)
-                          : null
-                      }
-                      onShow={() => {
-                        navigate(`/contest/${contest.id}`);
-                      }}
-                    />
-                  ),
-                },
+                id: contest.id,
+                title: contest.name,
+                organizer: contest.organizer,
+                startDate: formatMxnDate(contest?.startDate || null),
+                endDate: formatMxnDate(contest?.endDate || null) || "Sin fecha",
+                status: contest.status,
+                location: contest.location,
+                quantityAthletes: contest?.categories
+                  ? extractAthletesFromCategories(contest?.categories)
+                  : 0,
+                categories: contest?.categories
+                  ? extractCategoryNames(contest.categories)
+                  : [],
               };
-              return <Card key={contest.id} data={parseContest} />;
+              return (
+                <CardContest
+                  key={contest.id}
+                  contest={parseContest}
+                  onDelete={
+                    isDeletePermissions.hasPermission
+                      ? () => onOpenDeleteModal(contest.id)
+                      : null
+                  }
+                  onEdit={
+                    isEditPermissions.hasPermission
+                      ? () => onEditContest(contest)
+                      : null
+                  }
+                  onView={() => navigate(`/contest/${contest.id}`)}
+                />
+              );
             })}
           </div>
         ) : (
