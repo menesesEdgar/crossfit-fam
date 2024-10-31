@@ -69,6 +69,17 @@ export const getContestById = async (req, res) => {
             },
           },
         },
+        contestWod: {
+          select: {
+            id: true,
+            wod: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+          },
+        }
       },
     });
 
@@ -154,7 +165,7 @@ export const deleteContest = async (req, res) => {
 };
 
 export const addCategory = async (req, res) => {
-  console.log("req ", req.params);
+
   try {
     const { id: contestId, categoryId } = req.params;
     const contest = await db.contestCategory.create({
@@ -270,6 +281,127 @@ export const removeAllCategoriesFromContest = async (req, res) => {
     res.json(contest);
   } catch (error) {
     console.log("error on removeAllCategoriesFromContest", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Wods for contest crud
+export const addWod = async (req, res) => {
+  try {
+    const { id: contestId, wodId } = req.params;
+    const contest = await db.contestWod.create({
+      data: {
+        contestId: parseInt(contestId),
+        wodId: parseInt(wodId),
+      },
+      include: {
+        wod: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
+    });
+    res.json(contest);
+  } catch (error) {
+    console.log("error on createContestWod", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const addAllWodsToContest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const wods = await db.wod.findMany({
+      where: { isDeleted: false },
+    });
+
+    const existingContestwods = await db.contestWod.findMany({
+      where: { contestId: parseInt(id) },
+      select: { wodId: true },
+    });
+
+    const existingWodIds = new Set(
+      existingContestwods.map(
+        (contestWod) => contestWod.wodId
+      )
+    );
+
+    const uniqueWods = wods
+      .filter((wod) => !existingWodIds.has(wod.id))
+      .map((wod) => ({
+        contestId: parseInt(id),
+        wodId: wod.id,
+      }));
+
+    const contest = await db.contestWod.createMany({
+      data: uniqueWods,
+    });
+
+    // get all categories for the contest
+    const contestWod = await db.contestWod.findMany({
+      where: { contestId: parseInt(id) },
+      include: {
+        wod: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
+    });
+
+    res.json({ message: "All wods added to contest", data: contestWod });
+  } catch (error) {
+    console.log("error on addAllWodsToContest", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const removeWod = async (req, res) => {
+  const { id, wodId } = req.params;
+  try {
+    const wod = db.contestWod.findUnique({
+      where: { id: parseInt(wodId) },
+    });
+
+    if (!wod) {
+      res.status(404).json({ message: "Contest wod not found" });
+      return;
+    }
+
+    await db.contestWod.delete({ where: { id: parseInt(wodId) } });
+
+    const contestWod = await db.contestWod.findMany({
+      where: { contestId: parseInt(id) },
+      include: {
+        wod: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
+    });
+    res.json({ message: "Contest wod deleted", contestWod });
+  } catch (error) {
+    console.log("error on deleteContestWod", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const removeAllWodsFromContest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const contest = await db.contestWod.deleteMany({
+      where: { contestId: parseInt(id) },
+    });
+
+    res.json(contest);
+  } catch (error) {
+    console.log("error on removeAllWodsFromContest", error);
     res.status(500).json({ message: error.message });
   }
 };

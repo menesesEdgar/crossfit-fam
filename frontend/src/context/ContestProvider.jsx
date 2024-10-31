@@ -5,6 +5,8 @@ import useContest from "../hooks/useContest";
 const ContestProvider = ({ children }) => {
   const [state, dispatch] = useReducer(contestReducer, {
     contest: {},
+    categories: [],
+    wods: []
   });
   const {
     fetchContest,
@@ -13,6 +15,10 @@ const ContestProvider = ({ children }) => {
     deleteWodOfCategory,
     addAllCategories,
     removeAllContestCategories,
+    addWod,
+    deleteWod,
+    addAllWods,
+    removeAllContestWods
   } = useContest(dispatch);
 
   return (
@@ -24,6 +30,10 @@ const ContestProvider = ({ children }) => {
         deleteCategory,
         removeAllContestCategories,
         addAllCategories,
+        addWod,
+        deleteWod,
+        addAllWods,
+        removeAllContestWods
       }}
     >
       {children}
