@@ -426,3 +426,34 @@ export const removeAllContestWods = async (id) => {
     throw error;
   }
 };
+
+// Wods por categoria
+export const addWodToCategory = async (data) => {
+  const { categoryId, wodId } = data;
+  try {
+    const response = await api.post(`/contests/category/${categoryId}/wod/${wodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const getWodsByCategory = async (categoryId) => {
+  try {
+    const response = await api.get(`/contests/category/wods/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const deleteWodOfCategory = async (data) => {
+  const { categoryWodId } = data;
+  try {
+    const response = await api.delete(`/contests/categoryWod/${categoryWodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

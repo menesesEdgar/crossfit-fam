@@ -8,7 +8,9 @@ import {
   addWod,
   deleteContestWod,
   addAllWods,
-  removeAllContestWods
+  removeAllContestWods,
+  getWodsByCategory,
+  addWodToCategory
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -26,6 +28,14 @@ const useContest = (dispatch) => {
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
       dispatch({ type: "FETCH_CONTEST", payload: data });
+    },
+    onSettled: () => setLoading(false),
+  });
+  const getWodsByCategoryId = useMutation({
+    mutationFn: getWodsByCategory,
+    onMutate: () => setLoading(true),
+    onSuccess: (data) => {
+      dispatch({ type: "FETCH_WODS_BY_CATEGORY", payload: data });
     },
     onSettled: () => setLoading(false),
   });
@@ -186,8 +196,28 @@ const useRemoveAllContestWods= useMutation({
     setLoading(false);
   },
 });
+const useAddWodToCategory= useMutation({
+  mutationFn: addWodToCategory,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "ADD_WOD_TO_CATEGORY", payload: data });
+    Notifies("success", "Wod agregado correctamente");
+  },
+  onError: (error) => {
+    console.log("error adding wod", error);
+    Notifies("error", error?.response?.data?.message);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("categoryWods");
+    setLoading(false);
+  },
+});
   return {
     fetchContest: fetchContest.mutate,
+    getWodsByCategoryId: getWodsByCategoryId.mutate,
     addCategory: (values) => {
       return useAddCategory.mutateAsync(values);
     },
@@ -196,6 +226,9 @@ const useRemoveAllContestWods= useMutation({
     },
     addWod: (values) => {
       return useAddWod.mutateAsync(values);
+    },
+    addWodToCategory: (values) => {
+      return useAddWodToCategory.mutateAsync(values);
     },
     deleteWod: (values) => {
       return useDeleteWod.mutateAsync(values);

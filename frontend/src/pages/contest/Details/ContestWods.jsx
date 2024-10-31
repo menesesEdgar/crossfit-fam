@@ -135,7 +135,7 @@ const ContestWods = () => {
                 Wods seleccionados
               </h3>
               <p className="text-sm text-neutral-500">
-                Wods seleccionadas para la competencia.
+                Wods seleccionados para la competencia.
               </p>
             </div>
             <div className="h-full max-h-[30dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">

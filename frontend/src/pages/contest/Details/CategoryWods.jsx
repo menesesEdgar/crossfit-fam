@@ -4,27 +4,62 @@ import useCheckPermissions from "../../../hooks/useCheckPermissions";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { LiaDumbbellSolid } from "react-icons/lia";
-import { useParams } from "react-router-dom";
 import { useContestContext } from "../../../context/ContestContext";
-import { useCatalogContext } from "../../../context/CatalogContext";
-import { FaDeleteLeft } from "react-icons/fa6";
 import { TextInput } from "flowbite-react";
 const CategoryWods = () => {
   // ContestId
-  const { id } = useParams();
   const {
     categories: contestCategories,
+    wods: contestWods,
+    categoryWods,
     addWodToCategory,
     deleteWodOfCategory,
+    getWodsByCategoryId
   } = useContestContext();
-  const { wods } = useCatalogContext();
   const [isDisabled, setIsDisabled] = useState(false);
-
+  console.log("categoryWods ", categoryWods)
+  const [activeCategory, setActiveCategory] = useState(
+    contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null,
+  );
+  const updateWodOfCategory = async (wod, isChecked) => {
+    console.log("wod ", wod)
+    console.log("activeCategory ", activeCategory)
+    setIsDisabled(true);
+    if (isChecked) {
+      await addWodToCategory({
+        categoryId: activeCategory,
+        wodId: wod.conWodId,
+      });
+    } else {
+      await deleteWodOfCategory({
+        categoryId: activeCategory,
+        wodId: wod.conWodId,
+      });
+    }
+    setTimeout(() => {
+      setIsDisabled(false);
+    }, 1000);
+  };
+  const changeActiveCategory = (tab) => {
+    setActiveCategory(tab?.conCatId);
+    getWodsByCategory(tab?.conCatId);
+  };
+  useEffect(() => {
+    if (contestCategories.length > 0 && activeCategory) {
+      getWodsByCategoryId(activeCategory);
+    }
+  }, [activeCategory]);
+  const getWodsByCategory = async (categoryId) => {
+    await getWodsByCategoryId(categoryId);
+  };
+  console.log("contestCategories ", contestCategories)
+  console.log("contestWods ", contestWods)
+  // Contest Wods with the conWodId need to be found with the contestWodId in the other array
   const isEditContestPermission = useCheckPermissions("edit_contest");
   return (
     <>
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
-        <TableHeader title="Categorías registradas" icon={FaUserShield} />
+        <TableHeader title="Wods por categoría" icon={FaUserShield} />
         <div className="h-full grid grid-cols-2 gap-8 p-2 pt-4 pb-0">
           <div className="col-span-1 lg:col-span-1">
             <div className="mb-4">
@@ -40,7 +75,7 @@ const CategoryWods = () => {
                 .map((category) => (
                   <div
                     key={category.id}
-                    onClick={() => {}}
+                    onClick={() => changeActiveCategory(category)}
                     className={classNames(
                       "group p-4   border-b border-neutral-100 flex justify-between items-center text-neutral-700 hover:bg-neutral-100 cursor-pointer"
                     )}
@@ -74,9 +109,9 @@ const CategoryWods = () => {
               </div>
               <div className="space-y-6">
                 <div className="grid gap-2 grid-cols-1">
-                  {wods &&
-                    wods?.length > 0 &&
-                    wods.map((wod) => (
+                  {contestWods &&
+                    contestWods?.length > 0 &&
+                    contestWods.map((wod) => (
                       <label
                         key={wod.id || wod.name}
                         className="flex items-center gap-2 hover:bg-neutral-100 group-hover:bg-neutral-100 p-2 rounded-md cursor-pointer"
@@ -91,14 +126,14 @@ const CategoryWods = () => {
                               isDisabled ||
                               !isEditContestPermission.hasPermission
                             }
-                            // checked={
-                            //   !!rolePermissions?.find(
-                            //     (p) => p?.permissionId === permission?.id,
-                            //   )
-                            // }
-                            // onChange={(e) =>
-                            //   updateRolePermission(permission, e.target.checked)
-                            // }
+                            checked={
+                              !!categoryWods?.find(
+                                (c) => c?.contestWodId === wod?.conWodId,
+                              )
+                            }
+                            onChange={(e) =>
+                              updateWodOfCategory(wod, e.target.checked)
+                            }
                           />
                         ) : (
                           <TextInput

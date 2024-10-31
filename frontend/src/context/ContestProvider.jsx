@@ -10,8 +10,10 @@ const ContestProvider = ({ children }) => {
   });
   const {
     fetchContest,
+    getWodsByCategoryId,
     addCategory,
     deleteCategory,
+    addWodToCategory,
     deleteWodOfCategory,
     addAllCategories,
     removeAllContestCategories,
@@ -26,6 +28,7 @@ const ContestProvider = ({ children }) => {
       value={{
         ...state,
         fetchContest,
+        getWodsByCategoryId,
         addCategory,
         deleteCategory,
         removeAllContestCategories,
@@ -33,7 +36,8 @@ const ContestProvider = ({ children }) => {
         addWod,
         deleteWod,
         addAllWods,
-        removeAllContestWods
+        removeAllContestWods,
+        addWodToCategory
       }}
     >
       {children}

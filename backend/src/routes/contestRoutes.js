@@ -13,7 +13,10 @@ import {
   addWod,
   removeWod,
   addAllWodsToContest,
-  removeAllWodsFromContest
+  removeAllWodsFromContest,
+  addWodToCategory,
+  removeWodToCategory,
+  getWodsByCategory
 } from "../controllers/contestController.js";
 
 const router = express.Router();
@@ -44,5 +47,15 @@ router
 router
   .route("/:id/removeAllWods")
   .put(protect, removeAllWodsFromContest);
+
+  router
+  .route("/category/:categoryId/wod/:wodId")
+  .post(protect, addWodToCategory)
+  router
+  .route("/category/wods/:categoryId")
+  .get(getWodsByCategory)
+  router
+  .route("/categoryWod/:id")
+  .delete(protect, removeWodToCategory);
 
 export default router;

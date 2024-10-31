@@ -1,5 +1,6 @@
 const contestReducer = (state, action) => {
   switch (action.type) {
+    
     case "FETCH_CONTEST":
       return {
         ...state,
@@ -30,6 +31,12 @@ const contestReducer = (state, action) => {
             };
           }),
         },
+        loading: false,
+      };
+    case 'FETCH_WODS_BY_CATEGORY':
+      return {
+        ...state,
+        categoryWods: action.payload,
         loading: false,
       };
     case "ADD_CATEGORY":
@@ -84,20 +91,15 @@ const contestReducer = (state, action) => {
           : [],
         loading: false,
       };
-    case "ADD_WOD_CATEGORY":
+    case "ADD_WOD_TO_CATEGORY":
+      console.log("action ", action.payload)
       return {
         ...state,
-        categoryWod: action.payload,
-        categoryWods: [
-          ...state.categories,
-          {
-            ...action.payload.category,
-            ["conCatId"]: action.payload.id,
-          },
+        categoryWods: [...state.categoryWods, action.payload
         ],
         loading: false,
       };
-    case "DELETE_WOD_CATEGORY":
+    case "DELETE_WOD_OF_CATEGORY":
       return {
         ...state,
         categoryWods: action.payload?.contestCat

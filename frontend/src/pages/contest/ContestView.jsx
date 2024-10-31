@@ -1,6 +1,6 @@
 import React, { useEffect, useState, lazy } from "react";
 import { LiaDumbbellSolid } from "react-icons/lia";
-import { BiSolidZap } from "react-icons/bi";
+import { BiSolidZap, BiCategory } from "react-icons/bi";
 import { GiBiceps } from "react-icons/gi";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
@@ -26,7 +26,7 @@ const ContestView = () => {
     {
       id: 0,
       title: "Categorías",
-      icon: <LiaDumbbellSolid size={24} />,
+      icon: <BiCategory size={24} />,
       component: <ContestCategories />,
       permission: isViewContestCategoriesPermission,
     },

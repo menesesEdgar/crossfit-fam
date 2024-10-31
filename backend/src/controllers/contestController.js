@@ -362,3 +362,92 @@ export const removeAllWodsFromContest = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Wods to category
+export const addWodToCategory = async (req, res) => {
+  try {
+    const { categoryId, wodId } = req.params;
+    const contest = await db.conCateConWod.create({
+      data: {
+        contestCategoryId: parseInt(categoryId),
+        contestWodId: parseInt(wodId),
+      },
+    });
+    res.json(contest);
+  } catch (error) {
+    console.log("error on createContestWod", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+export const removeWodToCategory = async (req, res) => {
+  const { id: categoryWodId } = req.params; // categoryWodId
+  try {
+    const categoryWod = db.conCateConWod.findUnique({
+      where: { id: parseInt(categoryWodId) },
+    });
+
+    if (!categoryWod) {
+      res.status(404).json({ message: "Category wod not found" });
+      return;
+    }
+
+    await db.conCateConWod.delete({ where: { id: parseInt(categoryWodId) } });
+
+    const categoryWods = await db.conCateConWod.findMany({
+      where: { categoryId: parseInt(id) },
+      include: {
+        wod: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
+    });
+    res.json({ message: "Category wod deleted", categoryWods });
+  } catch (error) {
+    console.log("error on deleteCategoryWod", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getWodsByCategory = async (req, res) => {
+  const { categoryId } = req.params
+  try {
+    const contest = await db.conCateConWod.findMany({
+      where: { contestCategoryId: parseInt(categoryId) },
+      // include: {
+      //   contestCategory: {
+      //     select: {
+      //       id: true,
+      //       category: {
+      //         select: {
+      //           name: true,
+      //           id: true,
+      //         },
+      //       },
+      //     },
+      //   },
+      //   contestWod: {
+      //     select: {
+      //       id: true,
+      //       wod: {
+      //         select: {
+      //           name: true,
+      //           id: true,
+      //         },
+      //       },
+      //     },
+      //   }
+      // },
+    });
+    if (!contest) {
+      res.status(404).json({ message: "Contest not found" });
+      return;
+    }
+
+    res.json(contest);
+  } catch (error) {
+    console.log("error on getContestById", error);
+    res.status(500).json({ message: error.message });
+  }
+};
