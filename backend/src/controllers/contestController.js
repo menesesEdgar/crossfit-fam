@@ -422,29 +422,28 @@ export const addWodToCategory = async (req, res) => {
   }
 };
 export const removeWodToCategory = async (req, res) => {
-  const { id: categoryWodId } = req.params; // categoryWodId
+  const { categoryId, wodId: categoryWodId } = req.params; // categoryWodId
   try {
     const categoryWod = db.conCateConWod.findUnique({
-      where: { id: parseInt(categoryWodId) },
+      where: { id:parseInt(categoryWodId)},
     });
 
     if (!categoryWod) {
       res.status(404).json({ message: "Category wod not found" });
       return;
     }
-
-    await db.conCateConWod.delete({ where: { id: parseInt(categoryWodId) } });
+    await db.conCateConWod.delete({ where: { id: parseInt(categoryWodId)} });
 
     const categoryWods = await db.conCateConWod.findMany({
-      where: { categoryId: parseInt(id) },
-      include: {
-        wod: {
-          select: {
-            name: true,
-            id: true,
-          },
-        },
-      },
+      where: { contestCategoryId: parseInt(categoryId) },
+      // include: {
+      //   wod: {
+      //     select: {
+      //       name: true,
+      //       id: true,
+      //     },
+      //   },
+      // },
     });
     res.json({ message: "Category wod deleted", categoryWods });
   } catch (error) {

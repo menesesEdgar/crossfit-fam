@@ -448,9 +448,9 @@ export const getWodsByCategory = async (categoryId) => {
   }
 };
 export const deleteWodOfCategory = async (data) => {
-  const { categoryWodId } = data;
+  const { categoryId,categoryWodId } = data;
   try {
-    const response = await api.delete(`/contests/categoryWod/${categoryWodId}`);
+    const response = await api.delete(`/contests/category/${categoryId}/wod/${categoryWodId}`);
     return response.data;
   } catch (error) {
     console.error(error);

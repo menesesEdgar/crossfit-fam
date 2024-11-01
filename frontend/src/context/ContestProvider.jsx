@@ -14,7 +14,7 @@ const ContestProvider = ({ children }) => {
     addCategory,
     deleteCategory,
     addWodToCategory,
-    deleteWodOfCategory,
+    removeWodOfCategory,
     addAllCategories,
     removeAllContestCategories,
     addWod,
@@ -37,7 +37,8 @@ const ContestProvider = ({ children }) => {
         deleteWod,
         addAllWods,
         removeAllContestWods,
-        addWodToCategory
+        addWodToCategory,
+        removeWodOfCategory
       }}
     >
       {children}

@@ -92,24 +92,16 @@ const contestReducer = (state, action) => {
         loading: false,
       };
     case "ADD_WOD_TO_CATEGORY":
-      console.log("action ", action.payload)
       return {
         ...state,
-        categoryWods: [...state.categoryWods, action.payload
-        ],
+        categoryWods: [...state.categoryWods, action.payload],
         loading: false,
       };
     case "DELETE_WOD_OF_CATEGORY":
+      console.log("action ", action.payload)
       return {
         ...state,
-        categoryWods: action.payload?.contestCat
-          ? action.payload?.contestCat?.map((category) => {
-              return {
-                ...category.category,
-                ["conCatId"]: category.id,
-              };
-            })
-          : [],
+        categoryWods: action.payload.categoryWods,
         loading: false,
       };
     case "ADD_ALL_CATEGORIES":

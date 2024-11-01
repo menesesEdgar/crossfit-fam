@@ -51,11 +51,9 @@ router
   router
   .route("/category/:categoryId/wod/:wodId")
   .post(protect, addWodToCategory)
+  .delete(protect, removeWodToCategory);
   router
   .route("/category/wods/:categoryId")
-  .get(getWodsByCategory)
-  router
-  .route("/categoryWod/:id")
-  .delete(protect, removeWodToCategory);
+  .get(getWodsByCategory) 
 
 export default router;

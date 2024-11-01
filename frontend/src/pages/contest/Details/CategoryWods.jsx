@@ -13,7 +13,7 @@ const CategoryWods = () => {
     wods: contestWods,
     categoryWods,
     addWodToCategory,
-    deleteWodOfCategory,
+    removeWodOfCategory,
     getWodsByCategoryId
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
@@ -24,6 +24,7 @@ const CategoryWods = () => {
   const updateWodOfCategory = async (wod, isChecked) => {
     console.log("wod ", wod)
     console.log("activeCategory ", activeCategory)
+    
     setIsDisabled(true);
     if (isChecked) {
       await addWodToCategory({
@@ -31,9 +32,10 @@ const CategoryWods = () => {
         wodId: wod.conWodId,
       });
     } else {
-      await deleteWodOfCategory({
+      const id = categoryWods?.find((category) => category.contestWodId === wod.conWodId).id
+      await removeWodOfCategory({
         categoryId: activeCategory,
-        wodId: wod.conWodId,
+        categoryWodId: id,
       });
     }
     setTimeout(() => {

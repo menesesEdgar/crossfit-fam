@@ -10,7 +10,8 @@ import {
   addAllWods,
   removeAllContestWods,
   getWodsByCategory,
-  addWodToCategory
+  addWodToCategory,
+  deleteWodOfCategory
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -215,6 +216,24 @@ const useAddWodToCategory= useMutation({
     setLoading(false);
   },
 });
+const useDeleteWodOfCategory = useMutation({
+  mutationFn: deleteWodOfCategory,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "DELETE_WOD_OF_CATEGORY", payload: data });
+    Notifies("success", "Wod eliminado correctamente");
+  },
+  onError: (error) => {
+    console.log("error on delete wod", error);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("contestsCategoryWods");
+    setLoading(false);
+  },
+});
   return {
     fetchContest: fetchContest.mutate,
     getWodsByCategoryId: getWodsByCategoryId.mutate,
@@ -229,6 +248,9 @@ const useAddWodToCategory= useMutation({
     },
     addWodToCategory: (values) => {
       return useAddWodToCategory.mutateAsync(values);
+    },
+    removeWodOfCategory: (values) => {
+      return useDeleteWodOfCategory.mutateAsync(values);
     },
     deleteWod: (values) => {
       return useDeleteWod.mutateAsync(values);
