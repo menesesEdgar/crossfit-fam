@@ -82,7 +82,7 @@ const ContestWods = ({ setActiveTab }) => {
         <div className="flex-1 h-full grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 p-2 pb-0">
           <div className="col-span-1 h-full min-h-[25dvh] md:border-r-neutral-200 md:border-r md:pr-4">
             <div className="w-full flex justify-between flex-col md:flex-row gap-2">
-              <div className="md:mb-4">
+              <div className="mb-2 md:mb-4">
                 <h3 className="text-sm lg:text-lg font-semibold">
                   Todos los wods
                 </h3>
@@ -103,7 +103,7 @@ const ContestWods = ({ setActiveTab }) => {
                 />
               </div>
             </div>
-            <div className="h-full max-h-[27dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
+            <div className="h-full max-h-[28dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
               {wods &&
                 wods?.length > 0 &&
                 wods
@@ -148,7 +148,7 @@ const ContestWods = ({ setActiveTab }) => {
             </div>
           </div>
           <div className="col-span-1 h-full min-h-[28dvh]">
-            <div className="md:mb-4">
+            <div className="mb-2 md:mb-4">
               <h3 className="text-sm lg:text-lg font-semibold">
                 Wods seleccionados
               </h3>
