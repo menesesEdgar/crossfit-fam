@@ -139,7 +139,7 @@ const Contest = () => {
       </div>
       {filteredContests && !loading ? (
         filteredContests?.length > 0 ? (
-          <div className="px-2 md:px-4 pb-4 h-full max-h-[77.4dvh] overflow-auto grid justify-center items-start gap-4 md:gap-6 xl:gap-8 grid-cols-[repeat(auto-fill,_minmax(330px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(350px,_1fr))]">
+          <div className="px-2 md:px-4 pb-4 h-full max-h-[77.4dvh] overflow-auto grid gap-4 md:gap-6 xl:gap-8 grid-cols-[repeat(auto-fill,_minmax(330px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(350px,_1fr))]">
             {filteredContests?.map((contest, index) => {
               const parseContest = {
                 id: contest.id,
