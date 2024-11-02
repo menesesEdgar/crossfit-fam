@@ -84,7 +84,7 @@ const CategoryWods = ({ setActiveTab }) => {
         />
         <div className="h-full grid grid-cols-2 gap-8 p-2 pt-4 pb-0">
           <div className="col-span-1 lg:col-span-1">
-            <div className="mb-4">
+            <div className="md:mb-4">
               <h3 className="text-sm lg:text-lg font-semibold">Categorías</h3>
               <p className="text-sm text-neutral-500">
                 Estás son las categorías a usar en esta competencía
@@ -123,7 +123,7 @@ const CategoryWods = ({ setActiveTab }) => {
           </div>
           <div className="col-span-1 lg:col-span-1 h-full lg:max-h-[76dvh] overflow-hidden">
             <div className="mb-4 flex flex-col justify-between">
-              <div>
+              <div className="md:mb-4">
                 <h3 className="text-sm lg:text-lg font-semibold">Wods</h3>
                 <p className="text-sm text-neutral-500">
                   Seleccioné los wods a utilizar en la categoría seleccionada
