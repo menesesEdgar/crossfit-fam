@@ -118,8 +118,8 @@ const Contest = () => {
   };
 
   return (
-    <div className="flex min-h-[77dvh] h-full max-h-[90dvh] overflow-hidden flex-col gap-2 md:gap-4 bg-white shadow-md rounded-md dark:bg-gray-900 antialiased">
-      <div className="px-2 pt-2 md:px-4 md:pt-4">
+    <div className="flex min-h-[77dvh] h-full max-h-[92dvh] overflow-hidden flex-col gap-2 md:gap-4 bg-white shadow-md rounded-md dark:bg-gray-900 antialiased">
+      <div className="px-2 md:px-4 pt-4">
         <TableHeader
           icon={FaTrophy}
           title={"Competencias"}

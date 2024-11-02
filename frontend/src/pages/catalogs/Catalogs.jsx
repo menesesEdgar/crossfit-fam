@@ -48,7 +48,7 @@ const Catalogs = () => {
   }, [activeTab]);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full pt-4 h-full flex flex-col">
       <div className="grid h-fit grid-cols-3 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto">
         {tabContent.map(
           (tab, index) =>
@@ -69,7 +69,7 @@ const Catalogs = () => {
         )}
       </div>
 
-      <div className="relative bg-white rounded-md h-full max-h-[80dvh] md:max-h-[82dvh] shadow-md overflow-hidden mt-4">
+      <div className="relative bg-white rounded-md h-full max-h-[82dvh] md:max-h-[82dvh] shadow-md overflow-hidden mt-4">
         <div className="h-full overflow-auto">
           {tabContent.map((tab, index) => (
             <div
