@@ -10,7 +10,7 @@ import { useCatalogContext } from "../../../context/CatalogContext";
 import { MdRemoveCircleOutline } from "react-icons/md";
 import { TextInput } from "flowbite-react";
 
-const ContestCategories = () => {
+const ContestCategories = ({ setActiveTab }) => {
   // ContestId
   const { id } = useParams();
   const {
@@ -52,14 +52,33 @@ const ContestCategories = () => {
     }
   };
 
+  // function to validate if at least one category is selected to enable the next button
+  const isNextButtonDisabled = () => {
+    return contestCategoriesFiltered.length === 0;
+  };
+
   return (
     <>
       <section className="flex h-full max-h-[76.5dvh] md:max-h-[82dvh] overflow-hidden flex-col gap-3 p-3 antialiased">
-        <TableHeader title="Categorías registradas" icon={FaUserShield} />
+        <TableHeader
+          title="Categorías registradas"
+          icon={FaUserShield}
+          actions={[
+            {
+              label: "Siguiente",
+              disabled: isNextButtonDisabled(),
+              action: () => setActiveTab(),
+              icon: FaChevronRight,
+              color: "crossfit",
+              filled: isNextButtonDisabled() ? false : true,
+              iconRight: true,
+            },
+          ]}
+        />
         <div className="flex-1 h-full grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 p-2 pb-0">
           <div className="col-span-1 h-full min-h-[25dvh] md:border-r-neutral-200 md:border-r md:pr-4">
             <div className="w-full flex justify-between flex-col md:flex-row gap-2">
-              <div className="">
+              <div className="mb-2 md:mb-4">
                 <h3 className="text-sm lg:text-lg font-semibold">
                   Todas las categorías
                 </h3>

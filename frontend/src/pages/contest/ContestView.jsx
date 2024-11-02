@@ -22,26 +22,30 @@ const ContestView = () => {
   const isViewCategorieAthletesPermission = useCheckPermissions("view_contest");
   const isViewContestWodsPermission = useCheckPermissions("view_contest");
 
+  const setNextTab = () => {
+    setActiveTab(activeTab === 3 ? 0 : activeTab + 1);
+  };
+
   const tabContent = [
     {
       id: 0,
       title: "Categorías",
       icon: <BiCategory size={24} />,
-      component: <ContestCategories />,
+      component: <ContestCategories setActiveTab={setNextTab} />,
       permission: isViewContestCategoriesPermission,
     },
     {
       id: 1,
       title: "WODs",
       icon: <LiaDumbbellSolid size={24} />,
-      component: <ContestWods />,
+      component: <ContestWods setActiveTab={setNextTab} />,
       permission: isViewContestWodsPermission,
     },
     {
       id: 2,
       title: "WOD por categoría",
       icon: <BiSolidZap size={24} />,
-      component: <CategoryWods />,
+      component: <CategoryWods setActiveTab={setNextTab} />,
       permission: isViewCategorieWodsPermission,
     },
     {

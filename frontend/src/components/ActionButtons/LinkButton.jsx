@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { Button } from 'flowbite-react';
-import { getButtonClassNames } from '../../utils/getButtonClassNames';
+import { Link } from "react-router-dom";
+import { Button } from "flowbite-react";
+import { getButtonClassNames } from "../../utils/getButtonClassNames";
 
 const LinkButton = ({
   route,
@@ -11,18 +11,32 @@ const LinkButton = ({
   outline = false,
   disabled = false,
   className,
+  iconRight,
 }) => {
   return (
     <Link
       className={getButtonClassNames(color, filled, disabled, className)}
       to={!disabled ? route : null}
     >
-      {Icon && (
-        <i>
-          <Icon size={18} />
-        </i>
+      {iconRight ? (
+        <>
+          <span className={`${label?.length > 0 && "mr-2"}`}>{label}</span>
+          {Icon && (
+            <i>
+              <Icon size={18} />
+            </i>
+          )}
+        </>
+      ) : (
+        <>
+          {Icon && (
+            <i>
+              <Icon size={18} />
+            </i>
+          )}
+          <span className={`${label?.length > 0 && "ml-2"}`}>{label}</span>
+        </>
       )}
-      <span className={`${label?.length > 0 && 'ml-2'}`}>{label}</span>
     </Link>
   );
 };

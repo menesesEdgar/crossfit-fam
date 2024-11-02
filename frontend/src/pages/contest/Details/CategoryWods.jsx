@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { LiaDumbbellSolid } from "react-icons/lia";
 import { useContestContext } from "../../../context/ContestContext";
 import { TextInput } from "flowbite-react";
-const CategoryWods = () => {
+const CategoryWods = ({ setActiveTab }) => {
   // ContestId
   const {
     categories: contestCategories,
@@ -14,17 +14,17 @@ const CategoryWods = () => {
     categoryWods,
     addWodToCategory,
     removeWodOfCategory,
-    getWodsByCategoryId
+    getWodsByCategoryId,
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
-  console.log("categoryWods ", categoryWods)
+  // console.log("categoryWods ", categoryWods);
   const [activeCategory, setActiveCategory] = useState(
-    contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null,
+    contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null
   );
   const updateWodOfCategory = async (wod, isChecked) => {
-    console.log("wod ", wod)
-    console.log("activeCategory ", activeCategory)
-    
+    // console.log("wod ", wod);
+    // console.log("activeCategory ", activeCategory);
+
     setIsDisabled(true);
     if (isChecked) {
       await addWodToCategory({
@@ -32,7 +32,9 @@ const CategoryWods = () => {
         wodId: wod.conWodId,
       });
     } else {
-      const id = categoryWods?.find((category) => category.contestWodId === wod.conWodId).id
+      const id = categoryWods?.find(
+        (category) => category.contestWodId === wod.conWodId
+      ).id;
       await removeWodOfCategory({
         categoryId: activeCategory,
         categoryWodId: id,
@@ -54,14 +56,32 @@ const CategoryWods = () => {
   const getWodsByCategory = async (categoryId) => {
     await getWodsByCategoryId(categoryId);
   };
-  console.log("contestCategories ", contestCategories)
-  console.log("contestWods ", contestWods)
+  // console.log("contestCategories ", contestCategories);
+  // console.log("contestWods ", contestWods);
   // Contest Wods with the conWodId need to be found with the contestWodId in the other array
   const isEditContestPermission = useCheckPermissions("edit_contest");
+
+  const isNextButtonDisabled = () => {
+    return categoryWods?.length === 0;
+  };
+
   return (
     <>
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
-        <TableHeader title="Wods por categoría" icon={FaUserShield} />
+        <TableHeader
+          title="Wods por categoría"
+          icon={FaUserShield}
+          actions={[
+            {
+              label: "Siguiente",
+              disabled: isNextButtonDisabled(),
+              action: () => setActiveTab(),
+              icon: FaChevronRight,
+              color: "indigo",
+              iconRight: true,
+            },
+          ]}
+        />
         <div className="h-full grid grid-cols-2 gap-8 p-2 pt-4 pb-0">
           <div className="col-span-1 lg:col-span-1">
             <div className="mb-4">
@@ -130,7 +150,7 @@ const CategoryWods = () => {
                             }
                             checked={
                               !!categoryWods?.find(
-                                (c) => c?.contestWodId === wod?.conWodId,
+                                (c) => c?.contestWodId === wod?.conWodId
                               )
                             }
                             onChange={(e) =>
