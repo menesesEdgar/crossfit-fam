@@ -69,7 +69,7 @@ const Catalogs = () => {
         )}
       </div>
 
-      <div className="relative bg-white rounded-md h-full max-h-[82dvh] md:max-h-[82dvh] shadow-md overflow-hidden mt-4">
+      <div className="relative bg-white rounded-md h-full max-h-[80dvh] md:max-h-[82dvh] shadow-md overflow-hidden mt-4">
         <div className="h-full overflow-auto">
           {tabContent.map((tab, index) => (
             <div
