@@ -13,7 +13,7 @@ const CardContest = ({ contest, onView, onDelete, onEdit }) => {
   return (
     <article
       className={classNames(
-        "flex rounded-lg rounded-l-xl shadow-sm h-full hover:shadow-lg transition ease-in-out duration-200",
+        "flex rounded-lg rounded-l-xl shadow-sm h-fit hover:shadow-lg transition ease-in-out duration-200",
         { "bg-crossfit-primary": contest?.status === "Abierta" },
         { "bg-crossfit-info/70": contest?.status === "En curso" },
         { " bg-crossfit-success": contest?.status === "Finalizada" },
@@ -21,7 +21,7 @@ const CardContest = ({ contest, onView, onDelete, onEdit }) => {
       )}
     >
       <div className="w-[98%] flex border border-neutral-300 bg-neutral-50  flex-col rounded-l-lg justify-between">
-        <div className="flex rounded-tl-md flex-col gap-3 px-6 pt-4 relative">
+        <div className="flex rounded-tl-md flex-col gap-3 px-6 pt-4 pb-2 relative">
           <div className="absolute top-4 right-3">
             <span
               className={`px-3 py-1 font-semibold rounded-full ${
@@ -104,7 +104,7 @@ const CardContest = ({ contest, onView, onDelete, onEdit }) => {
             )}
           </div>
         </div>
-        <div className=" w-full rounded-b-lg bg-white flex gap-2 p-4">
+        <div className="w-full rounded-b-lg bg-white flex gap-2 p-4">
           <div className="bg-white">
             <ActionButtons
               extraActions={[
