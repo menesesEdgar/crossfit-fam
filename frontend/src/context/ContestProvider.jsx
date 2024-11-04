@@ -20,7 +20,9 @@ const ContestProvider = ({ children }) => {
     addWod,
     deleteWod,
     addAllWods,
-    removeAllContestWods
+    removeAllContestWods,
+    removeAllCategoryWods,
+    addAllWodsToCategory
   } = useContest(dispatch);
 
   return (
@@ -38,7 +40,9 @@ const ContestProvider = ({ children }) => {
         addAllWods,
         removeAllContestWods,
         addWodToCategory,
-        removeWodOfCategory
+        removeWodOfCategory,
+        removeAllCategoryWods,
+        addAllWodsToCategory
       }}
     >
       {children}

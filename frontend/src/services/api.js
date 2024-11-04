@@ -457,3 +457,23 @@ export const deleteWodOfCategory = async (data) => {
     throw error;
   }
 };
+
+export const addAllWodsToCategory = async (id) => {
+  try {
+    const response = await api.put(`/contests/category/${id}/addAllWods`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const removeAllCategoryWods = async (id) => {
+  try {
+    const response = await api.put(`/contests/category/${id}/removeAllWods`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

@@ -15,12 +15,21 @@ const CategoryWods = ({ setActiveTab }) => {
     addWodToCategory,
     removeWodOfCategory,
     getWodsByCategoryId,
+    removeAllCategoryWods,
+    addAllWodsToCategory
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
+
   // console.log("categoryWods ", categoryWods);
   const [activeCategory, setActiveCategory] = useState(
     contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null
   );
+  useEffect(() => {
+    if (contestCategories?.length > 0) {
+      setActiveCategory(contestCategories[0]?.conCatId)
+    }
+  }, [contestCategories])
   const updateWodOfCategory = async (wod, isChecked) => {
     // console.log("wod ", wod);
     // console.log("activeCategory ", activeCategory);
@@ -64,7 +73,14 @@ const CategoryWods = ({ setActiveTab }) => {
   const isNextButtonDisabled = () => {
     return categoryWods?.length === 0;
   };
-
+  const handleSelectAll = async () => {
+    // Add or remove all Wods to the selected category
+    if (selectAll) {
+      await removeAllCategoryWods(activeCategory);
+    } else {
+      await addAllWodsToCategory(activeCategory);
+    }
+  };
   return (
     <>
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
@@ -123,11 +139,25 @@ const CategoryWods = ({ setActiveTab }) => {
           </div>
           <div className="col-span-1 lg:col-span-1 h-full lg:max-h-[76dvh] overflow-hidden">
             <div className="mb-4 flex flex-col justify-between">
-              <div className="md:mb-4">
-                <h3 className="text-sm lg:text-lg font-semibold">Wods</h3>
-                <p className="text-sm text-neutral-500">
-                  Seleccioné los wods a utilizar en la categoría seleccionada
-                </p>
+              <div className="w-full flex justify-between flex-col md:flex-row gap-2">
+                <div className="mb-2 md:mb-4">
+                  <h3 className="text-sm lg:text-lg font-semibold">Wods</h3>
+                  <p className="text-sm text-neutral-500">
+                    Seleccioné los wods a utilizar en la categoría seleccionada
+                  </p>
+                </div>
+                <div className="hidden md:flex gap-2 items-center text-sm pr-1">
+                {selectAll ? "Deseleccionar todas" : "Seleccionar todas"}
+                <TextInput
+                  type="checkbox"
+                  label="Seleccionar todas"
+                  checked={selectAll}
+                  onChange={() => {
+                    setSelectAll(!selectAll);
+                    handleSelectAll();
+                  }}
+                />
+              </div>
               </div>
               <div className="space-y-6">
                 <div className="grid gap-2 grid-cols-1">

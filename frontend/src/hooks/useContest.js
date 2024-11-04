@@ -11,7 +11,9 @@ import {
   removeAllContestWods,
   getWodsByCategory,
   addWodToCategory,
-  deleteWodOfCategory
+  deleteWodOfCategory,
+  addAllWodsToCategory,
+  removeAllCategoryWods
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -197,6 +199,44 @@ const useRemoveAllContestWods= useMutation({
     setLoading(false);
   },
 });
+const useRemoveAllCategoryWods= useMutation({
+  mutationFn: removeAllCategoryWods,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "REMOVE_ALL_WODS_OF_CATEGORY", payload: data });
+    Notifies("success", "Wods eliminados correctamente");
+  },
+  onError: (error) => {
+    console.log("error removing all wods", error);
+    Notifies("error", error?.response?.data?.message);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("contestsCategoryWods");
+    setLoading(false);
+  },
+});
+const useAddAllWodsToCategory = useMutation({
+  mutationFn: addAllWodsToCategory,
+  onMutate: () => {
+    setLoading(true);
+  },
+  onSuccess: (data) => {
+    dispatch({ type: "ADD_ALL_WODS_TO_CATEGORY", payload: data?.data });
+    Notifies("success", "Wods agregados correctamente");
+  },
+  onError: (error) => {
+    console.log("error adding all wods", error);
+    Notifies("error", error?.response?.data?.message);
+    setLoading(false);
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries("contestsCategoryWods");
+    setLoading(false);
+  },
+});
 const useAddWodToCategory= useMutation({
   mutationFn: addWodToCategory,
   onMutate: () => {
@@ -267,6 +307,12 @@ const useDeleteWodOfCategory = useMutation({
     removeAllContestWods: (values) => {
       return useRemoveAllContestWods.mutateAsync(values);
     },
+    removeAllCategoryWods:(values) => {
+      return useRemoveAllCategoryWods.mutateAsync(values);
+    },
+    addAllWodsToCategory: (values) => {
+      return useAddAllWodsToCategory.mutateAsync(values);
+    }
   };
 };
 

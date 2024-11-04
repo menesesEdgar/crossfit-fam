@@ -19,7 +19,9 @@ const ContestContext = createContext({
   addAllCategories: async () => {},
   removeAllContestWods: async () => {},
   addAllWods: async () => {},
-  getWodsByCategoryId: async () => {}
+  getWodsByCategoryId: async () => {},
+  removeAllCategoryWods: async () => {},
+  addAllWodsToCategory: async () => {}
 });
 
 export const useContestContext = () => useContext(ContestContext);
