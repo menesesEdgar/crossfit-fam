@@ -2,7 +2,7 @@ import axios from "axios";
 // import { saveAs } from 'file-saver';
 
 export const BASE_API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:4000/";
+  import.meta.env.VITE_API_URL || "http://localhost:4000";
 export const API_URL = `${BASE_API_URL}/api` || "http://localhost:4000/api";
 const api = axios.create({
   baseURL: API_URL,
@@ -431,7 +431,9 @@ export const removeAllContestWods = async (id) => {
 export const addWodToCategory = async (data) => {
   const { categoryId, wodId } = data;
   try {
-    const response = await api.post(`/contests/category/${categoryId}/wod/${wodId}`);
+    const response = await api.post(
+      `/contests/category/${categoryId}/wod/${wodId}`
+    );
     return response.data;
   } catch (error) {
     console.error(error);
@@ -448,9 +450,11 @@ export const getWodsByCategory = async (categoryId) => {
   }
 };
 export const deleteWodOfCategory = async (data) => {
-  const { categoryId,categoryWodId } = data;
+  const { categoryId, categoryWodId } = data;
   try {
-    const response = await api.delete(`/contests/category/${categoryId}/wod/${categoryWodId}`);
+    const response = await api.delete(
+      `/contests/category/${categoryId}/wod/${categoryWodId}`
+    );
     return response.data;
   } catch (error) {
     console.error(error);

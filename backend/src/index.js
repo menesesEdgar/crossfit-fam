@@ -12,6 +12,7 @@ import userRoutes from "./routes/userRoutes.js";
 import permissionRoutes from "./routes/permissionRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
 import rolePermissionRoutes from "./routes/rolePermissionRoutes.js";
+import contestPublicRoutes from "./routes/public/contestPublic.js";
 dotenv.config();
 
 const app = express();
@@ -34,6 +35,7 @@ app.use("/api/athletes", athletesRoutes);
 app.use("/api/permissions", permissionRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/role-permissions", rolePermissionRoutes);
+app.use("/api/public/contests", contestPublicRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

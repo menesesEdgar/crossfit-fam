@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   login,
   logout,
@@ -7,30 +7,30 @@ import {
   updateProfile,
   updatePassword,
   updateProfileImage,
-} from '../services/api';
-import { useLoading } from '../context/LoadingContext';
-import Notifies from '../components/Notifies/Notifies';
+} from "../services/api";
+import { useLoading } from "../context/LoadingContext";
+import Notifies from "../components/Notifies/Notifies";
 
 export const useAuthData = (dispatch) => {
   const queryClient = useQueryClient();
   const { dispatch: loadingDispatch } = useLoading();
 
   const setLoading = (loading) => {
-    loadingDispatch({ type: 'SET_LOADING', payload: loading });
+    loadingDispatch({ type: "SET_LOADING", payload: loading });
   };
 
   const loginMutation = useMutation({
     mutationFn: login,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
-      queryClient.setQueryData('user', data.user);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.token);
-      dispatch({ type: 'LOGIN_SUCCESS', payload: data.user });
+      queryClient.setQueryData("user", data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+      dispatch({ type: "LOGIN_SUCCESS", payload: data.user });
     },
     onError: (error) => {
-      dispatch({ type: 'AUTH_ERROR', payload: error });
-      Notifies('error', 'Usuario o contraseña incorrectos');
+      dispatch({ type: "AUTH_ERROR", payload: error });
+      Notifies("error", error?.response?.data?.message);
     },
     onSettled: () => setLoading(false),
   });
@@ -39,10 +39,10 @@ export const useAuthData = (dispatch) => {
     mutationFn: register,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
-      queryClient.setQueryData('user', data.user);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.token);
-      dispatch({ type: 'LOGIN_SUCCESS', payload: data.user });
+      queryClient.setQueryData("user", data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+      dispatch({ type: "LOGIN_SUCCESS", payload: data.user });
     },
     onSettled: () => setLoading(false),
   });
@@ -51,10 +51,10 @@ export const useAuthData = (dispatch) => {
     mutationFn: logout,
     onMutate: () => setLoading(true),
     onSuccess: () => {
-      queryClient.removeQueries('user');
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      dispatch({ type: 'LOGOUT' });
+      queryClient.removeQueries("user");
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      dispatch({ type: "LOGOUT" });
     },
     onSettled: () => setLoading(false),
   });
@@ -63,12 +63,12 @@ export const useAuthData = (dispatch) => {
     mutationFn: loadUser,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
-      queryClient.setQueryData('user', data);
-      localStorage.setItem('user', JSON.stringify(data));
+      queryClient.setQueryData("user", data);
+      localStorage.setItem("user", JSON.stringify(data));
       return data;
     },
     onError: (error) => {
-      dispatch({ type: 'AUTH_ERROR', payload: error });
+      dispatch({ type: "AUTH_ERROR", payload: error });
       return error;
     },
     onSettled: () => setLoading(false),
@@ -78,13 +78,13 @@ export const useAuthData = (dispatch) => {
     mutationFn: updateProfile,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
-      queryClient.setQueryData('user', data);
-      localStorage.setItem('user', JSON.stringify(data));
-      Notifies('success', 'Perfil actualizado');
-      dispatch({ type: 'PROFILE_UPDATED', payload: data });
+      queryClient.setQueryData("user", data);
+      localStorage.setItem("user", JSON.stringify(data));
+      Notifies("success", "Perfil actualizado");
+      dispatch({ type: "PROFILE_UPDATED", payload: data });
     },
     onError: (error) => {
-      Notifies('error', 'Error al actualizar el perfil');
+      Notifies("error", "Error al actualizar el perfil");
     },
     onSettled: () => setLoading(false),
   });
@@ -93,11 +93,11 @@ export const useAuthData = (dispatch) => {
     mutationFn: updatePassword,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
-      Notifies('success', 'Contraseña actualizada');
+      Notifies("success", "Contraseña actualizada");
       return data;
     },
     onError: (error) => {
-      Notifies('error', 'Error al actualizar la contraseña');
+      Notifies("error", "Error al actualizar la contraseña");
       return error;
     },
     onSettled: () => setLoading(false),
@@ -107,13 +107,13 @@ export const useAuthData = (dispatch) => {
     mutationFn: updateProfileImage,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
-      queryClient.setQueryData('user', data);
-      localStorage.setItem('user', JSON.stringify(data));
-      Notifies('success', 'Imagen de perfil actualizada');
-      dispatch({ type: 'PROFILE_IMAGE_UPDATED', payload: data });
+      queryClient.setQueryData("user", data);
+      localStorage.setItem("user", JSON.stringify(data));
+      Notifies("success", "Imagen de perfil actualizada");
+      dispatch({ type: "PROFILE_IMAGE_UPDATED", payload: data });
     },
     onError: (error) => {
-      Notifies('error', 'Error al actualizar la imagen de perfil');
+      Notifies("error", "Error al actualizar la imagen de perfil");
     },
     onSettled: () => setLoading(false),
   });

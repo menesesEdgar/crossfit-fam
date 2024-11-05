@@ -1,5 +1,5 @@
-import { createContext, useContext } from 'react';
-import { createContest } from '../services/api';
+import { createContext, useContext } from "react";
+import { createContest } from "../services/api";
 
 const CatalogContext = createContext({
   athletes: [],
@@ -10,8 +10,10 @@ const CatalogContext = createContext({
   wod: {},
   contests: [],
   contest: {},
+  publicContests: [],
+  publicContest: {},
   loading: true,
-  fetchContests:  async () => {},
+  fetchContests: async () => {},
   fetchAthletes: async () => {},
   fetchAthlete: async () => {},
   createAthlete: async () => {},
@@ -29,6 +31,8 @@ const CatalogContext = createContext({
   deleteWod: async () => {},
   createContest: async () => {},
   deleteContest: async () => {},
+  publicContests: async () => {},
+  publicContest: async () => {},
 });
 
 export const useCatalogContext = () => useContext(CatalogContext);

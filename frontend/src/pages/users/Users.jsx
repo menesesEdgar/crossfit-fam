@@ -57,7 +57,7 @@ const Users = () => {
     phone: "",
     role: "",
     photo: "",
-    status: true,
+    status: "",
     password: "",
     repeatPassword: "",
   });
@@ -200,7 +200,7 @@ const Users = () => {
         phone: "",
         role: "",
         photo: "",
-        status: true,
+        status: "",
         password: "",
         repeatPassword: "",
       });
@@ -222,7 +222,7 @@ const Users = () => {
       phone: "",
       role: "",
       photo: "",
-      status: true,
+      status: "",
       password: "",
       repeatPassword: "",
     });
@@ -347,12 +347,14 @@ const Users = () => {
                             <span
                               className={classNames(
                                 "text-xs font-bold px-4 py-2 rounded-full",
-                                formatedUser[column.id]
-                                  ? "bg-green-500 text-white"
-                                  : "bg-red-500 text-white"
+                                formatedUser[column.id] === "Habilitado"
+                                  ? "bg-crossfit-success text-white"
+                                  : formatedUser[column.id] === "Deshabilitado"
+                                  ? "bg-crossfit-danger text-white"
+                                  : "bg-crossfit-warning text-white"
                               )}
                             >
-                              {formatedUser[column.id] ? "Activo" : "Inactivo"}
+                              {formatedUser[column.id]}
                             </span>
                           </T.Cell>
                         ) : column.id === "actions" && sesionUser ? (

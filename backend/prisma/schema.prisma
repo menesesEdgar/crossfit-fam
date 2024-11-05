@@ -20,7 +20,7 @@ model User {
   athleteCharacteristics AthleteCharacteristics?
 
   password  String
-  status    Boolean?   @default(true)
+  status    UserStatus? @default(Habilitado)
   roleId    Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -30,6 +30,12 @@ model User {
 
   photo Image[] @relation("UserImage")
   contestCategoryAthlete ContestCategoryAthlete[]
+}
+
+enum UserStatus {
+  Habilitado
+  Deshabilitado
+  Pendiente
 }
 
 model AthleteCharacteristics {

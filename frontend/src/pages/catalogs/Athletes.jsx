@@ -86,7 +86,7 @@ const initiValues = {
   email: "",
   phone: "",
   role: "Athlete",
-  status: true,
+  status: "",
   id: "",
 };
 
@@ -371,12 +371,14 @@ const Athletes = () => {
                                   <span
                                     className={classNames(
                                       "text-xs font-bold px-4 py-2 rounded-full",
-                                      athlete?.status
-                                        ? "bg-green-500 text-white"
-                                        : "bg-red-500 text-white"
+                                      athlete?.status === "Habilitado"
+                                        ? "bg-crossfit-success text-white"
+                                        : athlete?.status === "Deshabilitado"
+                                        ? "bg-crossfit-danger text-white"
+                                        : "bg-crossfit-warning text-white"
                                     )}
                                   >
-                                    {athlete?.status ? "Activo" : "Inactivo"}
+                                    {athlete?.status}
                                   </span>
                                 ) : (
                                   cellValue

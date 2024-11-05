@@ -108,6 +108,24 @@ const CatalogReducer = (state, action) => {
         contests: action.payload,
         loading: false,
       };
+    case "FETCH_CONTEST":
+      return {
+        ...state,
+        contest: action.payload,
+        loading: false,
+      };
+    case "FETCH_PUBLIC_CONTESTS":
+      return {
+        ...state,
+        publicContests: action.payload,
+        loading: false,
+      };
+    case "FETCH_PUBLIC_CONTEST":
+      return {
+        ...state,
+        publicContest: action.payload,
+        loading: false,
+      };
     case "CREATE_CONTEST":
       return {
         ...state,

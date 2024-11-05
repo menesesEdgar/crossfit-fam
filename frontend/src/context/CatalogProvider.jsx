@@ -15,6 +15,8 @@ const CatalogProvider = ({ children }) => {
     wod: {},
     contests: [],
     contest: {},
+    publicContests: [],
+    publicContest: {},
     loading: true,
   });
 
@@ -39,16 +41,19 @@ const CatalogProvider = ({ children }) => {
     fetchContests,
     createContest,
     deleteContest,
-    updateContest
+    updateContest,
+    fetchPublicContest,
+    fetchPublicContests,
   } = useCatalogs(dispatch);
   const loadCatalogsData = () => {
     // fetchAthlete(); Al usar este metodo se extraen sin filtro todos los atletas y usuarios de la base de datos, es de corregir este error (RBM)
-    fetchContests()
+    fetchContests();
     fetchCategories();
     fetchWods();
   };
 
   useEffect(() => {
+    fetchPublicContests();
     if (!user || loading) {
       return;
     }
@@ -77,7 +82,9 @@ const CatalogProvider = ({ children }) => {
         fetchContests,
         createContest,
         updateContest,
-        deleteContest
+        deleteContest,
+        fetchPublicContest,
+        fetchPublicContests,
       }}
     >
       {children}

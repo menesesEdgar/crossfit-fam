@@ -5,22 +5,15 @@ import * as Yup from "yup";
 import AuthContext from "../../context/AuthContext";
 import FamCrossfitLogo from "../../assets/logo/logo-pink-filled.svg";
 import FamCrossfitLogoWhite from "../../assets/logo/logo-white-transparent.png";
-import BgLogin1 from "../../assets/bg/bg-login-1.webp";
-import BgLogin2 from "../../assets/bg/bg-login-2.webp";
+
 import BgLogin3 from "../../assets/bg/bg-login-3.webp";
-import { FaSignInAlt } from "react-icons/fa";
+import { FaSignInAlt, FaTrophy } from "react-icons/fa";
 import TextInput from "../../components/Inputs/TextInput";
 import { MdOutlineAlternateEmail, MdOutlinePassword } from "react-icons/md";
 import { Button } from "flowbite-react";
 import ActionButtons from "../../components/ActionButtons/ActionButtons";
 
 const Login = () => {
-  const getRandomBg = () => {
-    const bgImages = [BgLogin1, BgLogin2, BgLogin3];
-
-    return bgImages[Math.floor(Math.random() * bgImages.length)];
-  };
-
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const formRef = useRef(null);
@@ -86,6 +79,7 @@ const Login = () => {
             ref={formRef}
             className="space-y-4"
             onSubmit={formik.handleSubmit}
+            autoComplete="off"
           >
             <Field
               component={TextInput}
@@ -94,7 +88,6 @@ const Login = () => {
               type="email"
               label="Correo Electrónico"
               icon={MdOutlineAlternateEmail}
-              className="text-neutral-800"
             />
             <Field
               component={TextInput}
@@ -103,7 +96,6 @@ const Login = () => {
               type="password"
               label="Contraseña"
               icon={MdOutlinePassword}
-              className="text-neutral-800"
             />
             <div className="flex justify-center w-full items-center gap-4 pt-4">
               <Button
@@ -116,9 +108,8 @@ const Login = () => {
               </Button>
             </div>
           </Form>
-          {/* problemas para iniciar sesion?  */}
           <div className="flex flex-col items-center justify-center mt-8">
-            <p className="text-sm text-white md:text-gray-500 mb-2">
+            <p className="text-sm text-white md:text-gray-500">
               ¿Problemas para iniciar sesión?
             </p>
             <ActionButtons
@@ -133,6 +124,49 @@ const Login = () => {
               ]}
             />
           </div>
+          <section className="text-white md:text-neutral-800">
+            <div className="flex justify-center items-center  w-full h-16">
+              <p className="text-sm">
+                ¿No tienes una cuenta?{" "}
+                <span
+                  className="text-purple-500 hover:underline cursor-pointer"
+                  onClick={() => navigate("/public/contest/register")}
+                >
+                  Regístrate
+                </span>
+              </p>
+            </div>
+            <p
+              style={{
+                width: "100%",
+                textAlign: "center",
+                borderBottom: "1px solid #e2e8f0",
+                lineHeight: "0.1em",
+                margin: "10px 0 20px",
+              }}
+              className="col-span-12 text-base font-semibold"
+            >
+              <span style={{ padding: "0 20px" }}></span>
+            </p>
+            <div className="flex flex-col gap-3 md:bg-neutral-100 rounded-lg py-6 justify-center items-center w-full mt-4">
+              <span>
+                <FaTrophy size={50} className="text-yellow-300" />
+              </span>
+              <p className="text-sm">
+                Hechale un vistazo a nuestras competencias activas
+              </p>
+              <ActionButtons
+                extraActions={[
+                  {
+                    label: "Ver competencias",
+                    href: "/public/contest",
+                    color: "yellow",
+                    filled: true,
+                  },
+                ]}
+              />
+            </div>
+          </section>
         </div>
       </div>
     </FormikProvider>

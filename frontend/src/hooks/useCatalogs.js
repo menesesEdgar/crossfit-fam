@@ -20,6 +20,7 @@ import {
   deleteContest,
   getContests,
 } from "../services/api";
+import { getPublicContest, getPublicContests } from "../services/public.api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
 
@@ -213,6 +214,7 @@ const useCatalogs = (dispatch) => {
     },
     onSettled: () => setLoading(false),
   });
+
   // Contests
   const fetchContests = useMutation({
     mutationFn: getContests,
@@ -279,6 +281,25 @@ const useCatalogs = (dispatch) => {
       setLoading(false);
     },
   });
+
+  const fetchPublicContests = useMutation({
+    mutationFn: getPublicContests,
+    onMutate: () => setLoading(true),
+    onSuccess: (data) => {
+      dispatch({ type: "FETCH_PUBLIC_CONTESTS", payload: data });
+    },
+    onSettled: () => setLoading(false),
+  });
+
+  const fetchPublicContest = useMutation({
+    mutationFn: getPublicContest,
+    onMutate: () => setLoading(true),
+    onSuccess: (data) => {
+      dispatch({ type: "FETCH_PUBLIC_CONTEST", payload: data });
+    },
+    onSettled: () => setLoading(false),
+  });
+
   return {
     fetchContests: fetchContests.mutate,
     createContest: (values) => {
@@ -290,6 +311,8 @@ const useCatalogs = (dispatch) => {
     deleteContest: (values) => {
       return useDeleteContest.mutateAsync(values);
     },
+    fetchPublicContests: fetchPublicContests.mutate,
+    fetchPublicContest: fetchPublicContest.mutate,
     fetchAthletes: fetchAthletes.mutate,
     fetchAthlete: fetchAthlete.mutate,
     createAthlete: (values) => {

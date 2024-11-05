@@ -35,10 +35,9 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-
   try {
     const user = await db.user.findUnique({
-      where: { email },
+      where: { email, enabled: true },
       include: {
         role: {
           include: {
@@ -65,12 +64,19 @@ export const login = async (req, res) => {
       user.authPermissions = user.role.permissions.map(
         (rolePermission) => rolePermission.permission.name
       );
+
+      if (user.status !== "Habilitado") {
+        return res.status(401).json({
+          message: "Problemas con la cuenta, contacte al administrador.",
+        });
+      }
+
       res.json({
         user,
         token: generateToken(user.id),
       });
     } else {
-      res.status(401).json({ message: "Invalid email or password" });
+      res.status(401).json({ message: "Usuario o contraseña incorectos." });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -83,7 +89,7 @@ export const loadUser = async (req, res) => {
   try {
     if (user) {
       const loadedUser = await db.user.findFirst({
-        where: { id: user.id },
+        where: { id: user.id, enabled: true },
         include: {
           role: {
             include: {
@@ -105,7 +111,13 @@ export const loadUser = async (req, res) => {
       });
 
       if (!loadedUser) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      if (loadedUser.status !== "Habilitado") {
+        return res.status(401).json({
+          message: "Problemas con la cuenta, contacte al administrador.",
+        });
       }
 
       loadedUser.authPermissions = loadedUser.role.permissions.map(

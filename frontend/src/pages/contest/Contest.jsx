@@ -32,9 +32,11 @@ const Contest = () => {
   const { contests: allContests } = useCatalogContext();
   const { createContest, updateContest, deleteContest, loading } =
     useCatalogContext();
+
   const isCreatePermissions = useCheckPermissions("create_contest");
   const isEditPermissions = useCheckPermissions("edit_contest");
   const isDeletePermissions = useCheckPermissions("delete_contest");
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -118,8 +120,8 @@ const Contest = () => {
   };
 
   return (
-    <div className="flex min-h-[77dvh] h-full max-h-[92dvh] md:max-h-[92dvh] overflow-hidden flex-col gap-2 md:gap-4 bg-white shadow-md rounded-md dark:bg-gray-900 antialiased">
-      <div className="px-2 md:px-4 pt-4">
+    <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[92dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
+      <div className="flex flex-col gap-2 px-2 md:px-4 pt-4">
         <TableHeader
           icon={FaTrophy}
           title={"Competencias"}
@@ -139,7 +141,7 @@ const Contest = () => {
       </div>
       {filteredContests && !loading ? (
         filteredContests?.length > 0 ? (
-          <div className="px-2 md:px-4 pb-4 h-full max-h-[78.2dvh] overflow-auto grid gap-4 md:gap-6 xl:gap-8 grid-cols-[repeat(auto-fill,_minmax(330px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(350px,_1fr))]">
+          <div className="px-2 md:px-4 pb-4 h-full max-h-[77.2dvh] overflow-auto grid gap-4 md:gap-6 grid-cols-[repeat(auto-fill,_minmax(330px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(350px,_1fr))]">
             {filteredContests?.map((contest, index) => {
               const parseContest = {
                 id: contest.id,
@@ -160,6 +162,10 @@ const Contest = () => {
                 <CardContest
                   key={contest.id}
                   contest={parseContest}
+                  allowActions={
+                    isEditPermissions.hasPermission ||
+                    isDeletePermissions.hasPermission
+                  }
                   onDelete={
                     isDeletePermissions.hasPermission
                       ? () => onOpenDeleteModal(contest.id)

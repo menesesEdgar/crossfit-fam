@@ -9,18 +9,25 @@ import classNames from "classnames";
 import { AiOutlineEye } from "react-icons/ai";
 import { IoLocationOutline } from "react-icons/io5";
 
-const CardContest = ({ contest, onView, onDelete, onEdit }) => {
+const CardContest = ({
+  contest,
+  onView,
+  onDelete,
+  onEdit,
+  allowActions,
+  extraActions,
+}) => {
   return (
     <article
       className={classNames(
-        "flex rounded-lg rounded-l-xl shadow-sm h-fit hover:shadow-lg transition ease-in-out duration-200",
+        "flex rounded-lg rounded-l-xl shadow-sm h-full md:max-h-[38dvh] 2xl:max-h-[35dvh] hover:shadow-lg transition ease-in-out duration-200",
         { "bg-crossfit-primary": contest?.status === "Abierta" },
         { "bg-crossfit-info/70": contest?.status === "En curso" },
         { " bg-crossfit-success": contest?.status === "Finalizada" },
         { "bg-red-500": contest?.status === "Cancelada" }
       )}
     >
-      <div className="w-[98%] flex border border-neutral-300 bg-neutral-50  flex-col rounded-l-lg justify-between">
+      <div className="w-[98%] flex border border-neutral-300 bg-neutral-50 flex-col rounded-l-lg justify-between">
         <div className="flex rounded-tl-md flex-col gap-3 px-6 pt-4 pb-2 relative">
           <div className="absolute top-4 right-3">
             <span
@@ -105,44 +112,49 @@ const CardContest = ({ contest, onView, onDelete, onEdit }) => {
           </div>
         </div>
         <div className="w-full rounded-b-lg bg-white flex gap-2 p-4">
-          <div className="bg-white">
-            <ActionButtons
-              extraActions={[
-                {
-                  label: "Ver",
-                  action: () => onView(contest?.id),
-                  color: "neutral",
-                  icon: AiOutlineEye,
-                },
-              ]}
-            />
-          </div>
-          <Dropdown
-            renderTrigger={() => (
-              <button className="w-fit bg-white hover:bg-neutral-200 md:w-fit h-9 xl:h-10 text-sm xl:text-base cursor-pointer transition ease-in-out duration-200 p-4 flex items-center justify-center rounded-md border text-stone-800">
-                <BsThreeDotsVertical className="text-lg text-neutral-600" />
-              </button>
-            )}
-            dismissOnClick={false}
-            inline
-            arrowIcon={null}
-            placement="right"
-          >
-            <Dropdown.Item
-              className="min-w-36"
-              onClick={() => onEdit(contest)}
-              icon={FaEdit}
-            >
-              <span>Editar</span>
-            </Dropdown.Item>
-            <Dropdown.Item
-              className="min-w-36"
-              onClick={() => onDelete(contest?.id)}
-              icon={FaTrash}
-            >
-              <span>Eliminar</span>
-            </Dropdown.Item>
-          </Dropdown>
+          {allowActions && (
+            <>
+              <div className="bg-white">
+                <ActionButtons
+                  extraActions={[
+                    {
+                      label: "Ver",
+                      action: () => onView(contest?.id),
+                      color: "neutral",
+                      icon: AiOutlineEye,
+                    },
+                  ]}
+                />
+              </div>
+              <Dropdown
+                renderTrigger={() => (
+                  <button className="w-fit bg-white hover:bg-neutral-200 md:w-fit h-9 xl:h-10 text-sm xl:text-base cursor-pointer transition ease-in-out duration-200 p-4 flex items-center justify-center rounded-md border text-stone-800">
+                    <BsThreeDotsVertical className="text-lg text-neutral-600" />
+                  </button>
+                )}
+                dismissOnClick={false}
+                inline
+                arrowIcon={null}
+                placement="right"
+              >
+                <Dropdown.Item
+                  className="min-w-36"
+                  onClick={() => onEdit(contest)}
+                  icon={FaEdit}
+                >
+                  <span>Editar</span>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  className="min-w-36"
+                  onClick={() => onDelete(contest?.id)}
+                  icon={FaTrash}
+                >
+                  <span>Eliminar</span>
+                </Dropdown.Item>
+              </Dropdown>
+            </>
+          )}
+          {extraActions && <ActionButtons extraActions={extraActions} />}
         </div>
       </div>
     </article>

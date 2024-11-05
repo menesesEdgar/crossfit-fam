@@ -90,8 +90,9 @@ const AthleteFormFields = ({ editMode }) => {
           component={SelectInput}
           label="Estado"
           options={[
-            { value: true, label: "Habilitado" },
-            { value: false, label: "Deshabilitado" },
+            { value: "Habilitado", label: "Habilitado" },
+            { value: "Deshabilitado", label: "Deshabilitado" },
+            { value: "Pendiente", label: "Pendiente" },
           ]}
           icon={PiUserCircleCheckBold}
         />

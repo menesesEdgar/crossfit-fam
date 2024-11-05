@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createRole,
   getRoleById,
@@ -9,16 +9,16 @@ import {
   getRolePermissionByRoleId,
   createRolePermission,
   deleteRolePermission,
-} from '../services/secure.api';
-import { useLoading } from '../context/LoadingContext';
-import Notifies from '../components/Notifies/Notifies';
+} from "../services/secure.api";
+import { useLoading } from "../context/LoadingContext";
+import Notifies from "../components/Notifies/Notifies";
 
 const useRole = (dispatch) => {
   const queryClient = useQueryClient();
   const { dispatch: loadingDispatch } = useLoading();
 
   const setLoading = (loading) => {
-    loadingDispatch({ type: 'SET_LOADING', payload: loading });
+    loadingDispatch({ type: "SET_LOADING", payload: loading });
   };
 
   const useCreateRole = useMutation({
@@ -27,15 +27,15 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'CREATE_ROLE', payload: data });
-      Notifies('success', 'Rol creado correctamente');
+      dispatch({ type: "CREATE_ROLE", payload: data });
+      Notifies("success", "Rol creado correctamente");
     },
     onError: (error) => {
-      console.log('error on createRole', error);
+      console.log("error on createRole", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('roles');
+      queryClient.invalidateQueries("roles");
       setLoading(false);
     },
   });
@@ -46,15 +46,15 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'UPDATE_ROLE', payload: data });
-      Notifies('success', 'Rol actualizado correctamente');
+      dispatch({ type: "UPDATE_ROLE", payload: data });
+      Notifies("success", "Rol actualizado correctamente");
     },
     onError: (error) => {
-      console.log('error on updateRole', error);
+      console.log("error on updateRole", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('roles');
+      queryClient.invalidateQueries("roles");
       setLoading(false);
     },
   });
@@ -65,15 +65,15 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'DELETE_ROLE', payload: data });
-      Notifies('success', 'Rol eliminado correctamente');
+      dispatch({ type: "DELETE_ROLE", payload: data });
+      Notifies("success", "Rol eliminado correctamente");
     },
     onError: (error) => {
-      console.log('error on deleteRole', error);
+      console.log("error on deleteRole", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('roles');
+      queryClient.invalidateQueries("roles");
       setLoading(false);
     },
   });
@@ -84,10 +84,10 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'GET_ROLES', payload: data });
+      dispatch({ type: "GET_ROLES", payload: data });
     },
     onError: (error) => {
-      console.log('error on getRoles', error);
+      console.log("error on getRoles", error);
       setLoading(false);
     },
     onSettled: () => {
@@ -101,10 +101,10 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'GET_ROLE', payload: data });
+      dispatch({ type: "GET_ROLE", payload: data });
     },
     onError: (error) => {
-      console.log('error on getRoleById', error);
+      console.log("error on getRoleById", error);
       setLoading(false);
     },
     onSettled: () => {
@@ -118,10 +118,10 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'GET_ROLE_PERMISSIONS', payload: data });
+      dispatch({ type: "GET_ROLE_PERMISSIONS", payload: data });
     },
     onError: (error) => {
-      console.log('error on getRolePermissions', error);
+      console.log("error on getRolePermissions", error);
       setLoading(false);
     },
     onSettled: () => {
@@ -135,12 +135,12 @@ const useRole = (dispatch) => {
       setLoading(false);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'GET_ROLE_PERMISSION_BY_ROLE_ID', payload: data });
+      dispatch({ type: "GET_ROLE_PERMISSION_BY_ROLE_ID", payload: data });
       return data;
     },
     onError: (error) => {
-      console.log('error on getRolePermissionByRoleId', error);
-      Notifies('error', 'Error al obtener los permisos del rol');
+      console.log("error on getRolePermissionByRoleId", error);
+      Notifies("error", "Error al obtener los permisos del rol");
       setLoading(false);
     },
     onSettled: () => {
@@ -154,12 +154,12 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      Notifies('success', 'Permiso asignado correctamente');
-      dispatch({ type: 'CREATE_ROLE_PERMISSION', payload: data });
+      Notifies("success", "Permiso asignado correctamente");
+      dispatch({ type: "CREATE_ROLE_PERMISSION", payload: data });
       return data;
     },
     onError: (error) => {
-      console.log('error on createRolePermission', error);
+      console.log("error on createRolePermission", error);
       setLoading(false);
     },
     onSettled: () => {
@@ -173,12 +173,12 @@ const useRole = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      Notifies('success', 'Permiso eliminado correctamente');
-      dispatch({ type: 'DELETE_ROLE_PERMISSION', payload: data });
+      Notifies("success", "Permiso eliminado correctamente");
+      dispatch({ type: "DELETE_ROLE_PERMISSION", payload: data });
       return data;
     },
     onError: (error) => {
-      console.log('error on deleteRolePermission', error);
+      console.log("error on deleteRolePermission", error);
       setLoading(false);
     },
     onSettled: () => {

@@ -1,6 +1,5 @@
 import { db } from "../lib/db.js";
 import bcrypt from "bcryptjs";
-import { parseStatus } from "../utils/generateToken.js";
 import { generateRandomPassword } from "../utils/generatePassword.js";
 
 export const getUsers = async (req, res) => {
@@ -48,6 +47,7 @@ export const createUser = async (req, res) => {
       phone,
       role,
       birthDate,
+      status,
       gender,
       password,
     } = req.body;
@@ -139,7 +139,7 @@ export const updateUser = async (req, res) => {
         phone,
         birthdate: birthDate ? new Date(birthDate) : null,
         gender: gender || null,
-        status: parseStatus(status),
+        status: status,
         roleId: parseInt(role),
       },
       include: {
