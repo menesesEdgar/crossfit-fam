@@ -9,7 +9,7 @@ import withPermission from "../../utils/withPermissions";
 
 const ContestCategories = lazy(() => import("./Details/ContestCategories"));
 const CategoryWods = lazy(() => import("./Details/CategoryWods"));
-const CategorieAthletes = lazy(() => import("./Details/CategorieAthletes"));
+const ContestAthletes = lazy(() => import("./Details/ContestAthletes"));
 const ContestWods = lazy(() => import("./Details/ContestWods"));
 
 const ContestView = () => {
@@ -19,7 +19,7 @@ const ContestView = () => {
 
   const isViewContestCategoriesPermission = useCheckPermissions("view_contest");
   const isViewCategorieWodsPermission = useCheckPermissions("view_contest");
-  const isViewCategorieAthletesPermission = useCheckPermissions("view_contest");
+  const isViewContestAthletesPermission = useCheckPermissions("view_contest");
   const isViewContestWodsPermission = useCheckPermissions("view_contest");
 
   const setNextTab = () => {
@@ -52,8 +52,8 @@ const ContestView = () => {
       id: 3,
       title: "Atletas",
       icon: <GiBiceps size={24} />,
-      component: <CategorieAthletes />,
-      permission: isViewCategorieAthletesPermission,
+      component: <ContestAthletes />,
+      permission: isViewContestAthletesPermission,
     },
   ];
 

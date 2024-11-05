@@ -1,7 +1,7 @@
 import React from "react";
 import { Field } from "formik";
 import TextInput from "../Inputs/TextInput";
-import { MdEmail } from "react-icons/md";
+import { MdEmail, MdInfo } from "react-icons/md";
 import {
   FaCalendarAlt,
   FaPhoneSquareAlt,
@@ -12,6 +12,7 @@ import {
 import SelectInput from "../Inputs/SelectInput";
 import DateInput from "../Inputs/DateInput";
 import { PiUserCircleCheckBold } from "react-icons/pi";
+import MultiSelectInput from "../Inputs/MultiSelectInput";
 const genderOptions = [
   {
     id: "1",
@@ -26,7 +27,7 @@ const genderOptions = [
     name: "Otro",
   },
 ];
-const AthleteFormFields = ({ editMode }) => {
+const AthleteFormFields = ({ editMode, athleteForm = false, contestCategories = [] }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <Field
@@ -96,6 +97,20 @@ const AthleteFormFields = ({ editMode }) => {
           ]}
           icon={PiUserCircleCheckBold}
         />
+      )}
+      {athleteForm && (
+      <Field
+        name="category"
+        id="category"
+        component={MultiSelectInput}
+        icon={MdInfo}
+        label="Categoría"
+        options={contestCategories.map((category) => ({
+          label: category.name,
+          value: category.id,
+        }))}
+        className="col-span-"
+      />
       )}
       <Field
         className="hidden"

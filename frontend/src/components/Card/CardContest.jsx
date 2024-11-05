@@ -85,10 +85,10 @@ const CardContest = ({
               } else {
                 return (
                   <span
-                    className="px-3 py-1 text-nowrap border border-neutral-200 rounded-full"
+                    className="px-3 py-1 text-nowrap border border-neutral-200 rounded-full text-ellipsis whitespace-nowrap overflow-hidden"
                     key={index}
                   >
-                    <span className="text-xs md:text-sm font-medium text-neutral-800">
+                    <span className="text-xs md:text-sm font-medium text-neutral-800 ">
                       {category}
                     </span>
                   </span>

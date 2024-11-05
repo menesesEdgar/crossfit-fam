@@ -12,6 +12,8 @@ import {
   getWodsByCategory,
   addWodToCategory,
   deleteWodOfCategory,
+  addAllWodsToCategory,
+  removeAllCategoryWods,
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -266,6 +268,12 @@ const useContest = (dispatch) => {
     },
     removeAllContestWods: (values) => {
       return useRemoveAllContestWods.mutateAsync(values);
+    },
+    removeAllCategoryWods: (values) => {
+      return useRemoveAllCategoryWods.mutateAsync(values);
+    },
+    addAllWodsToCategory: (values) => {
+      return useAddAllWodsToCategory.mutateAsync(values);
     },
   };
 };
