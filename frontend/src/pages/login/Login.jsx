@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Field, Form, FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,11 +12,13 @@ import TextInput from "../../components/Inputs/TextInput";
 import { MdOutlineAlternateEmail, MdOutlinePassword } from "react-icons/md";
 import { Button } from "flowbite-react";
 import ActionButtons from "../../components/ActionButtons/ActionButtons";
+import ModalRegisterUser from "../../components/Modals/ModalRegisterUser";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const formRef = useRef(null);
+  const [openModal, setOpenModal] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -130,7 +132,7 @@ const Login = () => {
                 ¿No tienes una cuenta?{" "}
                 <span
                   className="text-purple-500 hover:underline cursor-pointer"
-                  onClick={() => navigate("/public/contest/register")}
+                  onClick={() => setOpenModal(true)}
                 >
                   Regístrate
                 </span>
@@ -169,6 +171,12 @@ const Login = () => {
           </section>
         </div>
       </div>
+      {openModal && (
+        <ModalRegisterUser
+          openModal={openModal}
+          setOpenModal={() => setOpenModal(!openModal)}
+        />
+      )}
     </FormikProvider>
   );
 };
