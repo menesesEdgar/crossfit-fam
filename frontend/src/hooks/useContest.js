@@ -14,6 +14,7 @@ import {
   deleteWodOfCategory,
   addAllWodsToCategory,
   removeAllCategoryWods,
+  addAthleteToContest,
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -236,11 +237,33 @@ const useContest = (dispatch) => {
       setLoading(false);
     },
   });
+  const useAddAthleteToContest = useMutation({
+    mutationFn: addAthleteToContest,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "ADD_ATHLETE_TO_CONTEST", payload: data });
+      Notifies("success", "Atleta agregado correctamente");
+    },
+    onError: (error) => {
+      console.log("error adding athlete", error);
+      Notifies("error", error?.response?.data?.message);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contestsAthletes");
+      setLoading(false);
+    },
+  });
   return {
     fetchContest: fetchContest.mutate,
     getWodsByCategoryId: getWodsByCategoryId.mutate,
     addCategory: (values) => {
       return useAddCategory.mutateAsync(values);
+    },
+    addAthleteToContest: (values) => {
+      return useAddAthleteToContest.mutateAsync(values);
     },
     deleteCategory: (values) => {
       return useDeleteCategory.mutateAsync(values);

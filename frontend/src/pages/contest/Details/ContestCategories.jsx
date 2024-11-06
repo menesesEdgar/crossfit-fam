@@ -12,10 +12,8 @@ import { TextInput } from "flowbite-react";
 
 const ContestCategories = ({ setActiveTab }) => {
   // ContestId
-  const { id } = useParams();
   const {
     addCategory,
-    fetchContest,
     categories: contestCategories,
     deleteCategory,
     addAllCategories,
@@ -24,10 +22,6 @@ const ContestCategories = ({ setActiveTab }) => {
   const { categories } = useCatalogContext();
   let contestCategoriesFiltered = [];
   const [selectAll, setSelectAll] = useState(false);
-
-  useEffect(() => {
-    fetchContest(id);
-  }, []);
 
   useEffect(() => {
     if (categories && contestCategories) {

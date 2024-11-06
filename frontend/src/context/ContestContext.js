@@ -1,12 +1,16 @@
 import { createContext, useContext } from "react";
+import { addAthleteToContest } from "../services/api";
 
 const ContestContext = createContext({
   contest: {},
   categories: [],
   wods: [],
+  athletes: [],
+  athlete: {},
   category: {},
   categoryWods: [], // Wods por categoria
   categoryWod: {}, // No necesario
+  fetchContest: async () => {},
   addCategory: async () => {},
   deleteCategory: async () => {},
   addWod: async () => {},
@@ -21,7 +25,8 @@ const ContestContext = createContext({
   addAllWods: async () => {},
   getWodsByCategoryId: async () => {},
   removeAllCategoryWods: async () => {},
-  addAllWodsToCategory: async () => {}
+  addAllWodsToCategory: async () => {},
+  addAthleteToContest: async () => {},
 });
 
 export const useContestContext = () => useContext(ContestContext);

@@ -611,3 +611,40 @@ export const removeAllWodsFromCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const addAthleteToContest = async (req, res) => {
+  try {
+    const {
+      id, category: categoryId} = req.body;
+
+    const contest = await db.contestCategoryAthlete.create({
+      data: {
+        userId: id,
+        contestCategoryId: parseInt(categoryId),
+      },
+    });
+    res.json(contest);
+  } catch (error) {
+    console.log("error adding athlete to contest", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const fetchRegisteredAthletes = async (req, res) => {
+  const { categories } = req.body;
+  try {
+    const contest = await db.ContestCategoryAthlete.findMany({
+      where: { contestCategoryId: {
+        in: categories
+      } },
+    });
+    if (!contest) {
+      res.status(404).json({ message: "Contest not found" });
+      return;
+    }
+
+    res.json(contest);
+  } catch (error) {
+    console.log("error on getContestById", error);
+    res.status(500).json({ message: error.message });
+  }
+};

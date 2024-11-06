@@ -34,7 +34,8 @@ export const UserFormInitialValues = {
   password: "",
   repeatPassword: "",
   role: "",
-  status: true,
+  status: "Habilitado",
+  category: "",
   photo: [],
   id: "",
 };
@@ -65,5 +66,20 @@ export const UserFormChangePasswordSchema = Yup.object().shape({
   repeatPassword: Yup.string()
     .required("La confirmación de la nueva contraseña es requerida")
     .oneOf([Yup.ref("password"), null], "Las contraseñas no coinciden"),
+  id: Yup.string(),
+});
+
+export const UserFormAddAthleteSchema = Yup.object().shape({
+  firstName: Yup.string().required("El nombre es requerido"),
+  lastName: Yup.string().required("El apellido es requerido"),
+  email: Yup.string()
+    .email("El correo electrónico no es válido")
+    .required("El correo electrónico es requerido"),
+  phone: Yup.string().matches(
+    /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/,
+    "El teléfono debe tener el formato 123-456-7890"
+  ),
+  role: Yup.string().required("El rol es requerido"),
+  status: Yup.boolean(),
   id: Yup.string(),
 });

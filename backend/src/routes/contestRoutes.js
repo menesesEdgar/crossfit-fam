@@ -18,11 +18,16 @@ import {
   removeWodToCategory,
   getWodsByCategory,
   addAllCategoryWods,
-  removeAllWodsFromCategory
+  removeAllWodsFromCategory,
+  addAthleteToContest,
+  fetchRegisteredAthletes
 } from "../controllers/contestController.js";
 
 const router = express.Router();
 
+router
+.route("/athletes").post(protect, addAthleteToContest)
+.get(fetchRegisteredAthletes)
 router.route("/").get(getContests).post(protect, createContest);
 router
   .route("/:id")

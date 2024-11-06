@@ -6,10 +6,11 @@ import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
 import LoadingModal from "../../components/LoadingModal/LoadingModal";
 import withPermission from "../../utils/withPermissions";
+import { useContestContext } from "../../context/ContestContext";
+import { useParams } from "react-router-dom";
 
 const ContestCategories = lazy(() => import("./Details/ContestCategories"));
 const CategoryWods = lazy(() => import("./Details/CategoryWods"));
-const ContestAthletes = lazy(() => import("./Details/ContestAthletes"));
 const ContestWods = lazy(() => import("./Details/ContestWods"));
 
 const ContestView = () => {
@@ -19,7 +20,6 @@ const ContestView = () => {
 
   const isViewContestCategoriesPermission = useCheckPermissions("view_contest");
   const isViewCategorieWodsPermission = useCheckPermissions("view_contest");
-  const isViewContestAthletesPermission = useCheckPermissions("view_contest");
   const isViewContestWodsPermission = useCheckPermissions("view_contest");
 
   const setNextTab = () => {
@@ -48,13 +48,6 @@ const ContestView = () => {
       component: <CategoryWods setActiveTab={setNextTab} />,
       permission: isViewCategorieWodsPermission,
     },
-    {
-      id: 3,
-      title: "Atletas",
-      icon: <GiBiceps size={24} />,
-      component: <ContestAthletes />,
-      permission: isViewContestAthletesPermission,
-    },
   ];
 
   useEffect(() => {
@@ -63,7 +56,7 @@ const ContestView = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="grid grid-cols-4 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto">
+      <div className="grid grid-cols-3 bg-white border-b-2 rounded-lg border-neutral-200 overflow-x-auto overflow-y-hidden">
         {tabContent.map(
           (tab, index) =>
             tab.permission.hasPermission && (
@@ -100,8 +93,7 @@ const ContestView = () => {
             </div>
           ))}
           {!isViewContestCategoriesPermission.hasPermission &&
-            !isViewCategorieWodsPermission.hasPermission &&
-            !isViewCategorieAthletesPermission && <NotFound />}
+            !isViewCategorieWodsPermission.hasPermission && <NotFound />}
         </div>
       </div>
     </div>

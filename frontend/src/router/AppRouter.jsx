@@ -25,6 +25,7 @@ import PublicProvider from "../context/PublicProvider";
 import PublicContest from "../pages/public/PublicContest";
 import PublicLayout from "../Layout/PublicLayout";
 import { Vortex } from "react-loader-spinner";
+import ContestRegister from "../pages/contest/ContestRegister";
 
 const AppRouter = () => {
   const { user } = useContext(AuthContext);
@@ -67,6 +68,14 @@ const AuthorizedRoute = ({ user }) => {
                   element={
                     <ContestProvider>
                       <ContestView />
+                    </ContestProvider>
+                  }
+                />
+                <Route
+                  path="/contest/:id/register"
+                  element={
+                    <ContestProvider>
+                      <ContestRegister />
                     </ContestProvider>
                   }
                 />

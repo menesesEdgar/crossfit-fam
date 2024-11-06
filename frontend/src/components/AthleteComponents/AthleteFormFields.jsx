@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field } from "formik";
 import TextInput from "../Inputs/TextInput";
 import { MdEmail, MdInfo } from "react-icons/md";
@@ -12,7 +12,7 @@ import {
 import SelectInput from "../Inputs/SelectInput";
 import DateInput from "../Inputs/DateInput";
 import { PiUserCircleCheckBold } from "react-icons/pi";
-import MultiSelectInput from "../Inputs/MultiSelectInput";
+import TextSelectInput from "../Inputs/TextSelectInput";
 const genderOptions = [
   {
     id: "1",
@@ -102,12 +102,12 @@ const AthleteFormFields = ({ editMode, athleteForm = false, contestCategories = 
       <Field
         name="category"
         id="category"
-        component={MultiSelectInput}
+        component={TextSelectInput}
         icon={MdInfo}
         label="Categoría"
         options={contestCategories.map((category) => ({
           label: category.name,
-          value: category.id,
+          value: category.conCatId,
         }))}
         className="col-span-"
       />

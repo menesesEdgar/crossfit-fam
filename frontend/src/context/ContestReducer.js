@@ -52,6 +52,13 @@ const contestReducer = (state, action) => {
         ],
         loading: false,
       };
+    case "ADD_ATHLETE_TO_CONTEST":
+      console.log("adding athlete ", action.payload)
+      return {
+        ...state,
+        athletes: [...state.athletes, action.payload],
+        loading: false,
+      };
     case "DELETE_CATEGORY":
       return {
         ...state,

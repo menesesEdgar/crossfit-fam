@@ -481,3 +481,14 @@ export const removeAllCategoryWods = async (id) => {
     throw error;
   }
 };
+
+export const addAthleteToContest = async (data) => {
+  // const { userId, categoryId } = data;
+  try {
+    const response = await api.post("/contests/athlete", data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

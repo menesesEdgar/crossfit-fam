@@ -2,12 +2,14 @@ import React from "react";
 import { FaEdit, FaRegCalendar, FaTrash } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { FiUsers } from "react-icons/fi";
+import { FaCog } from "react-icons/fa";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
 import { Dropdown } from "flowbite-react";
 import classNames from "classnames";
 import { AiOutlineEye } from "react-icons/ai";
 import { IoLocationOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 const CardContest = ({
   contest,
@@ -75,7 +77,7 @@ const CardContest = ({
               <FiUsers size={20} className="text-neutral-400" />
             </span>
             <p className="text-sm md:text-base text-neutral-800">
-              {contest?.quantityAthletes} atletas inscritos
+             <Link to={`/contest/${contest.id}/register`}><a className="hover:underline">{contest?.quantityAthletes} atletas inscritos</a></Link>
             </p>
           </div>
           <div className="w-full flex gap-2 items-start mt-2">
@@ -118,10 +120,10 @@ const CardContest = ({
                 <ActionButtons
                   extraActions={[
                     {
-                      label: "Ver",
+                      label: "Editar",
                       action: () => onView(contest?.id),
                       color: "neutral",
-                      icon: AiOutlineEye,
+                      icon: FaEdit,
                     },
                   ]}
                 />
@@ -140,9 +142,9 @@ const CardContest = ({
                 <Dropdown.Item
                   className="min-w-36"
                   onClick={() => onEdit(contest)}
-                  icon={FaEdit}
+                  icon={FaCog}
                 >
-                  <span>Editar</span>
+                  <span>Configurar</span>
                 </Dropdown.Item>
                 <Dropdown.Item
                   className="min-w-36"

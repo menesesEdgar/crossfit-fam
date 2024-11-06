@@ -2,12 +2,15 @@ import { useEffect, useReducer } from "react";
 import ContestContext from "./ContestContext";
 import contestReducer from "./ContestReducer";
 import useContest from "../hooks/useContest";
+import { useParams } from "react-router-dom";
 const ContestProvider = ({ children }) => {
   const [state, dispatch] = useReducer(contestReducer, {
     contest: {},
     categories: [],
-    wods: []
+    wods: [],
+    athlete: {}
   });
+  const { id } = useParams()
   const {
     fetchContest,
     getWodsByCategoryId,
@@ -22,8 +25,14 @@ const ContestProvider = ({ children }) => {
     addAllWods,
     removeAllContestWods,
     removeAllCategoryWods,
-    addAllWodsToCategory
+    addAllWodsToCategory,
+    addAthleteToContest
   } = useContest(dispatch);
+  useEffect(() => {
+    if (id) {
+      fetchContest(id);
+    }
+  }, [id]);
 
   return (
     <ContestContext.Provider
@@ -42,7 +51,8 @@ const ContestProvider = ({ children }) => {
         addWodToCategory,
         removeWodOfCategory,
         removeAllCategoryWods,
-        addAllWodsToCategory
+        addAllWodsToCategory,
+        addAthleteToContest,
       }}
     >
       {children}
