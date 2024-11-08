@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import classNames from 'classnames';
-import { MdOutlineViewInAr } from 'react-icons/md';
+import React, { useState } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import classNames from "classnames";
+import { MdOutlineViewInAr } from "react-icons/md";
 
 const AccordionItem = ({ title, content }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,9 +14,9 @@ const AccordionItem = ({ title, content }) => {
     <div className="border-b border-neutral-200">
       <button
         className={classNames(
-          'w-full flex justify-between items-center p-4 transition-colors duration-300',
-          { 'hover:bg-neutral-100 bg-white': !isOpen },
-          { 'hover:bg-neutral-200 bg-neutral-100': isOpen },
+          "w-full flex justify-between items-center p-4 transition-colors duration-300",
+          { "hover:bg-neutral-100 bg-white": !isOpen },
+          { "hover:bg-neutral-200 bg-neutral-100": isOpen }
         )}
         onClick={toggleAccordion}
       >

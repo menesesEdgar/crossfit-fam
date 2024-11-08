@@ -11,7 +11,6 @@ import { MdRemoveCircleOutline } from "react-icons/md";
 import { TextInput } from "flowbite-react";
 
 const ContestCategories = ({ setActiveTab }) => {
-  // ContestId
   const {
     addCategory,
     categories: contestCategories,
@@ -22,6 +21,7 @@ const ContestCategories = ({ setActiveTab }) => {
   const { categories } = useCatalogContext();
   let contestCategoriesFiltered = [];
   const [selectAll, setSelectAll] = useState(false);
+  const { id } = useParams();
 
   useEffect(() => {
     if (categories && contestCategories) {
@@ -46,14 +46,12 @@ const ContestCategories = ({ setActiveTab }) => {
     }
   };
 
-  // function to validate if at least one category is selected to enable the next button
   const isNextButtonDisabled = () => {
     return contestCategoriesFiltered.length === 0;
   };
-
   return (
     <>
-      <section className="flex h-full max-h-[76.5dvh] md:max-h-[82dvh] overflow-hidden flex-col gap-3 p-3 antialiased">
+      <section className="flex h-full max-h-[79.5dvh] md:max-h-[82dvh] overflow-hidden flex-col gap-3 p-3 antialiased">
         <TableHeader
           title="Categorías registradas"
           icon={FaUserShield}
@@ -69,9 +67,9 @@ const ContestCategories = ({ setActiveTab }) => {
             },
           ]}
         />
-        <div className="flex-1 h-full grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 p-2 pb-0">
+        <div className="flex-1 h-full max-h-[62dvh] grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 p-2 pb-0">
           <div className="col-span-1 h-full min-h-[25dvh] md:border-r-neutral-200 md:border-r md:pr-4">
-            <div className="w-full flex justify-between flex-col md:flex-row gap-2">
+            <div className="w-full flex justify-between flex-row gap-2">
               <div className="mb-2 md:mb-4">
                 <h3 className="text-sm lg:text-lg font-semibold">
                   Todas las categorías
@@ -80,11 +78,14 @@ const ContestCategories = ({ setActiveTab }) => {
                   Selecciona la categoría que desees agregar.
                 </p>
               </div>
-              <div className="hidden md:flex gap-2 items-center text-sm">
-                {selectAll ? "Deseleccionar todas" : "Seleccionar todas"}
+              <div className="flex gap-2 items-center text-sm">
+                <span className="hidden md:block">
+                  {selectAll ? "Deseleccionar todas" : "Seleccionar todas"}
+                </span>
                 <TextInput
                   type="checkbox"
                   label="Seleccionar todas"
+                  color="purple"
                   checked={selectAll}
                   onChange={() => {
                     setSelectAll(!selectAll);
@@ -93,7 +94,7 @@ const ContestCategories = ({ setActiveTab }) => {
                 />
               </div>
             </div>
-            <div className="h-full max-h-[28dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
+            <div className="flex-1 h-full md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
               {categories &&
                 categories?.length > 0 &&
                 categories
@@ -109,7 +110,13 @@ const ContestCategories = ({ setActiveTab }) => {
                                 categoryId: category.id,
                               });
                             }
-                          : () => {}
+                          : async () =>
+                              await deleteCategory({
+                                contestId: id,
+                                categoryId: contestCategories.find(
+                                  (c) => c.id === category.id
+                                )?.conCatId,
+                              })
                       }
                       className={classNames(
                         "group pl-6 pr-2 py-2 border border-neutral-300 rounded-md flex justify-between items-center",
@@ -137,7 +144,7 @@ const ContestCategories = ({ setActiveTab }) => {
                   ))}
             </div>
           </div>
-          <div className="col-span-1 h-full min-h-[28dvh]">
+          <div className="hidden md:block col-span-1 h-full min-h-[28dvh]">
             <div className="mb-2 md:mb-4">
               <h3 className="text-sm lg:text-lg font-semibold">
                 Categorías seleccionadas

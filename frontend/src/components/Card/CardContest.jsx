@@ -22,7 +22,7 @@ const CardContest = ({
   return (
     <article
       className={classNames(
-        "flex rounded-lg rounded-l-xl shadow-sm h-full md:max-h-[38dvh] 2xl:max-h-[35dvh] hover:shadow-lg transition ease-in-out duration-200",
+        "flex rounded-lg rounded-l-xl shadow-sm h-full md:max-h-[38dvh] 2xl:max-h-[38dvh] hover:shadow-lg transition ease-in-out duration-200",
         { "bg-crossfit-primary": contest?.status === "Abierta" },
         { "bg-crossfit-info/70": contest?.status === "En curso" },
         { " bg-crossfit-success": contest?.status === "Finalizada" },
@@ -77,7 +77,12 @@ const CardContest = ({
               <FiUsers size={20} className="text-neutral-400" />
             </span>
             <p className="text-sm md:text-base text-neutral-800">
-             <Link to={`/contest/${contest.id}/register`}><a className="hover:underline">{contest?.quantityAthletes} atletas inscritos</a></Link>
+              <Link
+                className="hover:underline hover:text-blue-400"
+                to={`/contest/${contest.id}/register`}
+              >
+                {contest?.quantityAthletes} atletas inscritos
+              </Link>
             </p>
           </div>
           <div className="w-full flex gap-2 items-start mt-2">

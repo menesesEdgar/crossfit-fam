@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { LiaDumbbellSolid } from "react-icons/lia";
 import { useContestContext } from "../../../context/ContestContext";
 import { TextInput } from "flowbite-react";
+import Accordion from "../../../components/Accordion/Accordion";
 const CategoryWods = ({ setActiveTab }) => {
   // ContestId
   const {
@@ -16,7 +17,7 @@ const CategoryWods = ({ setActiveTab }) => {
     removeWodOfCategory,
     getWodsByCategoryId,
     removeAllCategoryWods,
-    addAllWodsToCategory
+    addAllWodsToCategory,
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -25,12 +26,12 @@ const CategoryWods = ({ setActiveTab }) => {
   const [activeCategory, setActiveCategory] = useState(
     contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null
   );
-  console.log("contestCategories ", contestCategories)
+  console.log("contestCategories ", contestCategories);
   useEffect(() => {
     if (contestCategories?.length > 0) {
-      setActiveCategory(contestCategories[0]?.conCatId)
+      setActiveCategory(contestCategories[0]?.conCatId);
     }
-  }, [contestCategories])
+  }, [contestCategories]);
   const updateWodOfCategory = async (wod, isChecked) => {
     // console.log("wod ", wod);
     // console.log("activeCategory ", activeCategory);
@@ -75,13 +76,80 @@ const CategoryWods = ({ setActiveTab }) => {
     return categoryWods?.length === 0;
   };
   const handleSelectAll = async () => {
-    // Add or remove all Wods to the selected category
     if (selectAll) {
       await removeAllCategoryWods(activeCategory);
     } else {
       await addAllWodsToCategory(activeCategory);
     }
   };
+
+  const handleContestCategories = () => {
+    return contestCategories
+      ?.map((category) => {
+        return {
+          title: category?.name,
+          content: (
+            <div className="space-y-6">
+              <div className="grid gap-2 grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
+                <label className="flex items-center gap-2 hover:bg-neutral-100 p-2 rounded-md cursor-pointer">
+                  <TextInput
+                    color={"warning"}
+                    type="checkbox"
+                    name={"selectAll"}
+                    checked={() => {}}
+                    onChange={() => {}}
+                  />
+                  <span className="text-sm lg:text-base">
+                    Seleccionar todas
+                  </span>
+                </label>
+                {contestWods.map((wod) => (
+                  <label
+                    key={wod.id || wod.name}
+                    className="flex items-center gap-2 hover:bg-neutral-100 p-2 rounded-md cursor-pointer"
+                  >
+                    {isEditContestPermission.hasPermission ? (
+                      <TextInput
+                        color={"warning"}
+                        type="checkbox"
+                        name={wod.name}
+                        value={wod.name}
+                        disabled={
+                          isDisabled || !isEditContestPermission.hasPermission
+                        }
+                        checked={
+                          !!categoryWods?.find(
+                            (c) => c?.contestWodId === wod?.conWodId
+                          )
+                        }
+                        onChange={(e) =>
+                          updateWodOfCategory(wod, e.target.checked)
+                        }
+                      />
+                    ) : (
+                      <TextInput
+                        color={"warning"}
+                        type="checkbox"
+                        name={wod.name}
+                        value={wod.name}
+                        disabled={
+                          isDisabled || !isEditContestPermission.hasPermission
+                        }
+                        checked={false}
+                        onChange={null}
+                      />
+                    )}
+                    <span className="text-sm lg:text-base">{wod.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ),
+        };
+      })
+      .sort((a, b) => a.title.localeCompare(b.title));
+  };
+
   return (
     <>
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
@@ -99,7 +167,7 @@ const CategoryWods = ({ setActiveTab }) => {
             },
           ]}
         />
-        <div className="h-full grid grid-cols-2 gap-8 p-2 pt-4 pb-0">
+        {/* <div className="h-full grid grid-cols-2 gap-8 p-2 pt-4 pb-0">
           <div className="col-span-1 lg:col-span-1">
             <div className="md:mb-4">
               <h3 className="text-sm lg:text-lg font-semibold">Categorías</h3>
@@ -125,16 +193,6 @@ const CategoryWods = ({ setActiveTab }) => {
                         {category.name}
                       </h3>
                     </div>
-                    {/* {!contestCategoriesFiltered?.includes(category.id) && (
-                      <i
-                      className={classNames(
-                        'group-hover:text-neutral-800 transition-all duration-200',
-                        activeTab == category?.id ? '' : 'text-white',
-                      )}
-                    >
-                      <FaChevronRight size={18} className="text-lg mt-0.5" />
-                    </i>
-                    )} */}
                   </div>
                 ))}
           </div>
@@ -148,17 +206,17 @@ const CategoryWods = ({ setActiveTab }) => {
                   </p>
                 </div>
                 <div className="hidden md:flex gap-2 items-center text-sm pr-1">
-                {selectAll ? "Deseleccionar todas" : "Seleccionar todas"}
-                <TextInput
-                  type="checkbox"
-                  label="Seleccionar todas"
-                  checked={selectAll}
-                  onChange={() => {
-                    setSelectAll(!selectAll);
-                    handleSelectAll();
-                  }}
-                />
-              </div>
+                  {selectAll ? "Deseleccionar todas" : "Seleccionar todas"}
+                  <TextInput
+                    type="checkbox"
+                    label="Seleccionar todas"
+                    checked={selectAll}
+                    onChange={() => {
+                      setSelectAll(!selectAll);
+                      handleSelectAll();
+                    }}
+                  />
+                </div>
               </div>
               <div className="space-y-6">
                 <div className="grid gap-2 grid-cols-1">
@@ -198,11 +256,6 @@ const CategoryWods = ({ setActiveTab }) => {
                               isDisabled ||
                               !isEditContestPermission.hasPermission
                             }
-                            // checked={
-                            //   !!rolePermissions?.find(
-                            //     (p) => p?.permissionId === permission?.id,
-                            //   )
-                            // }
                             onChange={null}
                           />
                         )}
@@ -213,6 +266,9 @@ const CategoryWods = ({ setActiveTab }) => {
               </div>
             </div>
           </div>
+        </div> */}
+        <div className="overflow-y-auto h-full md:max-h-[69dvh] w-full">
+          <Accordion data={handleContestCategories() ?? []} />
         </div>
       </section>
     </>

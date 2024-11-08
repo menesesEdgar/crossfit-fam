@@ -63,7 +63,7 @@ const ContestWods = ({ setActiveTab }) => {
 
   return (
     <>
-      <section className="flex h-full max-h-[76.5dvh] md:max-h-[82dvh] overflow-hidden flex-col gap-3 p-3 antialiased">
+      <section className="flex h-full max-h-[81dvh] md:max-h-[82dvh] overflow-hidden flex-col gap-3 p-3 antialiased">
         <TableHeader
           title="Wods registrados"
           icon={FaUserShield}
@@ -79,9 +79,9 @@ const ContestWods = ({ setActiveTab }) => {
             },
           ]}
         />
-        <div className="flex-1 h-full grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 p-2 pb-0">
+        <div className="flex-1 h-full max-h-[63dvh] grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 p-2 pb-0">
           <div className="col-span-1 h-full min-h-[25dvh] md:border-r-neutral-200 md:border-r md:pr-4">
-            <div className="w-full flex justify-between flex-col md:flex-row gap-2">
+            <div className="w-full flex justify-between flex-row gap-2">
               <div className="mb-2 md:mb-4">
                 <h3 className="text-sm lg:text-lg font-semibold">
                   Todos los wods
@@ -90,11 +90,14 @@ const ContestWods = ({ setActiveTab }) => {
                   Selecciona los wods que desee agregar.
                 </p>
               </div>
-              <div className="hidden md:flex gap-2 items-center text-sm">
-                {selectAll ? "Deseleccionar todas" : "Seleccionar todas"}
+              <div className="flex gap-2 items-center text-sm">
+                <span className="hidden md:block">
+                  {selectAll ? "Deseleccionar todas" : "Seleccionar todas"}
+                </span>
                 <TextInput
                   type="checkbox"
                   label="Seleccionar todas"
+                  color="purple"
                   checked={selectAll}
                   onChange={() => {
                     setSelectAll(!selectAll);
@@ -103,7 +106,7 @@ const ContestWods = ({ setActiveTab }) => {
                 />
               </div>
             </div>
-            <div className="h-full max-h-[28dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
+            <div className="h-full md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
               {wods &&
                 wods?.length > 0 &&
                 wods
@@ -147,7 +150,7 @@ const ContestWods = ({ setActiveTab }) => {
                   ))}
             </div>
           </div>
-          <div className="col-span-1 h-full min-h-[28dvh]">
+          <div className="hidden md:block col-span-1 h-full min-h-[28dvh]">
             <div className="mb-2 md:mb-4">
               <h3 className="text-sm lg:text-lg font-semibold">
                 Wods seleccionados
