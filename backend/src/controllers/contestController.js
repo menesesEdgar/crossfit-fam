@@ -620,11 +620,11 @@ export const removeAllWodsFromCategory = async (req, res) => {
 };
 export const addAthleteToContest = async (req, res) => {
   try {
-    const {id, category: categoryId} = req.body;
+    const {userId, categoryId} = req.body;
 
     const contest = await db.contestCategoryAthlete.create({
       data: {
-        userId: id,
+        userId: userId,
         contestCategoryId: parseInt(categoryId),
       },
     });

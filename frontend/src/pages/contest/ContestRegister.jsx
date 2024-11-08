@@ -18,7 +18,8 @@ const CategoryWods = ({ setActiveTab }) => {
   // ContestId
   const {
     categories: contestCategories,
-    contest
+    contest,
+    addAthleteToContest
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -169,12 +170,13 @@ const CategoryWods = ({ setActiveTab }) => {
                     .map((athlete) => (
                       <div
                         key={athlete.id}
-                        // onClick={async () => {
-                        //   await deleteWod({
-                        //     contestId: id,
-                        //     wodId: wod.conWodId,
-                        //   });
-                        // }}
+                        onClick={async () => {
+                          !registeredAthletes.includes(athlete.id.toLowerCase()) ?
+                          await addAthleteToContest({
+                            userId: athlete.id,
+                            categoryId: activeCategory,
+                          }) : () => {}
+                        }}
                         className={classNames(
                           "group pl-6 pr-2 hover:bg-neutral-200/80 cursor-pointer py-2 border border-neutral-300 rounded-md flex justify-between items-center",
                           registeredAthletes.includes(athlete.id.toLowerCase()) ? "bg-green-500 text-white" : ""
