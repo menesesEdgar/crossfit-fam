@@ -1,41 +1,97 @@
 import TableHeader from "../../components/Table/TableHeader";
-import { FaChevronRight, FaUserShield } from "react-icons/fa";
+import { FaChevronRight, FaRegCheckCircle, FaUser, FaUserShield } from "react-icons/fa";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { LiaDumbbellSolid } from "react-icons/lia";
 import { useContestContext } from "../../context/ContestContext";
 import { TextInput } from "flowbite-react";
+import { LuSearch } from "react-icons/lu";
+import { useQuery } from "@tanstack/react-query";
+import { searchUsers as searchAthletes } from "../../services/api";
+import { Field } from "formik";
+import { MdInfo, MdRemoveCircleOutline } from "react-icons/md";
+import { calculateAge } from "../../utils/formatDates";
+import { useParams } from "react-router-dom";
+
 const CategoryWods = ({ setActiveTab }) => {
   // ContestId
   const {
     categories: contestCategories,
+    contest
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-
+  console.log("contest data ", contest)
+  const { id } = useParams()
+  const [registeredAthletes, setRegisteredAthletes] = useState([])
+  const [searchFilters, setSearchFilters] = useState({
+    searchTerm: "",
+    pageSize: 10,
+    page: 1,
+    sortBy: "firstName",
+    order: "asc",
+    role: "Athlete",
+    contestId: id
+  });  const lastChange = useRef()
   // console.log("categoryWods ", categoryWods);
   const [activeCategory, setActiveCategory] = useState(
     contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null
   );
-  console.log("contestCategories ", contestCategories)
+
   useEffect(() => {
     if (contestCategories?.length > 0) {
       setActiveCategory(contestCategories[0]?.conCatId)
     }
   }, [contestCategories])
 
+  const {
+  data: athletes,
+  refetch,
+  isLoading,
+  isPending,
+  } = useQuery({
+  queryKey: ["athletes", { ...searchFilters }],
+  queryFn: ({ signal }) => searchAthletes({ ...searchFilters, signal }),
+  staleTime: Infinity,
+  });
+  console.log("athletes ", athletes)
+  useEffect(() => {
+    refetch();
+  }, [searchFilters]);
+  
+  const handleSearch = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (lastChange.current) {
+        clearTimeout(lastChange.current);
+      }
+      lastChange.current = setTimeout(() => {
+        lastChange.current = null;
+        setSearchFilters((prevState) => {
+          return {
+            ...prevState,
+            searchTerm: e.target.value,
+          };
+        });
+      }, 600);
+    },
+    [searchFilters]
+  );
+  const changeActiveCategory = (tab) => {
+    setActiveCategory(tab?.conCatId);
+    const activeCategory =  contest?.contestCategory?.find((category) => category.conCatId === tab?.conCatId)
+    if (activeCategory) {
+      const activeAthletes = activeCategory?.categoryAthletes?.map((athlete ) => athlete.userId.toLowerCase())
 
-
-
-  const handleSelectAll = async () => {
-    // Add or remove all Wods to the selected category
-    if (selectAll) {
-      await removeAllCategoryWods(activeCategory);
-    } else {
-      await addAllWodsToCategory(activeCategory);
+      setRegisteredAthletes(activeAthletes)
     }
   };
+  useEffect(() => {
+    // If the category change, we need to filter the athletes
+  }, [activeCategory])
+
+  console.log("registeredAthletes ", registeredAthletes)
   return (
     <>
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
@@ -58,7 +114,7 @@ const CategoryWods = ({ setActiveTab }) => {
                 .map((category) => (
                   <div
                     key={category.id}
-                    // onClick={() => changeActiveCategory(category)}
+                    onClick={() => changeActiveCategory(category)}
                     className={classNames(
                       "group p-4   border-b border-neutral-100 flex justify-between items-center text-neutral-700 hover:bg-neutral-100 cursor-pointer"
                     )}
@@ -92,53 +148,61 @@ const CategoryWods = ({ setActiveTab }) => {
                   </p>
                 </div>
               </div>
-              <div className="space-y-6">
-                <div className="grid gap-2 grid-cols-1">
-                  {/* {contestWods &&
-                    contestWods?.length > 0 &&f
-                    contestWods.map((wod) => (
-                      <label
-                        key={wod.id || wod.name}
-                        className="flex items-center gap-2 hover:bg-neutral-100 group-hover:bg-neutral-100 p-2 rounded-md cursor-pointer"
-                      >
-                        {isEditContestPermission.hasPermission ? (
-                          <TextInput
-                            color={"warning"}
-                            type="checkbox"
-                            name={wod.name}
-                            value={wod.name}
-                            disabled={
-                              isDisabled ||
-                              !isEditContestPermission.hasPermission
-                            }
-                            checked={
-                              !!categoryWods?.find(
-                                (c) => c?.contestWodId === wod?.conWodId
-                              )
-                            }
-                            onChange={(e) =>
-                              updateWodOfCategory(wod, e.target.checked)
-                            }
-                          />
-                        ) : (
-                          <TextInput
-                            color={"warning"}
-                            type="checkbox"
-                            name={permission.name}
-                            value={permission.name}
-                            disabled={
-                              isDisabled ||
-                              !isEditContestPermission.hasPermission
-                            }
-
-                            onChange={null}
-                          />
-                        )}
-                        <span className="text-sm lg:text-base">{wod.name}</span>
-                      </label>
-                    ))} */}
+                <div className="relative w-full pb-4">
+                  <TextInput
+                    icon={LuSearch}
+                    type="search"
+                    placeholder="Buscar"
+                    onChange={handleSearch}
+                    className="h-10 w-full"
+                    style={{
+                      backgroundColor: "#fff",
+                      borderRadius: "5px",
+                      border: "1px solid #e5e5e5",
+                    }}
+                  />
                 </div>
-              </div>
+              <div className="h-full max-h-[30dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
+                {athletes?.data &&
+                  athletes?.data?.length > 0 &&
+                  athletes?.data.filter((athlete) => athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory || athlete.contestCategoryAthlete?.length === 0)
+                    .map((athlete) => (
+                      <div
+                        key={athlete.id}
+                        // onClick={async () => {
+                        //   await deleteWod({
+                        //     contestId: id,
+                        //     wodId: wod.conWodId,
+                        //   });
+                        // }}
+                        className={classNames(
+                          "group pl-6 pr-2 hover:bg-neutral-200/80 cursor-pointer py-2 border border-neutral-300 rounded-md flex justify-between items-center",
+                          registeredAthletes.includes(athlete.id.toLowerCase()) ? "bg-green-500 text-white" : ""
+                        )}
+                      >
+                        <div className="flex gap-4 items-center text-neutral-600 group-hover:text-red-500">
+                          <FaUser  size={20} />
+                          <h3 className="text-sm lg:text-lg font-semibold capitalize">
+                            {`${athlete?.firstName} ${athlete?.lastName} - ${calculateAge(athlete.birthdate)} años`}
+                          </h3>
+                        </div>
+                        <i className="flex items-center mb-1">
+                          {registeredAthletes.includes(athlete.id.toLowerCase()) ? (
+                            <FaRegCheckCircle 
+                            size={22}
+                            className="text-lg mt-0.5 text-neutral-600 group-hover:text-red-500"
+                            />
+                          ) : (
+                            <MdRemoveCircleOutline
+                            size={22}
+                            className="text-lg mt-0.5 text-neutral-600 group-hover:text-red-500"
+                            />
+                          )}
+
+                        </i>
+                      </div>
+                    ))}
+            </div>
             </div>
           </div>
         </div>

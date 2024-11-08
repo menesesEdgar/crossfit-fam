@@ -2,6 +2,7 @@ const contestReducer = (state, action) => {
   switch (action.type) {
     
     case "FETCH_CONTEST":
+      console.log("fetch contest ", action.payload)
       return {
         ...state,
         categories: action.payload?.contestCategory?.map((category) => {
@@ -21,6 +22,7 @@ const contestReducer = (state, action) => {
           contestCategory: action.payload?.contestCategory?.map((category) => {
             return {
               ...category.category,
+              categoryAthletes: [...category.contestCategoryAthlete],
               ["conCatId"]: category.id,
             };
           }),

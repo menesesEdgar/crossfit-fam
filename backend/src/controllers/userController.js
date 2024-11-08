@@ -224,6 +224,7 @@ export const searchUsers = async (req, res) => {
       page = 1,
       pageSize = 10,
       role,
+      contestId,
     } = req.query;
     const { user: currentUser } = req;
     const validSortColumns = [
@@ -291,6 +292,15 @@ export const searchUsers = async (req, res) => {
         photo: {
           where: { enabled: true },
         },
+        contestCategoryAthlete: {
+          where: {
+            contestCategory: {
+              contestId: {
+                in: [parseInt(contestId)]
+              }
+            }
+          }
+        }
       },
       orderBy: formSortBy(orderField, orderDirection),
       skip,

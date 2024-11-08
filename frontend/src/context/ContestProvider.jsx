@@ -26,7 +26,7 @@ const ContestProvider = ({ children }) => {
     removeAllContestWods,
     removeAllCategoryWods,
     addAllWodsToCategory,
-    addAthleteToContest
+    addAthleteToContest,
   } = useContest(dispatch);
   useEffect(() => {
     if (id) {

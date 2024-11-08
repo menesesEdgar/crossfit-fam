@@ -138,6 +138,7 @@ export const searchUsers = async ({
   page,
   pageSize,
   role,
+  contestId,
   signal,
 }) => {
   try {
@@ -149,6 +150,7 @@ export const searchUsers = async ({
         page,
         pageSize,
         role,
+        contestId
       },
       signal: signal,
     });
@@ -483,7 +485,7 @@ export const removeAllCategoryWods = async (id) => {
 };
 
 export const addAthleteToContest = async (data) => {
-  // const { userId, categoryId } = data;
+  // Data must contain the conCatId and the userId
   try {
     const response = await api.post("/contests/athlete", data);
     return response.data;

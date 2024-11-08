@@ -35,7 +35,7 @@ export const getContests = async (req, res) => {
         const categoriesWithAthletes = categories.map((cat) => ({
           ...cat,
           athletes: cat.contestCategoryAthlete
-            .filter((athleteEntry) => athleteEntry.user.role === "athlete")
+            .filter((athleteEntry) => athleteEntry.user.role.name === "Athlete")
             .map((athleteEntry) => athleteEntry.user),
         }));
 
@@ -126,6 +126,13 @@ export const getContestById = async (req, res) => {
                 id: true,
               },
             },
+            contestCategoryAthlete: {
+              select: {
+                id: true,
+                userId: true,
+                contestCategoryId: true
+              }
+            }
           },
         },
         contestWod: {
@@ -613,8 +620,7 @@ export const removeAllWodsFromCategory = async (req, res) => {
 };
 export const addAthleteToContest = async (req, res) => {
   try {
-    const {
-      id, category: categoryId} = req.body;
+    const {id, category: categoryId} = req.body;
 
     const contest = await db.contestCategoryAthlete.create({
       data: {
@@ -625,6 +631,41 @@ export const addAthleteToContest = async (req, res) => {
     res.json(contest);
   } catch (error) {
     console.log("error adding athlete to contest", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+export const removeAthleteFromContest = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const athlete = await db.ContestCategoryAthlete.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        contestCategory: {
+         select: {
+          contestId: true
+         }
+        }
+      }
+    });
+    if (!athlete) {
+      res.status(404).json({ message: "Athlete not registered" });
+      return;
+    }
+    // Remove the athlete
+    await db.ContestCategoryAthlete.delete({ where: { id: parseInt(id) } });
+    // Fetch existing athletes of the contest
+    const athletes = await db.contestCategoryAthlete.findMany({
+      where: {
+        contestCategory: {
+          contestId: {
+            in: [athlete?.contestCategory?.contestId]
+          }
+        }
+      }
+    });
+    res.json({ message: "Athlete removed", athletes });
+  } catch (error) {
+    console.log("error on deleteContest", error);
     res.status(500).json({ message: error.message });
   }
 };
