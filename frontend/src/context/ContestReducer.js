@@ -18,9 +18,18 @@ const contestReducer = (state, action) => {
             ["conWodId"]: wod.id,
           };
         }),
-        // categoryWods: action.payload?.contestCategory?.map((category) => {
-        //   return {[category.id]: [...category.conCateConWod]}
-        // }),
+        categoryWods: action.payload?.contestCategory?.map((category) => {
+          let obj = {}
+          obj[category.id] = category.conCateConWod
+          return obj
+        }).flatMap(item => {
+          return Object.entries(item).map(([key, value]) => {
+              return value.map(v => ({
+                  ...v,
+                  contestCategoryId: key
+              }));
+          }).flat();
+      }),
         contest: {
           ...action.payload,
           contestCategory: action.payload?.contestCategory?.map((category) => {
@@ -91,26 +100,35 @@ const contestReducer = (state, action) => {
           : [],
         loading: false,
       };
-    // case "ADD_WOD_TO_CATEGORY":
-    //   console.log("ADD_WOD_TO_CATEGORY ",action.payload)
-    //   return {
-    //     ...state,
-    //     categoryWods: [...state.categoryWods, action.payload],
-    //     loading: false,
-    //   };
-    // case "DELETE_WOD_OF_CATEGORY":
-    //   return {
-    //     ...state,
-    //     categories: state.categories?.map((category) => {
-    //       console.log(category.categoryWods.filter((cwod) => cwod.id !== action.payload.categoryWodDeleted.id))
-    //       return {
-    //         ...category,
-    //         categoryWods: [category.categoryWods.filter((cwod) => cwod.id !== action.payload.categoryWodDeleted.id)],
-    //         ["conCatId"]: category.id,
-    //       };
-    //     }),
-    //     loading: false,
-    //   };
+    case "ADD_WOD_TO_CATEGORY":
+      console.log("ADD_WOD_TO_CATEGORY ",action.payload)
+      return {
+        ...state,
+        categoryWods: [...state.categoryWods, action.payload],
+        loading: false,
+      };
+    case "DELETE_WOD_OF_CATEGORY":
+      return {
+        ...state,
+        categoryWods: action.payload?.categoryWodDeleted ?
+       [... state.categoryWods.filter((cWod) => cWod.id !== action.payload?.categoryWodDeleted.id)] : [],
+        loading: false,
+      };
+    case "ADD_ALL_WODS_TO_CATEGORY":
+      return {
+        ...state,
+        categoryWods: action.payload,
+        loading: false,
+      };
+    case "REMOVE_ALL_WODS_FROM_CATEGORY":
+      console.log("REMOVE_ALL_WODS_FROM_CATEGORY", action.payload)
+      return {
+        ...state,
+        categoryWods: state.categoryWods?.length > 0 ? 
+          [...state.categoryWods.filter((cWod) => parseInt(cWod.contestCategoryId) !== parseInt(action.payload.data))]
+        : [],
+        loading: false,
+      };
     case "ADD_ALL_CATEGORIES":
       return {
         ...state,

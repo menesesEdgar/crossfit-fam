@@ -474,9 +474,9 @@ export const deleteWodOfCategory = async (data) => {
   }
 };
 
-export const addAllWodsToCategory = async (id) => {
+export const addAllWodsToCategory = async ({categoryId, contestId}) => {
   try {
-    const response = await api.put(`/contests/category/${id}/addAllWods`);
+    const response = await api.put(`/contests/${contestId}/category/${categoryId}/addAllWods`);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -181,7 +181,45 @@ const useContest = (dispatch) => {
       setLoading(false);
     },
   });
+  const useAddAllWodsToCategory = useMutation({
+    mutationFn: addAllWodsToCategory,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "ADD_ALL_WODS_TO_CATEGORY", payload: data?.data });
+      Notifies("success", "Wods agregados correctamente");
+    },
+    onError: (error) => {
+      console.log("error adding all wods", error);
+      Notifies("error", error?.response?.data?.message);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("categoryWods");
+      setLoading(false);
+    },
+  });
 
+  const useRemoveAllCategoryWods = useMutation({
+    mutationFn: removeAllCategoryWods,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "REMOVE_ALL_WODS_FROM_CATEGORY", payload: data });
+      Notifies("success", "Wods eliminados correctamente");
+    },
+    onError: (error) => {
+      console.log("error removing all wods", error);
+      Notifies("error", error?.response?.data?.message);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contestsWods");
+      setLoading(false);
+    },
+  });
   const useRemoveAllContestWods = useMutation({
     mutationFn: removeAllContestWods,
     onMutate: () => {

@@ -61,7 +61,7 @@ router
   .delete(protect, removeWodToCategory);
 router.route("/category/wods/:categoryId").get(getWodsByCategory);
 router
-  .route("/category/:categoryId/addAllWods")
+  .route("/:contestId/category/:categoryId/addAllWods")
   .put(protect, addAllCategoryWods);
 router
   .route("/category/:categoryId/removeAllWods")

@@ -666,45 +666,39 @@ export const getWodsByCategory = async (req, res) => {
 
 export const addAllCategoryWods = async (req, res) => {
   try {
-    const { categoryId } = req.params;
+    // categoryId = contestCategoryId
+    const { categoryId, contestId } = req.params;
 
-    // const wods = await db.wod.findMany({
-    //   where: { isDeleted: false },
-    // });
+    const wods = await db.ContestWod.findMany({
+      where: { contestId: parseInt(contestId) },
+    });
 
-    const existingContestwods = await db.contestWod.findMany({
-      where: { contestId: parseInt(id) },
-      select: { wodId: true },
+    const existingCategoryWods = await db.conCateConWod.findMany({
+      where: { contestCategoryId: parseInt(categoryId) },
+      select: { contestWodId: true },
     });
 
     const existingWodIds = new Set(
-      existingContestwods.map((contestWod) => contestWod.wodId)
+      existingCategoryWods.map((categoryWod) => categoryWod.contestWodId)
     );
-
-    const uniqueWods = wods
+    const uniqueCategoryWods = wods
       .filter((wod) => !existingWodIds.has(wod.id))
       .map((wod) => ({
-        contestId: parseInt(id),
-        wodId: wod.id,
+        contestCategoryId: parseInt(categoryId),
+        contestWodId: wod.id,
       }));
-
-    const contest = await db.contestWod.createMany({
-      data: uniqueWods,
+    await db.conCateConWod.createMany({
+      data: uniqueCategoryWods,
     });
-
-    // get all categories for the contest
-    const contestWod = await db.contestWod.findMany({
-      where: { contestId: parseInt(id) },
-      include: {
-        wod: {
-          select: {
-            name: true,
-            id: true,
+    const contestWod = await db.conCateConWod.findMany({
+      where: { 
+        contestCategory: {
+          contestId: {
+            in: [parseInt(contestId)],
           },
-        },
-      },
+       },
+      }
     });
-
     res.json({ message: "All wods added to contest", data: contestWod });
   } catch (error) {
     console.log("error on addAllWodsToContest", error);
@@ -714,12 +708,13 @@ export const addAllCategoryWods = async (req, res) => {
 
 export const removeAllWodsFromCategory = async (req, res) => {
   try {
-    const { id } = req.params;
-    const contest = await db.contestWod.deleteMany({
-      where: { contestId: parseInt(id) },
+    const { categoryId } = req.params;
+    await db.conCateConWod.deleteMany({
+      where: { contestCategoryId: parseInt(categoryId) },
     });
 
-    res.json(contest);
+    res.json({ message: "All wods removed", data: categoryId });
+
   } catch (error) {
     console.log("error on removeAllWodsFromContest", error);
     res.status(500).json({ message: error.message });

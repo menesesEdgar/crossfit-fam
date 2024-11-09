@@ -7,6 +7,7 @@ import { LiaDumbbellSolid } from "react-icons/lia";
 import { useContestContext } from "../../../context/ContestContext";
 import { TextInput } from "flowbite-react";
 import Accordion from "../../../components/Accordion/Accordion";
+import { useParams } from "react-router-dom";
 const CategoryWods = ({ setActiveTab }) => {
   // ContestId
   const {
@@ -20,6 +21,7 @@ const CategoryWods = ({ setActiveTab }) => {
     addAllWodsToCategory,
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
+  const {id} = useParams()
   const [selectAll, setSelectAll] = useState(false);
 
   const updateWodOfCategory = async (wod, isChecked) => {
@@ -43,23 +45,26 @@ const CategoryWods = ({ setActiveTab }) => {
 
   console.log("categoryWods ", categoryWods);
   console.log("contestCategories ", contestCategories);
+  console.log("contestWods ", contestWods);
   // Contest Wods with the conWodId need to be found with the contestWodId in the other array
   const isEditContestPermission = useCheckPermissions("edit_contest");
 
   const isNextButtonDisabled = () => {
     return !categoryWods || categoryWods?.length === 0;
   };
-  const handleSelectAll = async (categoryId) => {
-    if (selectAll) {
+  const handleSelectAll = async (categoryId, allSelected) => {
+    console.log("categoryId ", categoryId, " allSelected ", allSelected)
+    if (allSelected) {
       await removeAllCategoryWods(categoryId);
     } else {
-      await addAllWodsToCategory(categoryId);
+      await addAllWodsToCategory({categoryId, contestId: id});
     }
   };
-
+  
   const handleContestCategories = () => {
     return contestCategories
       ?.map((category) => {
+        const allSelected = categoryWods.filter((cWod) => parseInt(cWod.contestCategoryId ) === category.conCatId).length === contestWods.length
         return {
           title: category?.name,
           content: (
@@ -70,8 +75,8 @@ const CategoryWods = ({ setActiveTab }) => {
                     color={"warning"}
                     type="checkbox"
                     name={"selectAll"}
-                    checked={false}
-                    onChange={() => {}}
+                    checked={allSelected}
+                    onChange={() => handleSelectAll(category.conCatId, allSelected)}
                   />
                   <span className="text-sm lg:text-base">
                     Seleccionar todas
@@ -79,7 +84,7 @@ const CategoryWods = ({ setActiveTab }) => {
                 </label>
                 {contestWods.map((wod) => (
                   <label
-                    key={wod.id || wod.name}
+                    key={wod.id}
                     className="flex items-center gap-2 hover:bg-neutral-100 p-2 rounded-md cursor-pointer"
                   >
                     {isEditContestPermission.hasPermission ? (
@@ -91,9 +96,8 @@ const CategoryWods = ({ setActiveTab }) => {
                         disabled={
                           isDisabled || !isEditContestPermission.hasPermission
                         }
-                        checked={category?.categoryWods?.find(
-                          (ctWod) => ctWod?.contestWodId === wod?.conWodId
-                        )}
+                        checked={!!categoryWods?.find(
+                          (ctWod) => ctWod?.contestWodId === wod?.conWodId && parseInt(ctWod.contestCategoryId) === category.conCatId)}
                         onChange={(e) =>
                           updateWodOfCategory(
                             {
