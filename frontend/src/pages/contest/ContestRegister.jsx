@@ -19,7 +19,8 @@ const CategoryWods = ({ setActiveTab }) => {
   const {
     categories: contestCategories,
     contest,
-    addAthleteToContest
+    addAthleteToContest,
+    removeAthleteFromContest
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -45,7 +46,7 @@ const CategoryWods = ({ setActiveTab }) => {
       setActiveCategory(contestCategories[0]?.conCatId)
     }
   }, [contestCategories])
-
+  console.log("activeCat ", activeCategory)
   const {
   data: athletes,
   refetch,
@@ -81,18 +82,8 @@ const CategoryWods = ({ setActiveTab }) => {
   );
   const changeActiveCategory = (tab) => {
     setActiveCategory(tab?.conCatId);
-    const activeCategory =  contest?.contestCategory?.find((category) => category.conCatId === tab?.conCatId)
-    if (activeCategory) {
-      const activeAthletes = activeCategory?.categoryAthletes?.map((athlete ) => athlete.userId.toLowerCase())
-
-      setRegisteredAthletes(activeAthletes)
-    }
   };
-  useEffect(() => {
-    // If the category change, we need to filter the athletes
-  }, [activeCategory])
 
-  console.log("registeredAthletes ", registeredAthletes)
   return (
     <>
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
@@ -117,7 +108,9 @@ const CategoryWods = ({ setActiveTab }) => {
                     key={category.id}
                     onClick={() => changeActiveCategory(category)}
                     className={classNames(
-                      "group p-4   border-b border-neutral-100 flex justify-between items-center text-neutral-700 hover:bg-neutral-100 cursor-pointer"
+                      "group p-4   border-b border-neutral-100 flex justify-between items-center text-neutral-700 hover:bg-neutral-100 cursor-pointer",
+                      activeCategory === category.conCatId ? "text-neutral-600 font-bold opacity-80 bg-neutral-700/10" : ""
+                      
                     )}
                   >
                     <div className="flex gap-4 items-center">
@@ -164,35 +157,35 @@ const CategoryWods = ({ setActiveTab }) => {
                   />
                 </div>
               <div className="h-full max-h-[30dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
-                {athletes?.data &&
+                {activeCategory && athletes?.data &&
                   athletes?.data?.length > 0 &&
                   athletes?.data.filter((athlete) => athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory || athlete.contestCategoryAthlete?.length === 0)
                     .map((athlete) => (
                       <div
                         key={athlete.id}
                         onClick={async () => {
-                          !registeredAthletes.includes(athlete.id.toLowerCase()) ?
+                          !(athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory) ?
                           await addAthleteToContest({
                             userId: athlete.id,
                             categoryId: activeCategory,
-                          }) : () => {}
+                          }) : await removeAthleteFromContest(athlete.contestCategoryAthlete[0]?.id)
                         }}
                         className={classNames(
                           "group pl-6 pr-2 hover:bg-neutral-200/80 cursor-pointer py-2 border border-neutral-300 rounded-md flex justify-between items-center",
-                          registeredAthletes.includes(athlete.id.toLowerCase()) ? "bg-green-500 text-white" : ""
+                          athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory  ? "bg-green-500 text-white" : "text-neutral-600"
                         )}
                       >
-                        <div className="flex gap-4 items-center text-neutral-600 group-hover:text-red-500">
+                        <div className="flex gap-4 items-center  group-hover:text-red-500">
                           <FaUser  size={20} />
                           <h3 className="text-sm lg:text-lg font-semibold capitalize">
                             {`${athlete?.firstName} ${athlete?.lastName} - ${calculateAge(athlete.birthdate)} años`}
                           </h3>
                         </div>
                         <i className="flex items-center mb-1">
-                          {registeredAthletes.includes(athlete.id.toLowerCase()) ? (
+                          {athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory? (
                             <FaRegCheckCircle 
                             size={22}
-                            className="text-lg mt-0.5 text-neutral-600 group-hover:text-red-500"
+                            className="text-lg mt-0.5 text-white group-hover:text-red-500"
                             />
                           ) : (
                             <MdRemoveCircleOutline

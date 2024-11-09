@@ -8,6 +8,7 @@ const contestReducer = (state, action) => {
         categories: action.payload?.contestCategory?.map((category) => {
           return {
             ...category.category,
+            categoryWods: [...category.conCateConWod],
             ["conCatId"]: category.id,
           };
         }),
@@ -17,6 +18,9 @@ const contestReducer = (state, action) => {
             ["conWodId"]: wod.id,
           };
         }),
+        // categoryWods: action.payload?.contestCategory?.map((category) => {
+        //   return {[category.id]: [...category.conCateConWod]}
+        // }),
         contest: {
           ...action.payload,
           contestCategory: action.payload?.contestCategory?.map((category) => {
@@ -35,12 +39,6 @@ const contestReducer = (state, action) => {
         },
         loading: false,
       };
-    case 'FETCH_WODS_BY_CATEGORY':
-      return {
-        ...state,
-        categoryWods: action.payload,
-        loading: false,
-      };
     case "ADD_CATEGORY":
       return {
         ...state,
@@ -52,13 +50,6 @@ const contestReducer = (state, action) => {
             ["conCatId"]: action.payload.id,
           },
         ],
-        loading: false,
-      };
-    case "ADD_ATHLETE_TO_CONTEST":
-      console.log("adding athlete ", action.payload)
-      return {
-        ...state,
-        athletes: [...state.athletes, action.payload],
         loading: false,
       };
     case "DELETE_CATEGORY":
@@ -100,19 +91,26 @@ const contestReducer = (state, action) => {
           : [],
         loading: false,
       };
-    case "ADD_WOD_TO_CATEGORY":
-      return {
-        ...state,
-        categoryWods: [...state.categoryWods, action.payload],
-        loading: false,
-      };
-    case "DELETE_WOD_OF_CATEGORY":
-      console.log("action ", action.payload)
-      return {
-        ...state,
-        categoryWods: action.payload.categoryWods,
-        loading: false,
-      };
+    // case "ADD_WOD_TO_CATEGORY":
+    //   console.log("ADD_WOD_TO_CATEGORY ",action.payload)
+    //   return {
+    //     ...state,
+    //     categoryWods: [...state.categoryWods, action.payload],
+    //     loading: false,
+    //   };
+    // case "DELETE_WOD_OF_CATEGORY":
+    //   return {
+    //     ...state,
+    //     categories: state.categories?.map((category) => {
+    //       console.log(category.categoryWods.filter((cwod) => cwod.id !== action.payload.categoryWodDeleted.id))
+    //       return {
+    //         ...category,
+    //         categoryWods: [category.categoryWods.filter((cwod) => cwod.id !== action.payload.categoryWodDeleted.id)],
+    //         ["conCatId"]: category.id,
+    //       };
+    //     }),
+    //     loading: false,
+    //   };
     case "ADD_ALL_CATEGORIES":
       return {
         ...state,

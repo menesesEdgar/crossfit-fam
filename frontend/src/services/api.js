@@ -452,10 +452,10 @@ export const getWodsByCategory = async (categoryId) => {
   }
 };
 export const deleteWodOfCategory = async (data) => {
-  const { categoryId, categoryWodId } = data;
+  const { categoryId, wodId } = data;
   try {
     const response = await api.delete(
-      `/contests/category/${categoryId}/wod/${categoryWodId}`
+      `/contests/category/${categoryId}/wod/${wodId}`
     );
     return response.data;
   } catch (error) {
@@ -488,6 +488,17 @@ export const addAthleteToContest = async (data) => {
   // Data must contain the conCatId and the userId
   try {
     const response = await api.post("/contests/athlete", data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const removeAthleteFromContest = async (athleteId) => {
+  console.log("athleteId ", athleteId)
+  try {
+    const response = await api.delete(`/contests/athlete/${athleteId}` );
     return response.data;
   } catch (error) {
     console.error(error);

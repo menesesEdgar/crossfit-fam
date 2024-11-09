@@ -271,7 +271,6 @@ export const searchUsers = async (req, res) => {
       }
       return obj;
     };
-
     const orderField = validSortColumns.includes(sortBy) ? sortBy : "firstName";
     const orderDirection = order === "asc" ? "asc" : "desc";
     const skip = (page - 1) * pageSize;
@@ -284,7 +283,17 @@ export const searchUsers = async (req, res) => {
       enabled: true,
       role: athleteRol,
     };
-
+    const ahtleteWhere = contestId ? {
+      contestCategoryAthlete: {
+        where: {
+          contestCategory: {
+            contestId: {
+              in: [parseInt(contestId)]
+            }
+          }
+        }
+      }
+    } : {}
     const users = await db.user.findMany({
       where: whereConditions,
       include: {
@@ -292,15 +301,7 @@ export const searchUsers = async (req, res) => {
         photo: {
           where: { enabled: true },
         },
-        contestCategoryAthlete: {
-          where: {
-            contestCategory: {
-              contestId: {
-                in: [parseInt(contestId)]
-              }
-            }
-          }
-        }
+      ...ahtleteWhere
       },
       orderBy: formSortBy(orderField, orderDirection),
       skip,

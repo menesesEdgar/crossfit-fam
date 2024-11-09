@@ -22,64 +22,41 @@ const CategoryWods = ({ setActiveTab }) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
 
-  // console.log("categoryWods ", categoryWods);
-  const [activeCategory, setActiveCategory] = useState(
-    contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null
-  );
-  console.log("contestCategories ", contestCategories);
-  useEffect(() => {
-    if (contestCategories?.length > 0) {
-      setActiveCategory(contestCategories[0]?.conCatId);
-    }
-  }, [contestCategories]);
   const updateWodOfCategory = async (wod, isChecked) => {
-    // console.log("wod ", wod);
-    // console.log("activeCategory ", activeCategory);
-
+    console.log("wod ", wod);
+    const {conWodId, categoryId} = wod
     setIsDisabled(true);
     if (isChecked) {
       await addWodToCategory({
-        categoryId: activeCategory,
-        wodId: wod.conWodId,
+        categoryId: categoryId,
+        wodId: conWodId,
       });
     } else {
-      const id = categoryWods?.find(
-        (category) => category.contestWodId === wod.conWodId
-      ).id;
+
       await removeWodOfCategory({
-        categoryId: activeCategory,
-        categoryWodId: id,
+        categoryId: categoryId,
+        wodId: conWodId,
       });
     }
     setTimeout(() => {
       setIsDisabled(false);
     }, 1000);
   };
-  const changeActiveCategory = (tab) => {
-    setActiveCategory(tab?.conCatId);
-    getWodsByCategory(tab?.conCatId);
-  };
-  useEffect(() => {
-    if (contestCategories.length > 0 && activeCategory) {
-      getWodsByCategoryId(activeCategory);
-    }
-  }, [activeCategory]);
-  const getWodsByCategory = async (categoryId) => {
-    await getWodsByCategoryId(categoryId);
-  };
-  // console.log("contestCategories ", contestCategories);
-  // console.log("contestWods ", contestWods);
+
+
+  console.log("categoryWods ", categoryWods);
+  console.log("contestCategories ", contestCategories);
   // Contest Wods with the conWodId need to be found with the contestWodId in the other array
   const isEditContestPermission = useCheckPermissions("edit_contest");
 
   const isNextButtonDisabled = () => {
-    return categoryWods?.length === 0;
+    return !categoryWods || categoryWods?.length === 0;
   };
-  const handleSelectAll = async () => {
+  const handleSelectAll = async (categoryId) => {
     if (selectAll) {
-      await removeAllCategoryWods(activeCategory);
+      await removeAllCategoryWods(categoryId);
     } else {
-      await addAllWodsToCategory(activeCategory);
+      await addAllWodsToCategory(categoryId);
     }
   };
 
@@ -96,7 +73,7 @@ const CategoryWods = ({ setActiveTab }) => {
                     color={"warning"}
                     type="checkbox"
                     name={"selectAll"}
-                    checked={() => {}}
+                    checked={false}
                     onChange={() => {}}
                   />
                   <span className="text-sm lg:text-base">
@@ -118,12 +95,10 @@ const CategoryWods = ({ setActiveTab }) => {
                           isDisabled || !isEditContestPermission.hasPermission
                         }
                         checked={
-                          !!categoryWods?.find(
-                            (c) => c?.contestWodId === wod?.conWodId
-                          )
+                          category?.categoryWods?.find((ctWod) => ctWod?.contestWodId === wod?.conWodId)
                         }
                         onChange={(e) =>
-                          updateWodOfCategory(wod, e.target.checked)
+                          updateWodOfCategory({conWodId: wod.conWodId, categoryId: category.conCatId}, e.target.checked)
                         }
                       />
                     ) : (

@@ -132,6 +132,13 @@ export const getContestById = async (req, res) => {
                 userId: true,
                 contestCategoryId: true
               }
+            },
+            conCateConWod: {
+              select: {
+                id: true,
+                contestCategoryId: true,
+                contestWodId: true
+              }
             }
           },
         },
@@ -485,30 +492,17 @@ export const addWodToCategory = async (req, res) => {
   }
 };
 export const removeWodToCategory = async (req, res) => {
-  const { categoryId, wodId: categoryWodId } = req.params; // categoryWodId
+  const { categoryId, wodId } = req.params; // categoryWodId
   try {
-    const categoryWod = db.conCateConWod.findUnique({
-      where: { id: parseInt(categoryWodId) },
+    const categoryWod = await db.conCateConWod.findMany({
+      where: { contestCategoryId: parseInt(categoryId), contestWodId: parseInt(wodId) },
     });
-
-    if (!categoryWod) {
+    if (categoryWod?.length == 0) {
       res.status(404).json({ message: "Category wod not found" });
       return;
     }
-    await db.conCateConWod.delete({ where: { id: parseInt(categoryWodId) } });
-
-    const categoryWods = await db.conCateConWod.findMany({
-      where: { contestCategoryId: parseInt(categoryId) },
-      // include: {
-      //   wod: {
-      //     select: {
-      //       name: true,
-      //       id: true,
-      //     },
-      //   },
-      // },
-    });
-    res.json({ message: "Category wod deleted", categoryWods });
+    const categoryWodDeleted = await db.conCateConWod.delete({ where: { id: parseInt(categoryWod[0].id) } });
+    res.json({ message: "Category wod deleted", categoryWodDeleted });
   } catch (error) {
     console.log("error on deleteCategoryWod", error);
     res.status(500).json({ message: error.message });

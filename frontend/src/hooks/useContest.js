@@ -15,6 +15,7 @@ import {
   addAllWodsToCategory,
   removeAllCategoryWods,
   addAthleteToContest,
+  removeAthleteFromContest
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -237,6 +238,24 @@ const useContest = (dispatch) => {
       setLoading(false);
     },
   });
+  const useDeleteAthleteFromContest = useMutation({
+    mutationFn: removeAthleteFromContest,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "DELETE_ATHLETE_FROM_CONTEST", payload: data });
+      Notifies("success", "Athleta eliminado correctamente");
+    },
+    onError: (error) => {
+      console.log("error on delete athlete", error);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contestsAthlete");
+      setLoading(false);
+    },
+  });
   const useAddAthleteToContest = useMutation({
     mutationFn: addAthleteToContest,
     onMutate: () => {
@@ -264,6 +283,9 @@ const useContest = (dispatch) => {
     },
     addAthleteToContest: (values) => {
       return useAddAthleteToContest.mutateAsync(values);
+    },
+    removeAthleteFromContest: (values) => {
+      return useDeleteAthleteFromContest.mutateAsync(values);
     },
     deleteCategory: (values) => {
       return useDeleteCategory.mutateAsync(values);

@@ -8,7 +8,8 @@ const ContestProvider = ({ children }) => {
     contest: {},
     categories: [],
     wods: [],
-    athlete: {}
+    athlete: {},
+    categoryWods: []
   });
   const { id } = useParams()
   const {
@@ -27,6 +28,7 @@ const ContestProvider = ({ children }) => {
     removeAllCategoryWods,
     addAllWodsToCategory,
     addAthleteToContest,
+    removeAthleteFromContest
   } = useContest(dispatch);
   useEffect(() => {
     if (id) {
@@ -53,6 +55,7 @@ const ContestProvider = ({ children }) => {
         removeAllCategoryWods,
         addAllWodsToCategory,
         addAthleteToContest,
+        removeAthleteFromContest
       }}
     >
       {children}
