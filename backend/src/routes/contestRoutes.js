@@ -22,7 +22,7 @@ import {
   removeAllWodsFromCategory,
   addAthleteToContest,
   removeAthleteFromContest,
-  fetchRegisteredAthletes,
+  getAthletesByCategory
 } from "../controllers/contestController.js";
 
 const router = express.Router();
@@ -30,7 +30,9 @@ const router = express.Router();
 router
   .route("/athlete")
   .post(protect, addAthleteToContest)
-  .get(fetchRegisteredAthletes);
+
+router.route("/:contestId/category/:categoryId")
+.get(getAthletesByCategory)
 router.route("/athlete/:id").delete(protect, removeAthleteFromContest);
 router.route("/").get(getContests).post(protect, createContest);
 router

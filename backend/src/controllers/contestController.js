@@ -772,24 +772,111 @@ export const removeAthleteFromContest = async (req, res) => {
   }
 };
 
-export const fetchRegisteredAthletes = async (req, res) => {
-  const { categories } = req.body;
+// where: {
+//   contestCategoryAthlete: {
+//       contestCategoryId: {
+//         in: [parseInt(categoryId)]
+//       }
+//   }
+// },
+// include: {
+//   contestCategoryAthlete: {
+//     select: {
+//       user: {
+//         select: {
+//           firstName: true,
+//           lastName: true,
+//           email: true,
+//           phone: true,
+//         },
+//       },          }
+//   },
+
+// }
+export const getAthletesByCategory = async (req, res) => {
+  const { categoryId, contestId } = req.params;
   try {
-    const contest = await db.ContestCategoryAthlete.findMany({
+    const contestAthletes = await db.contestCategoryAthlete.findMany({
       where: {
         contestCategoryId: {
-          in: categories,
+          in: [parseInt(categoryId)],
         },
       },
+      select: {
+        id: true,
+        contestCategoryId: true,
+        userId:true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+          },
+        },
+        score: {
+          select: {
+            id: true,
+            score: true,
+            measure: true,
+            contestCategoryWodId: true,
+            contestCategoryAthleteId: true
+          }
+        }
+      },
     });
-    if (!contest) {
-      res.status(404).json({ message: "Contest not found" });
+    const formattedData = contestAthletes.map((athlete) => {
+      const newObj = {
+        ...athlete,
+        ...athlete.user,
+      }
+      delete newObj.user;
+      return newObj
+    })
+    
+    if (!formattedData) {
+      res.status(404).json({ message: "Athletes not found for this category" });
       return;
     }
 
+    res.json(formattedData);
+  } catch (error) {
+    console.log("error on getAthletesByCategory", error);
+    res.status(500).json({ message: error.message });
+  }
+};export const addScoreToAthlete = async (req, res) => {
+  try {
+    const { athleteId, score, measure, wodId } = req.body;
+
+    const contest = await db.score.create({
+      data: {
+        contestCategoryAthleteId: athleteId,
+        score,
+        measure: measure ? measure : 'reps',
+        contestCategoryWodId: wodId
+      },
+    });
     res.json(contest);
   } catch (error) {
-    console.log("error on getContestById", error);
+    console.log("error adding athlete to contest", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+export const updateScoreToAthlete = async (req, res) => {
+  try {
+    const { id, score, measure } = req.body;
+
+    const athleteScore = await db.score.update({
+      where: { id: parseInt(id)},
+      data: {
+        score,
+        measure: measure ? measure : 'reps',
+      },
+    });
+
+    res.json(athleteScore);
+  } catch (error) {
+    console.log("error adding athlete to contest", error);
     res.status(500).json({ message: error.message });
   }
 };

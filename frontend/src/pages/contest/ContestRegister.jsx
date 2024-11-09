@@ -18,13 +18,11 @@ const CategoryWods = ({ setActiveTab }) => {
   // ContestId
   const {
     categories: contestCategories,
-    contest,
     addAthleteToContest,
     removeAthleteFromContest
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  console.log("contest data ", contest)
   const { id } = useParams()
   const [registeredAthletes, setRegisteredAthletes] = useState([])
   const [searchFilters, setSearchFilters] = useState({
@@ -46,7 +44,7 @@ const CategoryWods = ({ setActiveTab }) => {
       setActiveCategory(contestCategories[0]?.conCatId)
     }
   }, [contestCategories])
-  console.log("activeCat ", activeCategory)
+  console.log("contestCategories ", contestCategories)
   const {
   data: athletes,
   refetch,
