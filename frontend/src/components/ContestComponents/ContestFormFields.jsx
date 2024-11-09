@@ -3,11 +3,14 @@ import { Field } from "formik";
 import TextInput from "../Inputs/TextInput";
 import DateInput from "../Inputs/DateInput";
 import { BiCategory } from "react-icons/bi";
-import { PiTrademarkRegisteredBold } from "react-icons/pi";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCalendar, FaFlagCheckered, FaUser } from "react-icons/fa";
 import SelectInput from "../Inputs/SelectInput";
 const statusOptions = [
+  {
+    id: "Borrador",
+    name: "Borrador",
+  },
   {
     id: "Abierta",
     name: "Abierta",
@@ -26,7 +29,7 @@ const statusOptions = [
   },
 ];
 
-const ContestFormFields = () => {
+const ContestFormFields = ({ isUpdate }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <Field
@@ -61,17 +64,29 @@ const ContestFormFields = () => {
         type="date"
         icon={FaCalendar}
       />
-      <Field
-        name="status"
-        id="status"
-        component={SelectInput}
-        label="Estatus"
-        icon={BiCategory}
-        options={statusOptions.map((status) => ({
-          label: status.name,
-          value: status.id,
-        }))}
-      />
+      {isUpdate ? (
+        <Field
+          name="status"
+          id="status"
+          component={SelectInput}
+          label="Estatus"
+          icon={BiCategory}
+          options={statusOptions.map((status) => ({
+            label: status.name,
+            value: status.id,
+          }))}
+        />
+      ) : (
+        <Field
+          className="hidden"
+          name="status"
+          label="status"
+          component={TextInput}
+          type="hidden"
+          value={"Borrador"}
+          disabled={true}
+        />
+      )}
       <Field
         name="location"
         id="location"

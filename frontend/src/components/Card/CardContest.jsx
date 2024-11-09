@@ -1,28 +1,19 @@
 import React from "react";
-import { FaEdit, FaRegCalendar, FaTrash } from "react-icons/fa";
-import { MdOutlineLocationOn } from "react-icons/md";
+import { FaRegCalendar } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
-import { FaCog } from "react-icons/fa";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
 import { Dropdown } from "flowbite-react";
 import classNames from "classnames";
-import { AiOutlineEye } from "react-icons/ai";
 import { IoLocationOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
-const CardContest = ({
-  contest,
-  onView,
-  onDelete,
-  onEdit,
-  allowActions,
-  extraActions,
-}) => {
+const CardContest = ({ contest, actions, collapsedActions }) => {
   return (
     <article
       className={classNames(
         "flex rounded-lg rounded-l-xl shadow-sm h-full md:max-h-[38dvh] 2xl:max-h-[38dvh] hover:shadow-lg transition ease-in-out duration-200",
+        { "bg-crossfit-gray-dark": contest?.status === "Borrador" },
         { "bg-crossfit-primary": contest?.status === "Abierta" },
         { "bg-crossfit-info/70": contest?.status === "En curso" },
         { " bg-crossfit-success": contest?.status === "Finalizada" },
@@ -42,6 +33,8 @@ const CardContest = ({
                   ? "bg-crossfit-success text-white"
                   : contest?.status === "Cancelada"
                   ? "bg-red-500 text-white"
+                  : contest?.status === "Borrador"
+                  ? "bg-crossfit-gray-dark text-white"
                   : "bg-neutral-100 text-neutral-600"
               }`}
             >
@@ -119,20 +112,9 @@ const CardContest = ({
           </div>
         </div>
         <div className="w-full rounded-b-lg bg-white flex gap-2 p-4">
-          {allowActions && (
-            <>
-              <div className="bg-white">
-                <ActionButtons
-                  extraActions={[
-                    {
-                      label: "Editar",
-                      action: () => onView(contest?.id),
-                      color: "neutral",
-                      icon: FaEdit,
-                    },
-                  ]}
-                />
-              </div>
+          <>
+            {actions && <ActionButtons extraActions={actions} />}
+            {collapsedActions && (
               <Dropdown
                 renderTrigger={() => (
                   <button className="w-fit bg-white hover:bg-neutral-200 md:w-fit h-9 xl:h-10 text-sm xl:text-base cursor-pointer transition ease-in-out duration-200 p-4 flex items-center justify-center rounded-md border text-stone-800">
@@ -143,25 +125,21 @@ const CardContest = ({
                 inline
                 arrowIcon={null}
                 placement="right"
+                className="md:w-52"
               >
-                <Dropdown.Item
-                  className="min-w-36"
-                  onClick={() => onEdit(contest)}
-                  icon={FaCog}
-                >
-                  <span>Configurar</span>
-                </Dropdown.Item>
-                <Dropdown.Item
-                  className="min-w-36"
-                  onClick={() => onDelete(contest?.id)}
-                  icon={FaTrash}
-                >
-                  <span>Eliminar</span>
-                </Dropdown.Item>
+                {collapsedActions?.map((action, index) => (
+                  <Dropdown.Item
+                    key={index}
+                    className="min-w-36 min-h-12"
+                    onClick={() => action?.action(contest?.id)}
+                    icon={action?.icon}
+                  >
+                    <span>{action?.label}</span>
+                  </Dropdown.Item>
+                ))}
               </Dropdown>
-            </>
-          )}
-          {extraActions && <ActionButtons extraActions={extraActions} />}
+            )}
+          </>
         </div>
       </div>
     </article>

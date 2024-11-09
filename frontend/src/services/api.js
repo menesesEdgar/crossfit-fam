@@ -150,7 +150,7 @@ export const searchUsers = async ({
         page,
         pageSize,
         role,
-        contestId
+        contestId,
       },
       signal: signal,
     });
@@ -333,6 +333,16 @@ export const updateContest = async (contest) => {
   }
 };
 
+export const setContestNextStep = async ({ id, step }) => {
+  try {
+    const response = await api.put(`/contests/${id}/nextStep`, { step });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const deleteContest = async (contestId) => {
   try {
     const response = await api.delete(`/contests/${contestId}`);
@@ -496,9 +506,9 @@ export const addAthleteToContest = async (data) => {
 };
 
 export const removeAthleteFromContest = async (athleteId) => {
-  console.log("athleteId ", athleteId)
+  console.log("athleteId ", athleteId);
   try {
-    const response = await api.delete(`/contests/athlete/${athleteId}` );
+    const response = await api.delete(`/contests/athlete/${athleteId}`);
     return response.data;
   } catch (error) {
     console.error(error);

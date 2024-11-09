@@ -17,6 +17,7 @@ import {
   deleteWod,
   createContest,
   updateContest,
+  setContestNextStep,
   deleteContest,
   getContests,
 } from "../services/api";
@@ -224,6 +225,7 @@ const useCatalogs = (dispatch) => {
     },
     onSettled: () => setLoading(false),
   });
+
   const useCreateContest = useMutation({
     mutationFn: createContest,
     onMutate: () => {
@@ -263,13 +265,32 @@ const useCatalogs = (dispatch) => {
     },
   });
 
+  const useSetNextStep = useMutation({
+    mutationFn: setContestNextStep,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "UPDATE_CONTEST", payload: data });
+      Notifies("success", "Competencia actualizada correctamente");
+    },
+    onError: (error) => {
+      console.log("error on setNextStep", error);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contests");
+      setLoading(false);
+    },
+  });
+
   const useDeleteContest = useMutation({
     mutationFn: deleteContest,
     onMutate: () => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: "DELETE_CONTEST", payload: data });
+      dispatch({ type: "DELETE_CONTEST", payload: data?.data });
       Notifies("success", "Competencia eliminada correctamente");
     },
     onError: (error) => {
@@ -307,6 +328,9 @@ const useCatalogs = (dispatch) => {
     },
     updateContest: (values) => {
       return useUpdateContest.mutateAsync(values);
+    },
+    setContestNextStep: (values) => {
+      return useSetNextStep.mutateAsync(values);
     },
     deleteContest: (values) => {
       return useDeleteContest.mutateAsync(values);

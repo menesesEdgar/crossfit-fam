@@ -31,6 +31,7 @@ const CatalogContext = createContext({
   deleteWod: async () => {},
   createContest: async () => {},
   deleteContest: async () => {},
+  setContestNextStep: async () => {},
   publicContests: async () => {},
   publicContest: async () => {},
 });

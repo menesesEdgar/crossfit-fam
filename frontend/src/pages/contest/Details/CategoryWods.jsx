@@ -23,8 +23,7 @@ const CategoryWods = ({ setActiveTab }) => {
   const [selectAll, setSelectAll] = useState(false);
 
   const updateWodOfCategory = async (wod, isChecked) => {
-    console.log("wod ", wod);
-    const {conWodId, categoryId} = wod
+    const { conWodId, categoryId } = wod;
     setIsDisabled(true);
     if (isChecked) {
       await addWodToCategory({
@@ -32,7 +31,6 @@ const CategoryWods = ({ setActiveTab }) => {
         wodId: conWodId,
       });
     } else {
-
       await removeWodOfCategory({
         categoryId: categoryId,
         wodId: conWodId,
@@ -42,7 +40,6 @@ const CategoryWods = ({ setActiveTab }) => {
       setIsDisabled(false);
     }, 1000);
   };
-
 
   console.log("categoryWods ", categoryWods);
   console.log("contestCategories ", contestCategories);
@@ -94,11 +91,17 @@ const CategoryWods = ({ setActiveTab }) => {
                         disabled={
                           isDisabled || !isEditContestPermission.hasPermission
                         }
-                        checked={
-                          category?.categoryWods?.find((ctWod) => ctWod?.contestWodId === wod?.conWodId)
-                        }
+                        checked={category?.categoryWods?.find(
+                          (ctWod) => ctWod?.contestWodId === wod?.conWodId
+                        )}
                         onChange={(e) =>
-                          updateWodOfCategory({conWodId: wod.conWodId, categoryId: category.conCatId}, e.target.checked)
+                          updateWodOfCategory(
+                            {
+                              conWodId: wod.conWodId,
+                              categoryId: category.conCatId,
+                            },
+                            e.target.checked
+                          )
                         }
                       />
                     ) : (

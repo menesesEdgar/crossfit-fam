@@ -19,7 +19,9 @@ const ModalViewer = ({
       dismissible={dismissible}
       popup={popup}
     >
-      <Modal.Header>{title}</Modal.Header>
+      <Modal.Header className="bg-crossfit-light-purple">
+        <span className="text-white">{title}</span>
+      </Modal.Header>
       <Modal.Body
         className={classNames("flex items-start", `justify-${contentPosition}`)}
       >

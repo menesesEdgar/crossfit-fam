@@ -130,16 +130,16 @@ export const getContestById = async (req, res) => {
               select: {
                 id: true,
                 userId: true,
-                contestCategoryId: true
-              }
+                contestCategoryId: true,
+              },
             },
             conCateConWod: {
               select: {
                 id: true,
                 contestCategoryId: true,
-                contestWodId: true
-              }
-            }
+                contestWodId: true,
+              },
+            },
           },
         },
         contestWod: {
@@ -178,7 +178,7 @@ export const createContest = async (req, res) => {
         organizer,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
-        status,
+        status: "Borrador",
       },
     });
     res.json(contest);
@@ -218,6 +218,71 @@ export const updateContest = async (req, res) => {
   }
 };
 
+export const setContextNextStep = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { step } = req.body;
+
+    const steps = ["Borrador", "Abierta", "En curso", "Finalizada"];
+
+    const getStepIndex = steps.indexOf(step);
+
+    await db.contest.update({
+      where: { id: parseInt(id) },
+      data: {
+        status: steps[getStepIndex + 1],
+      },
+    });
+
+    const contestWithDetails = await db.contest.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        contestCategory: {
+          select: {
+            id: true,
+            category: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+            contestCategoryAthlete: {
+              select: {
+                id: true,
+                userId: true,
+                contestCategoryId: true,
+              },
+            },
+            conCateConWod: {
+              select: {
+                id: true,
+                contestCategoryId: true,
+                contestWodId: true,
+              },
+            },
+          },
+        },
+        contestWod: {
+          select: {
+            id: true,
+            wod: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.json(contestWithDetails);
+  } catch (error) {
+    console.log("error on setContextNextStep", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const deleteContest = async (req, res) => {
   try {
     const contest = db.contest.findUnique({
@@ -230,7 +295,50 @@ export const deleteContest = async (req, res) => {
     }
 
     await db.contest.delete({ where: { id: parseInt(req.params.id) } });
-    res.json({ message: "Contest deleted" });
+    const contests = await db.contest.findMany();
+
+    const contestsWithDetails = await Promise.all(
+      contests.map(async (contest) => {
+        const categories = await db.contestCategory.findMany({
+          where: { contestId: contest.id },
+          include: {
+            category: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+            contestCategoryAthlete: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    role: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const categoriesWithAthletes = categories.map((cat) => ({
+          ...cat,
+          athletes: cat.contestCategoryAthlete
+            .filter((athleteEntry) => athleteEntry.user.role.name === "Athlete")
+            .map((athleteEntry) => athleteEntry.user),
+        }));
+
+        return {
+          ...contest,
+          categories: categoriesWithAthletes,
+        };
+      })
+    );
+    res.json({ message: "Contest deleted", data: contestsWithDetails });
   } catch (error) {
     console.log("error on deleteContest", error);
     res.status(500).json({ message: error.message });
@@ -495,13 +603,18 @@ export const removeWodToCategory = async (req, res) => {
   const { categoryId, wodId } = req.params; // categoryWodId
   try {
     const categoryWod = await db.conCateConWod.findMany({
-      where: { contestCategoryId: parseInt(categoryId), contestWodId: parseInt(wodId) },
+      where: {
+        contestCategoryId: parseInt(categoryId),
+        contestWodId: parseInt(wodId),
+      },
     });
     if (categoryWod?.length == 0) {
       res.status(404).json({ message: "Category wod not found" });
       return;
     }
-    const categoryWodDeleted = await db.conCateConWod.delete({ where: { id: parseInt(categoryWod[0].id) } });
+    const categoryWodDeleted = await db.conCateConWod.delete({
+      where: { id: parseInt(categoryWod[0].id) },
+    });
     res.json({ message: "Category wod deleted", categoryWodDeleted });
   } catch (error) {
     console.log("error on deleteCategoryWod", error);
@@ -614,7 +727,7 @@ export const removeAllWodsFromCategory = async (req, res) => {
 };
 export const addAthleteToContest = async (req, res) => {
   try {
-    const {userId, categoryId} = req.body;
+    const { userId, categoryId } = req.body;
 
     const contest = await db.contestCategoryAthlete.create({
       data: {
@@ -635,11 +748,11 @@ export const removeAthleteFromContest = async (req, res) => {
       where: { id: parseInt(id) },
       include: {
         contestCategory: {
-         select: {
-          contestId: true
-         }
-        }
-      }
+          select: {
+            contestId: true,
+          },
+        },
+      },
     });
     if (!athlete) {
       res.status(404).json({ message: "Athlete not registered" });
@@ -652,10 +765,10 @@ export const removeAthleteFromContest = async (req, res) => {
       where: {
         contestCategory: {
           contestId: {
-            in: [athlete?.contestCategory?.contestId]
-          }
-        }
-      }
+            in: [athlete?.contestCategory?.contestId],
+          },
+        },
+      },
     });
     res.json({ message: "Athlete removed", athletes });
   } catch (error) {
@@ -668,9 +781,11 @@ export const fetchRegisteredAthletes = async (req, res) => {
   const { categories } = req.body;
   try {
     const contest = await db.ContestCategoryAthlete.findMany({
-      where: { contestCategoryId: {
-        in: categories
-      } },
+      where: {
+        contestCategoryId: {
+          in: categories,
+        },
+      },
     });
     if (!contest) {
       res.status(404).json({ message: "Contest not found" });
