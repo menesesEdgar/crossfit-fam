@@ -95,31 +95,27 @@ const Wods = () => {
     setRemoveWodId(wod);
   };
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <div className="h-full overflow-auto">
-        {wods && !loading ? (
-          <CatalogCardList
-            icon={BiSolidZap}
-            data={wods}
-            title="WODs"
-            onCreate={
-              isCreatepermission.hasPermission
-                ? () => setIsOpenModal(true)
-                : null
-            }
-            onEdit={
-              isEditPermission.hasPermission ? (wod) => handleEdit(wod) : null
-            }
-            onRemove={
-              isDeletepermission.hasPermission
-                ? (wod) => onOpenDeleteModal(wod.id)
-                : null
-            }
-          />
-        ) : (
-          <CatalogCardList.Skeleton />
-        )}
-      </div>
+    <div className="flex h-full flex-col flex-1 overflow-hidden">
+      {wods && !loading ? (
+        <CatalogCardList
+          icon={BiSolidZap}
+          data={wods}
+          title="WODs"
+          onCreate={
+            isCreatepermission.hasPermission ? () => setIsOpenModal(true) : null
+          }
+          onEdit={
+            isEditPermission.hasPermission ? (wod) => handleEdit(wod) : null
+          }
+          onRemove={
+            isDeletepermission.hasPermission
+              ? (wod) => onOpenDeleteModal(wod.id)
+              : null
+          }
+        />
+      ) : (
+        <CatalogCardList.Skeleton />
+      )}
       {isOpenModal && (
         <ModalFormikForm
           onClose={onCloseModal}

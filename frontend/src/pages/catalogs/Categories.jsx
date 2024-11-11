@@ -97,32 +97,28 @@ const Categories = () => {
 
   return (
     <div className="flex flex-col h-full flex-1 overflow-hidden">
-      <div className="h-fit md:h-full overflow-hidden">
-        {categories && !loading ? (
-          <CatalogCardList
-            icon={LiaDumbbellSolid}
-            data={categories}
-            title="Categorias"
-            onCreate={
-              isCreatePermission.hasPermission
-                ? () => setIsOpenModal(true)
-                : null
-            }
-            onEdit={
-              isEditPermission.hasPermission
-                ? (category) => handleEdit(category)
-                : null
-            }
-            onRemove={
-              isDeletePermission.hasPermission
-                ? (category) => onOpenDeleteModal(category.id)
-                : null
-            }
-          />
-        ) : (
-          <CatalogCardList.Skeleton />
-        )}
-      </div>
+      {categories && !loading ? (
+        <CatalogCardList
+          icon={LiaDumbbellSolid}
+          data={categories}
+          title="Categorias"
+          onCreate={
+            isCreatePermission.hasPermission ? () => setIsOpenModal(true) : null
+          }
+          onEdit={
+            isEditPermission.hasPermission
+              ? (category) => handleEdit(category)
+              : null
+          }
+          onRemove={
+            isDeletePermission.hasPermission
+              ? (category) => onOpenDeleteModal(category.id)
+              : null
+          }
+        />
+      ) : (
+        <CatalogCardList.Skeleton />
+      )}
       {isOpenModal && (
         <ModalFormikForm
           onClose={onCloseModal}

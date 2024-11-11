@@ -17,9 +17,11 @@ import {
   deleteWod,
   createContest,
   updateContest,
+  setContestNextStep,
   deleteContest,
-  getContests
+  getContests,
 } from "../services/api";
+import { getPublicContest, getPublicContests } from "../services/public.api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
 
@@ -56,6 +58,7 @@ const useCatalogs = (dispatch) => {
       queryClient.invalidateQueries("athletes");
       dispatch({ type: "CREATE_ATHLETE", payload: data });
       Notifies("success", "Atleta registrado exitosamente");
+      return data;
     },
     onError: (error) => {
       Notifies("error", "Error al registrar atleta");
@@ -70,6 +73,7 @@ const useCatalogs = (dispatch) => {
       queryClient.invalidateQueries("athletes");
       dispatch({ type: "UPDATE_ATHLETE", payload: data });
       Notifies("success", "Atleta actualizado exitosamente");
+      return data;
     },
     onError: (error) => {
       Notifies("error", "Error al actualizar el atleta");
@@ -211,6 +215,7 @@ const useCatalogs = (dispatch) => {
     },
     onSettled: () => setLoading(false),
   });
+
   // Contests
   const fetchContests = useMutation({
     mutationFn: getContests,
@@ -220,22 +225,23 @@ const useCatalogs = (dispatch) => {
     },
     onSettled: () => setLoading(false),
   });
+
   const useCreateContest = useMutation({
     mutationFn: createContest,
     onMutate: () => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'CREATE_CONTEST', payload: data });
-      Notifies('success', 'Competencia creada correctamente');
+      dispatch({ type: "CREATE_CONTEST", payload: data });
+      Notifies("success", "Competencia creada correctamente");
     },
     onError: (error) => {
-      console.log('error on createContest', error);
-      Notifies('error', error?.response?.data?.message);
+      console.log("error on createContest", error);
+      Notifies("error", error?.response?.data?.message);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('contests');
+      queryClient.invalidateQueries("contests");
       setLoading(false);
     },
   });
@@ -246,19 +252,37 @@ const useCatalogs = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'UPDATE_CONTEST', payload: data });
-      Notifies('success', 'Competencia actualizada correctamente');
+      dispatch({ type: "UPDATE_CONTEST", payload: data });
+      Notifies("success", "Competencia actualizada correctamente");
     },
     onError: (error) => {
-      console.log('error on updateContest', error);
+      console.log("error on updateContest", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('contests');
+      queryClient.invalidateQueries("contests");
       setLoading(false);
     },
   });
 
+  const useSetNextStep = useMutation({
+    mutationFn: setContestNextStep,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "UPDATE_CONTEST", payload: data });
+      Notifies("success", "Competencia actualizada correctamente");
+    },
+    onError: (error) => {
+      console.log("error on setNextStep", error);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contests");
+      setLoading(false);
+    },
+  });
 
   const useDeleteContest = useMutation({
     mutationFn: deleteContest,
@@ -266,18 +290,37 @@ const useCatalogs = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'DELETE_CONTEST', payload: data });
-      Notifies('success', 'Competencia eliminada correctamente');
+      dispatch({ type: "DELETE_CONTEST", payload: data?.data });
+      Notifies("success", "Competencia eliminada correctamente");
     },
     onError: (error) => {
-      console.log('error on deleteContest', error);
+      console.log("error on deleteContest", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('contests');
+      queryClient.invalidateQueries("contests");
       setLoading(false);
     },
   });
+
+  const fetchPublicContests = useMutation({
+    mutationFn: getPublicContests,
+    onMutate: () => setLoading(true),
+    onSuccess: (data) => {
+      dispatch({ type: "FETCH_PUBLIC_CONTESTS", payload: data });
+    },
+    onSettled: () => setLoading(false),
+  });
+
+  const fetchPublicContest = useMutation({
+    mutationFn: getPublicContest,
+    onMutate: () => setLoading(true),
+    onSuccess: (data) => {
+      dispatch({ type: "FETCH_PUBLIC_CONTEST", payload: data });
+    },
+    onSettled: () => setLoading(false),
+  });
+
   return {
     fetchContests: fetchContests.mutate,
     createContest: (values) => {
@@ -286,9 +329,14 @@ const useCatalogs = (dispatch) => {
     updateContest: (values) => {
       return useUpdateContest.mutateAsync(values);
     },
+    setContestNextStep: (values) => {
+      return useSetNextStep.mutateAsync(values);
+    },
     deleteContest: (values) => {
       return useDeleteContest.mutateAsync(values);
     },
+    fetchPublicContests: fetchPublicContests.mutate,
+    fetchPublicContest: fetchPublicContest.mutate,
     fetchAthletes: fetchAthletes.mutate,
     fetchAthlete: fetchAthlete.mutate,
     createAthlete: (values) => {

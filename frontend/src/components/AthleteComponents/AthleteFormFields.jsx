@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field } from "formik";
 import TextInput from "../Inputs/TextInput";
-import { MdEmail } from "react-icons/md";
+import { MdEmail, MdInfo } from "react-icons/md";
 import {
   FaCalendarAlt,
   FaPhoneSquareAlt,
@@ -11,6 +11,8 @@ import {
 } from "react-icons/fa";
 import SelectInput from "../Inputs/SelectInput";
 import DateInput from "../Inputs/DateInput";
+import { PiUserCircleCheckBold } from "react-icons/pi";
+import TextSelectInput from "../Inputs/TextSelectInput";
 const genderOptions = [
   {
     id: "1",
@@ -25,7 +27,7 @@ const genderOptions = [
     name: "Otro",
   },
 ];
-const AthleteFormFields = () => {
+const AthleteFormFields = ({ editMode, athleteForm = false, contestCategories = [] }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <Field
@@ -82,6 +84,34 @@ const AthleteFormFields = () => {
         icon={FaPhoneSquareAlt}
         placeholder="123-456-7890"
       />
+      {editMode && (
+        <Field
+          name="status"
+          id="status"
+          component={SelectInput}
+          label="Estado"
+          options={[
+            { value: "Habilitado", label: "Habilitado" },
+            { value: "Deshabilitado", label: "Deshabilitado" },
+            { value: "Pendiente", label: "Pendiente" },
+          ]}
+          icon={PiUserCircleCheckBold}
+        />
+      )}
+      {athleteForm && (
+      <Field
+        name="category"
+        id="category"
+        component={TextSelectInput}
+        icon={MdInfo}
+        label="Categoría"
+        options={contestCategories.map((category) => ({
+          label: category.name,
+          value: category.conCatId,
+        }))}
+        className="col-span-"
+      />
+      )}
       <Field
         className="hidden"
         name="id"

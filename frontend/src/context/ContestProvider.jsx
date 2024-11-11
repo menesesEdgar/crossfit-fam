@@ -2,26 +2,65 @@ import { useEffect, useReducer } from "react";
 import ContestContext from "./ContestContext";
 import contestReducer from "./ContestReducer";
 import useContest from "../hooks/useContest";
-const ContestProvider = ({children}) => {
+import { useParams } from "react-router-dom";
+const ContestProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(contestReducer, {
+    contest: {},
+    categories: [],
+    wods: [],
+    athlete: {},
+    categoryWods: []
+  });
+  const { id } = useParams()
+  const {
+    fetchContest,
+    getWodsByCategoryId,
+    addCategory,
+    deleteCategory,
+    addWodToCategory,
+    removeWodOfCategory,
+    addAllCategories,
+    removeAllContestCategories,
+    addWod,
+    deleteWod,
+    addAllWods,
+    removeAllContestWods,
+    removeAllCategoryWods,
+    addAllWodsToCategory,
+    addAthleteToContest,
+    removeAthleteFromContest
+  } = useContest(dispatch);
+  useEffect(() => {
+    if (id) {
+      fetchContest(id);
+    }
+  }, [id]);
 
-    const [state, dispatch] = useReducer(contestReducer, {
-        contest: {}
-    })
-    const { 
+  return (
+    <ContestContext.Provider
+      value={{
+        ...state,
         fetchContest,
+        getWodsByCategoryId,
         addCategory,
         deleteCategory,
-        deleteWodOfCategory,
-      } = useContest(dispatch)
+        removeAllContestCategories,
+        addAllCategories,
+        addWod,
+        deleteWod,
+        addAllWods,
+        removeAllContestWods,
+        addWodToCategory,
+        removeWodOfCategory,
+        removeAllCategoryWods,
+        addAllWodsToCategory,
+        addAthleteToContest,
+        removeAthleteFromContest
+      }}
+    >
+      {children}
+    </ContestContext.Provider>
+  );
+};
 
-    return (
-        <ContestContext.Provider value={{
-            ...state,
-            fetchContest,
-            addCategory,
-            deleteCategory
-        }}>{children}</ContestContext.Provider>
-    );
-}
- 
 export default ContestProvider;

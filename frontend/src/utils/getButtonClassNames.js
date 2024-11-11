@@ -7,7 +7,7 @@ export const getButtonClassNames = (
   className
 ) => {
   const baseClasses =
-    "w-full md:w-fit h-9 xl:h-10 text-sm xl:text-base cursor-pointer transition ease-in-out duration-200 p-2 xl:p-4 flex items-center justify-center rounded-md border text-stone-800";
+    "w-full md:w-fit h-9 xl:h-10 text-sm xl:text-base transition ease-in-out duration-200 p-2 xl:p-4 flex items-center justify-center rounded-md border text-stone-800";
 
   let notFilledClasses = {
     "hover:bg-crossfit-primary hover:text-white":
@@ -30,6 +30,8 @@ export const getButtonClassNames = (
     "hover:bg-amber-500 hover:text-white": color === "amber" && !disabled,
     "hover:bg-gray-500 hover:text-white": color === "gray" && !disabled,
     "hover:bg-stone-200 hover:text-stone-800": color === "stone" && !disabled,
+    "hover:bg-neutral-200 hover:text-neutral-800":
+      color === "neutral" && !disabled,
     "hover:bg-orange-400 hover:text-white": color === "orange" && !disabled,
     "hover:bg-pink-500 hover:text-white": color === "pink" && !disabled,
     "hover:bg-teal-500 hover:text-white": color === "teal" && !disabled,
@@ -74,6 +76,8 @@ export const getButtonClassNames = (
       color === "gray",
     "bg-stone-200 text-stone-800 border-stone-200 hover:bg-stone-300":
       color === "stone",
+    "bg-neutral-200 text-neutral-800 border-neutral-200 hover:bg-neutral-300":
+      color === "neutral",
     "bg-orange-400 text-white border-orange-400 hover:bg-orange-700":
       color === "orange",
     "bg-pink-500 text-white border-pink-500 hover:bg-pink-700":
@@ -100,6 +104,7 @@ export const getButtonClassNames = (
   const disabledClasses = {
     "cursor-not-allowed hover:bg-white hover:text-stone-800 hover:animate-shake":
       disabled,
+    "cursor-pointer": !disabled,
   };
 
   const colorClasses = classNames(filled ? filledClasses : notFilledClasses);

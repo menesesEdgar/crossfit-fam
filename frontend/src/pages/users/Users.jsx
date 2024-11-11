@@ -1,43 +1,43 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useUserContext } from '../../context/UserContext';
-import { useQuery } from '@tanstack/react-query';
-import Skeleton from 'react-loading-skeleton';
-import { IoMdAdd } from 'react-icons/io';
-import { Table as T } from 'flowbite-react';
-import ModalRemove from '../../components/Modals/ModalRemove';
-import { searchUsers } from '../../services/api';
-import usersColumns from '../../utils/usersColumns';
-import ActionButtons from '../../components/ActionButtons/ActionButtons';
-import Notifies from '../../components/Notifies/Notifies';
-import ImageViewer from '../../components/ImageViewer/ImageViewer';
-import { useAuthContext } from '../../context/AuthContext';
-import { FaLock, FaUserShield } from 'react-icons/fa';
-import { useRoleContext } from '../../context/RoleContext';
-import ModalFormikForm from '../../components/Modals/ModalFormikForm';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useUserContext } from "../../context/UserContext";
+import { useQuery } from "@tanstack/react-query";
+import Skeleton from "react-loading-skeleton";
+import { IoMdAdd } from "react-icons/io";
+import { Table as T } from "flowbite-react";
+import ModalRemove from "../../components/Modals/ModalRemove";
+import { searchUsers } from "../../services/api";
+import usersColumns from "../../utils/usersColumns";
+import ActionButtons from "../../components/ActionButtons/ActionButtons";
+import Notifies from "../../components/Notifies/Notifies";
+import ImageViewer from "../../components/ImageViewer/ImageViewer";
+import { useAuthContext } from "../../context/AuthContext";
+import { FaLock, FaUserShield } from "react-icons/fa";
+import { useRoleContext } from "../../context/RoleContext";
+import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import {
   UserFormChangePasswordSchema,
   UserFormSchema,
   UserFormUpdateSchema,
-} from '../../components/Users/UserFormSchema';
-import UserFormFields from '../../components/Users/UserFormFields';
-const Card = React.lazy(() => import('../../components/Card/Card'));
-const TableHeader = React.lazy(
-  () => import('../../components/Table/TableHeader'),
+} from "../../components/Users/UserFormSchema";
+import UserFormFields from "../../components/Users/UserFormFields";
+const Card = React.lazy(() => import("../../components/Card/Card"));
+const TableHeader = React.lazy(() =>
+  import("../../components/Table/TableHeader")
 );
-const TableFooter = React.lazy(
-  () => import('../../components/Table/TableFooter'),
+const TableFooter = React.lazy(() =>
+  import("../../components/Table/TableFooter")
 );
-const TableActions = React.lazy(
-  () => import('../../components/Table/TableActions'),
+const TableActions = React.lazy(() =>
+  import("../../components/Table/TableActions")
 );
-const TableResultsNotFound = React.lazy(
-  () => import('../../components/Table/TableResultsNotFound'),
+const TableResultsNotFound = React.lazy(() =>
+  import("../../components/Table/TableResultsNotFound")
 );
-const Table = React.lazy(() => import('../../components/Table/Table'));
-import classNames from 'classnames';
-import UserChangePasswordFormFields from '../../components/Users/UserChangePasswordFormFields';
-import withPermission from '../../utils/withPermissions';
-import useCheckPermissions from '../../hooks/useCheckPermissions';
+const Table = React.lazy(() => import("../../components/Table/Table"));
+import classNames from "classnames";
+import UserChangePasswordFormFields from "../../components/Users/UserChangePasswordFormFields";
+import withPermission from "../../utils/withPermissions";
+import useCheckPermissions from "../../hooks/useCheckPermissions";
 
 const Users = () => {
   const lastChange = useRef();
@@ -51,25 +51,25 @@ const Users = () => {
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
   const [initialValues, setInitialValues] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    role: '',
-    photo: '',
-    status: true,
-    password: '',
-    repeatPassword: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    role: "",
+    photo: "",
+    status: "",
+    password: "",
+    repeatPassword: "",
   });
   const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [refreshData, setRefreshData] = useState(false);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const [searchFilters, setSearchFilters] = useState({
-    searchTerm: '',
+    searchTerm: "",
     pageSize: 5,
     page: currentPageNumber,
-    sortBy: 'firstName',
-    order: 'asc',
+    sortBy: "firstName",
+    order: "asc",
   });
 
   const {
@@ -78,7 +78,7 @@ const Users = () => {
     isLoading,
     isPending,
   } = useQuery({
-    queryKey: ['users', searchFilters],
+    queryKey: ["users", searchFilters],
     queryFn: ({ signal }) => searchUsers(searchFilters, signal),
     staleTime: Infinity,
   });
@@ -131,7 +131,7 @@ const Users = () => {
         });
       }, 600);
     },
-    [searchFilters?.searchTerm],
+    [searchFilters?.searchTerm]
   );
 
   const changePageSize = (e) => {
@@ -151,7 +151,7 @@ const Users = () => {
       selectedHeader;
       const updatedHeader = {
         ...selectedHeader,
-        order: selectedHeader?.order === 'asc' ? 'desc' : 'asc',
+        order: selectedHeader?.order === "asc" ? "desc" : "asc",
       };
       updatedHeaders = [...columns];
       updatedHeaders[selectedHeaderIndex] = updatedHeader;
@@ -168,7 +168,7 @@ const Users = () => {
 
   const handleRefreshData = () => {
     setRefreshData(true);
-    Notifies('success', 'Datos actualizados correctamente');
+    Notifies("success", "Datos actualizados correctamente");
   };
 
   const onEditUser = (item) => {
@@ -180,10 +180,10 @@ const Users = () => {
       email: item.email,
       phone: item.phone,
       role: item.role.id,
-      photo: '',
+      photo: "",
       status: item.status,
-      password: '',
-      repeatPassword: '',
+      password: "",
+      repeatPassword: "",
     });
     setIsOpenModal(true);
   };
@@ -194,21 +194,21 @@ const Users = () => {
       setSubmitting(false);
       resetForm();
       setInitialValues({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        role: '',
-        photo: '',
-        status: true,
-        password: '',
-        repeatPassword: '',
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        role: "",
+        photo: "",
+        status: "",
+        password: "",
+        repeatPassword: "",
       });
       setEditMode(false);
       setIsOpenModal(false);
     } catch (err) {
-      console.log('error on submit create or edit user', err);
-      Notifies('error', 'Error al guardar el usuario');
+      console.log("error on submit create or edit user", err);
+      Notifies("error", "Error al guardar el usuario");
     }
   };
 
@@ -216,15 +216,15 @@ const Users = () => {
     setIsOpenModal(false);
     setEditMode(false);
     setInitialValues({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      role: '',
-      photo: '',
-      status: true,
-      password: '',
-      repeatPassword: '',
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      role: "",
+      photo: "",
+      status: "",
+      password: "",
+      repeatPassword: "",
     });
   };
 
@@ -239,8 +239,8 @@ const Users = () => {
       setIsRemoveModalOpen(false);
       setDeleteUserId(null);
     } catch (err) {
-      console.log('error on remove user', err);
-      Notifies('error', 'Error al eliminar el usuario');
+      console.log("error on remove user", err);
+      Notifies("error", "Error al eliminar el usuario");
     }
   };
 
@@ -250,33 +250,33 @@ const Users = () => {
       setSubmitting(false);
       resetForm();
       setInitialValues({
-        id: '',
-        password: '',
-        repeatPassword: '',
+        id: "",
+        password: "",
+        repeatPassword: "",
       });
       setChangePasswordModal(false);
     } catch (err) {
-      console.log('error on submit change password', err);
-      Notifies('error', 'Error al cambiar la contraseña del usuario');
+      console.log("error on submit change password", err);
+      Notifies("error", "Error al cambiar la contraseña del usuario");
     }
   };
 
-  const isCreateUserPermission = useCheckPermissions('create_users');
-  const isEditUserPermission = useCheckPermissions('edit_users');
-  const isRemoveUserPermission = useCheckPermissions('delete_users');
+  const isCreateUserPermission = useCheckPermissions("create_users");
+  const isEditUserPermission = useCheckPermissions("edit_users");
+  const isRemoveUserPermission = useCheckPermissions("delete_users");
 
   return (
     <div className="flex flex-col gap-3 bg-white shadow-md rounded-md dark:bg-gray-900 p-3 antialiased">
       <TableHeader
-        title={'Usuarios'}
+        title={"Usuarios"}
         icon={FaUserShield}
         actions={[
           {
-            label: 'Nuevo',
+            label: "Nuevo",
             action: isCreateUserPermission.hasPermission
               ? () => setIsOpenModal(true)
               : null,
-            color: 'mycad',
+            color: "mycad",
             icon: IoMdAdd,
             filled: true,
           },
@@ -302,20 +302,20 @@ const Users = () => {
                     lastName: user.lastName,
                     email: user.email,
                     phone: user.phone,
-                    'role.name': user.role.name,
+                    "role.name": user.role.name,
                     photo: user?.photo?.[0] ? [user.photo?.[0]] : [],
                     status: user.status,
                   };
                   return (
                     <T.Row key={user.id}>
                       {columns.map((column) =>
-                        column.id === 'photo' ? (
+                        column.id === "photo" ? (
                           <T.Cell key={column.id}>
                             {formatedUser[column.id] &&
                             formatedUser[column.id].length > 0 ? (
                               <ImageViewer
                                 containerClassNames={
-                                  'first:w-12 first:h-12 first:rounded-md'
+                                  "first:w-12 first:h-12 first:rounded-md"
                                 }
                                 images={formatedUser[column.id]}
                                 alt={`${formatedUser.firstName} ${formatedUser.lastName}`}
@@ -329,31 +329,35 @@ const Users = () => {
                               </div>
                             )}
                           </T.Cell>
-                        ) : column.id === 'firstName' ||
-                          column.id === 'lastName' ||
-                          column.id === 'email' ||
-                          column.id === 'phone' ||
-                          column.id === 'role.name' ? (
+                        ) : column.id === "firstName" ||
+                          column.id === "lastName" ||
+                          column.id === "email" ||
+                          column.id === "phone" ||
+                          column.id === "role.name" ? (
                           <T.Cell
-                            className={`${column?.id === 'firstName' ? 'font-bold' : ''}`}
+                            className={`${
+                              column?.id === "firstName" ? "font-bold" : ""
+                            }`}
                             key={column.id}
                           >
                             {formatedUser[column.id]}
                           </T.Cell>
-                        ) : column.id === 'status' ? (
+                        ) : column.id === "status" ? (
                           <T.Cell key={column.id}>
                             <span
                               className={classNames(
-                                'text-xs font-bold px-4 py-2 rounded-full',
-                                formatedUser[column.id]
-                                  ? 'bg-green-500 text-white'
-                                  : 'bg-red-500 text-white',
+                                "text-xs font-bold px-4 py-2 rounded-full",
+                                formatedUser[column.id] === "Habilitado"
+                                  ? "bg-crossfit-success text-white"
+                                  : formatedUser[column.id] === "Deshabilitado"
+                                  ? "bg-crossfit-danger text-white"
+                                  : "bg-crossfit-warning text-white"
                               )}
                             >
-                              {formatedUser[column.id] ? 'Activo' : 'Inactivo'}
+                              {formatedUser[column.id]}
                             </span>
                           </T.Cell>
-                        ) : column.id === 'actions' && sesionUser ? (
+                        ) : column.id === "actions" && sesionUser ? (
                           <T.Cell key={column?.id}>
                             <div className="flex justify-center items-center gap-2">
                               <ActionButtons
@@ -369,25 +373,25 @@ const Users = () => {
                                 }
                                 extraActions={[
                                   {
-                                    label: 'Cambiar contraseña',
+                                    label: "Cambiar contraseña",
                                     action: isEditUserPermission.hasPermission
                                       ? () => {
                                           setInitialValues({
                                             id: user.id,
-                                            password: '',
-                                            repeatPassword: '',
+                                            password: "",
+                                            repeatPassword: "",
                                           });
                                           setChangePasswordModal(true);
                                         }
                                       : null,
-                                    color: 'indigo',
+                                    color: "indigo",
                                     icon: FaLock,
                                   },
                                 ]}
                               />
                             </div>
                           </T.Cell>
-                        ) : null,
+                        ) : null
                       )}
                     </T.Row>
                   );
@@ -398,31 +402,31 @@ const Users = () => {
               {users?.data?.map((user) => {
                 const formatedUser = {
                   image: {
-                    key: 'Foto',
+                    key: "Foto",
                     value: user.photo[0] ?? [],
                   },
                   title: {
-                    key: 'Nombre',
+                    key: "Nombre",
                     value: `${user.firstName} ${user.lastName}`,
                   },
                   phone: {
-                    key: 'Teléfono',
+                    key: "Teléfono",
                     value: user.phone,
                   },
                   subtitle: {
-                    key: 'Rol',
+                    key: "Rol",
                     value: user.role.name,
                   },
                   status: {
-                    key: 'Estado',
-                    value: user.status ? 'Activo' : 'Inactivo',
+                    key: "Estado",
+                    value: user.status ? "Activo" : "Inactivo",
                   },
                   email: {
-                    key: 'Correo',
+                    key: "Correo",
                     value: user.email,
                   },
                   actions: {
-                    key: 'Acciones',
+                    key: "Acciones",
                     value: (
                       <ActionButtons
                         onEdit={
@@ -437,18 +441,18 @@ const Users = () => {
                         }
                         extraActions={[
                           {
-                            label: 'Cambiar contraseña',
+                            label: "Cambiar contraseña",
                             action: isEditUserPermission.hasPermission
                               ? () => {
                                   setInitialValues({
                                     id: user.id,
-                                    password: '',
-                                    repeatPassword: '',
+                                    password: "",
+                                    repeatPassword: "",
                                   });
                                   setChangePasswordModal(true);
                                 }
                               : null,
-                            color: 'indigo',
+                            color: "indigo",
                             icon: FaLock,
                           },
                         ]}
@@ -480,13 +484,13 @@ const Users = () => {
           onClose={onCloseModal}
           isOpenModal={isOpenModal}
           dismissible
-          title={editMode ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
-          size={'3xl'}
+          title={editMode ? "Editar Usuario" : "Crear Nuevo Usuario"}
+          size={"3xl"}
           schema={editMode ? UserFormUpdateSchema : UserFormSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
           formFields={<UserFormFields editMode={editMode} roles={roles} />}
-          saveLabel={editMode ? 'Actualizar' : 'Guardar'}
+          saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
       {changePasswordModal && (
@@ -502,23 +506,25 @@ const Users = () => {
             users?.data?.find((user) => user?.id === initialValues?.id)
               ?.lastName
           }`}
-          size={'xl'}
+          size={"xl"}
           schema={UserFormChangePasswordSchema}
           initialValues={initialValues}
           onSubmit={onChangeUserPassword}
           formFields={<UserChangePasswordFormFields />}
-          saveLabel={editMode ? 'Actualizar' : 'Guardar'}
+          saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
-      <ModalRemove
-        isOpenModal={isRemoveModalOpen}
-        onCloseModal={() => setIsRemoveModalOpen(false)}
-        removeFunction={onConfirmRemoveUser}
-      />
+      {isRemoveModalOpen && (
+        <ModalRemove
+          isOpenModal={isRemoveModalOpen}
+          onCloseModal={() => setIsRemoveModalOpen(false)}
+          removeFunction={onConfirmRemoveUser}
+        />
+      )}
     </div>
   );
 };
 
-const ProtectedUserView = withPermission(Users, 'view_users');
+const ProtectedUserView = withPermission(Users, "view_users");
 
 export default ProtectedUserView;

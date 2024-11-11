@@ -1,14 +1,13 @@
-import React from 'react';
-import { Field } from 'formik';
-import TextInput from '../Inputs/TextInput';
-import SelectInput from '../Inputs/SelectInput';
-import { BiUser } from 'react-icons/bi';
-import { FaEnvelope } from 'react-icons/fa';
-import { FaPhoneAlt } from 'react-icons/fa';
-import { FaLock } from 'react-icons/fa';
-import { MdManageAccounts } from 'react-icons/md';
-import FileInput from '../Inputs/FileInput';
-import { PiUserCircleCheckBold } from 'react-icons/pi';
+import React from "react";
+import { Field } from "formik";
+import TextInput from "../Inputs/TextInput";
+import SelectInput from "../Inputs/SelectInput";
+import { BiUser } from "react-icons/bi";
+import { FaEnvelope } from "react-icons/fa";
+import { FaPhoneAlt } from "react-icons/fa";
+import { FaLock } from "react-icons/fa";
+import { MdManageAccounts } from "react-icons/md";
+import { PiUserCircleCheckBold } from "react-icons/pi";
 
 const UserFormFields = ({ roles, editMode }) => {
   return (
@@ -83,8 +82,8 @@ const UserFormFields = ({ roles, editMode }) => {
           component={SelectInput}
           label="Estado"
           options={[
-            { value: true, label: 'Habilitado' },
-            { value: false, label: 'Deshabilitado' },
+            { value: true, label: "Habilitado" },
+            { value: false, label: "Deshabilitado" },
           ]}
           icon={PiUserCircleCheckBold}
         />

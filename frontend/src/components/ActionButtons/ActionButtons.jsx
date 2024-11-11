@@ -1,8 +1,8 @@
-import React, { forwardRef } from 'react';
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa';
-import { MdCancel } from 'react-icons/md';
-import LinkButton from './LinkButton';
-import { getButtonClassNames } from '../../utils/getButtonClassNames';
+import React, { forwardRef } from "react";
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
+import LinkButton from "./LinkButton";
+import { getButtonClassNames } from "../../utils/getButtonClassNames";
 
 const ActionButtons = forwardRef(
   (
@@ -19,50 +19,50 @@ const ActionButtons = forwardRef(
       labelCancel,
       extraActions = [],
     },
-    ref,
+    ref
   ) => {
     const actions = [
       ...extraActions.map((action) => ({
         ...action,
       })),
       {
-        label: labelShow || 'Ver',
+        label: labelShow || "Ver",
         action: onShow,
-        color: 'cyan',
+        color: "cyan",
         icon: FaEye,
         disabled: false,
       },
       {
-        label: labelEdit || 'Editar',
+        label: labelEdit || "Editar",
         action: onEdit,
-        color: 'yellow',
+        color: "yellow",
         icon: FaEdit,
         disabled: false,
       },
       {
-        label: labelRemove || 'Eliminar',
+        label: labelRemove || "Eliminar",
         action: onRemove,
-        color: 'red',
+        color: "red",
         icon: FaTrash,
         disabled: false,
       },
       {
-        label: labelCreate || 'Nuevo',
+        label: labelCreate || "Nuevo",
         action: onCreate,
-        color: 'indigo',
+        color: "indigo",
         icon: FaPlus,
         disabled: false,
       },
       {
-        label: labelCancel || 'Cancelar',
+        label: labelCancel || "Cancelar",
         action: onCancel,
-        color: 'red',
+        color: "red",
         icon: MdCancel,
         disabled: false,
       },
     ];
     const filteredActions = actions.filter(
-      (action) => action.action || action.href,
+      (action) => action.action || action.href
     );
 
     if (filteredActions.length === 0) {
@@ -81,6 +81,7 @@ const ActionButtons = forwardRef(
           filled={action?.filled}
           disabled={action?.disabled || false}
           className={action?.className}
+          iconRight={action?.iconRight}
         />
       ) : (
         <button
@@ -91,20 +92,31 @@ const ActionButtons = forwardRef(
             action?.color,
             action?.filled,
             action?.disabled,
-            action?.className,
+            action?.className
           )}
           outline={action?.outline}
-          type={action?.type || 'button'}
+          type={action?.type || "button"}
           disabled={action?.disabled || false}
         >
-          <i>{action.icon && <action.icon size={18} />}</i>
-          <span className={`${action?.label?.length > 0 && 'ml-2'}`}>
-            {action.label}
-          </span>
+          {action?.iconRight ? (
+            <>
+              <span className={`${action?.label?.length > 0 && "mr-2"}`}>
+                {action.label}
+              </span>
+              <i>{action.icon && <action.icon size={18} />}</i>
+            </>
+          ) : (
+            <>
+              <i>{action.icon && <action.icon size={18} />}</i>
+              <span className={`${action?.label?.length > 0 && "ml-2"}`}>
+                {action.label}
+              </span>
+            </>
+          )}
         </button>
-      ),
+      )
     );
-  },
+  }
 );
 
 export default ActionButtons;

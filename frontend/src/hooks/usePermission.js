@@ -1,20 +1,20 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createPermission,
   getPermissionById,
   getPermissions,
   deletePermission,
   updatePermission,
-} from '../services/secure.api';
-import { useLoading } from '../context/LoadingContext';
-import Notifies from '../components/Notifies/Notifies';
+} from "../services/secure.api";
+import { useLoading } from "../context/LoadingContext";
+import Notifies from "../components/Notifies/Notifies";
 
 const usePermission = (dispatch) => {
   const queryClient = useQueryClient();
   const { dispatch: loadingDispatch } = useLoading();
 
   const setLoading = (loading) => {
-    loadingDispatch({ type: 'SET_LOADING', payload: loading });
+    loadingDispatch({ type: "SET_LOADING", payload: loading });
   };
 
   const useCreatePermission = useMutation({
@@ -23,15 +23,15 @@ const usePermission = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'CREATE_PERMISSION', payload: data });
-      Notifies('success', 'Permiso creado correctamente');
+      dispatch({ type: "CREATE_PERMISSION", payload: data });
+      Notifies("success", "Permiso creado correctamente");
     },
     onError: (error) => {
-      console.log('error on createPermission', error);
+      console.log("error on createPermission", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('permissions');
+      queryClient.invalidateQueries("permissions");
       setLoading(false);
     },
   });
@@ -42,15 +42,15 @@ const usePermission = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'UPDATE_PERMISSION', payload: data });
-      Notifies('success', 'Permiso actualizado correctamente');
+      dispatch({ type: "UPDATE_PERMISSION", payload: data });
+      Notifies("success", "Permiso actualizado correctamente");
     },
     onError: (error) => {
-      console.log('error on updatePermission', error);
+      console.log("error on updatePermission", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('permissions');
+      queryClient.invalidateQueries("permissions");
       setLoading(false);
     },
   });
@@ -61,15 +61,15 @@ const usePermission = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'DELETE_PERMISSION', payload: data });
-      Notifies('success', 'Permiso eliminado correctamente');
+      dispatch({ type: "DELETE_PERMISSION", payload: data });
+      Notifies("success", "Permiso eliminado correctamente");
     },
     onError: (error) => {
-      console.log('error on deletePermission', error);
+      console.log("error on deletePermission", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('permissions');
+      queryClient.invalidateQueries("permissions");
       setLoading(false);
     },
   });
@@ -80,10 +80,10 @@ const usePermission = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'GET_PERMISSIONS', payload: data });
+      dispatch({ type: "GET_PERMISSIONS", payload: data });
     },
     onError: (error) => {
-      console.log('error on getPermissions', error);
+      console.log("error on getPermissions", error);
     },
     onSettled: () => {
       setLoading(false);
@@ -96,10 +96,10 @@ const usePermission = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'GET_PERMISSION', payload: data });
+      dispatch({ type: "GET_PERMISSION", payload: data });
     },
     onError: (error) => {
-      console.log('error on getPermissionById', error);
+      console.log("error on getPermissionById", error);
     },
     onSettled: () => {
       setLoading(false);

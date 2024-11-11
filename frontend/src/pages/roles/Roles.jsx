@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { useRoleContext } from '../../context/RoleContext';
-import TableHeader from '../../components/Table/TableHeader';
-import { IoMdAdd } from 'react-icons/io';
-import Accordion from '../../components/Accordion/Accordion';
-import { FaChevronRight, FaUserShield } from 'react-icons/fa';
-import { FiEdit } from 'react-icons/fi';
-import classNames from 'classnames';
-import { IoShieldSharp } from 'react-icons/io5';
-import { PermissionsByGroup } from '../../utils/Permissions';
-import { usePermissionContext } from '../../context/PermissionContext';
-import { Dropdown, TextInput } from 'flowbite-react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import ModalFormikForm from '../../components/Modals/ModalFormikForm';
-import { RoleFormSchema } from '../../components/Roles/RoleFormSchema';
-import RoleFormFields from '../../components/Roles/RoleFormFields';
-import ActionButtons from '../../components/ActionButtons/ActionButtons';
-import { MdRemoveModerator } from 'react-icons/md';
-import ModalRemove from '../../components/Modals/ModalRemove';
-import withPermission from '../../utils/withPermissions';
-import useCheckPermissions from '../../hooks/useCheckPermissions';
+import React, { useState, useEffect } from "react";
+import { useRoleContext } from "../../context/RoleContext";
+import TableHeader from "../../components/Table/TableHeader";
+import { IoMdAdd } from "react-icons/io";
+import Accordion from "../../components/Accordion/Accordion";
+import { FaChevronRight, FaUserShield } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
+import classNames from "classnames";
+import { IoShieldSharp } from "react-icons/io5";
+import { PermissionsByGroup } from "../../utils/Permissions";
+import { usePermissionContext } from "../../context/PermissionContext";
+import { Dropdown, TextInput } from "flowbite-react";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import ModalFormikForm from "../../components/Modals/ModalFormikForm";
+import { RoleFormSchema } from "../../components/Roles/RoleFormSchema";
+import RoleFormFields from "../../components/Roles/RoleFormFields";
+import ActionButtons from "../../components/ActionButtons/ActionButtons";
+import { MdRemoveModerator } from "react-icons/md";
+import ModalRemove from "../../components/Modals/ModalRemove";
+import withPermission from "../../utils/withPermissions";
+import useCheckPermissions from "../../hooks/useCheckPermissions";
 
 const Roles = () => {
   const {
@@ -34,9 +34,9 @@ const Roles = () => {
   } = useRoleContext();
   const { permissions, useGetPermissions } = usePermissionContext();
   const [activeTab, setActiveTab] = useState(
-    roles?.length > 0 ? roles[0]?.id : null,
+    roles?.length > 0 ? roles[0]?.id : null
   );
-  console.log("roles ", roles)
+  console.log("roles ", roles);
   const [isDisabled, setIsDisabled] = useState(false);
   const [groupedPermissions, setGroupedPermissions] = useState({});
   const [roleName, setRoleName] = useState();
@@ -44,9 +44,9 @@ const Roles = () => {
   const [editMode, setEditMode] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const isCreateRolesPermission = useCheckPermissions('create_roles');
-  const isEditRolesPermission = useCheckPermissions('edit_roles');
-  const isDeleteRolesPermission = useCheckPermissions('delete_roles');
+  const isCreateRolesPermission = useCheckPermissions("create_roles");
+  const isEditRolesPermission = useCheckPermissions("edit_roles");
+  const isDeleteRolesPermission = useCheckPermissions("delete_roles");
 
   useEffect(() => {
     useGetPermissions();
@@ -67,7 +67,7 @@ const Roles = () => {
     if (permissions.length > 0) {
       const updatedPermissions = mapPermissionsToGroups(
         PermissionsByGroup,
-        permissions,
+        permissions
       );
       setGroupedPermissions(updatedPermissions);
     }
@@ -133,7 +133,7 @@ const Roles = () => {
         ...group,
         permissions: group.permissions.map((permissionName) => {
           const backendPermission = backendPermissions.find(
-            (p) => p.name === permissionName,
+            (p) => p.name === permissionName
           );
 
           return backendPermission
@@ -141,7 +141,7 @@ const Roles = () => {
             : {
                 name: permissionName,
                 id: null,
-                description: 'Descripción no disponible',
+                description: "Descripción no disponible",
               };
         }),
       };
@@ -166,7 +166,7 @@ const Roles = () => {
                   >
                     {isDeleteRolesPermission.hasPermission ? (
                       <TextInput
-                        color={'warning'}
+                        color={"warning"}
                         type="checkbox"
                         name={permission.name}
                         value={permission.name}
@@ -175,7 +175,7 @@ const Roles = () => {
                         }
                         checked={
                           !!rolePermissions?.find(
-                            (p) => p?.permissionId === permission?.id,
+                            (p) => p?.permissionId === permission?.id
                           )
                         }
                         onChange={(e) =>
@@ -184,7 +184,7 @@ const Roles = () => {
                       />
                     ) : (
                       <TextInput
-                        color={'warning'}
+                        color={"warning"}
                         type="checkbox"
                         name={permission.name}
                         value={permission.name}
@@ -193,7 +193,7 @@ const Roles = () => {
                         }
                         checked={
                           !!rolePermissions?.find(
-                            (p) => p?.permissionId === permission?.id,
+                            (p) => p?.permissionId === permission?.id
                           )
                         }
                         onChange={null}
@@ -220,11 +220,11 @@ const Roles = () => {
           icon={FaUserShield}
           actions={[
             {
-              label: 'Agregar Rol',
+              label: "Agregar Rol",
               action: isCreateRolesPermission.hasPermission
                 ? () => setIsModalOpen(true)
                 : null,
-              color: 'mycad',
+              color: "mycad",
               icon: IoMdAdd,
               filled: true,
             },
@@ -245,10 +245,8 @@ const Roles = () => {
                   key={role.id}
                   onClick={() => changeActiveTab(role)}
                   className={classNames(
-                    'group p-4 hover:bg-neutral-100 text-neutral-700 border-b border-neutral-100 cursor-pointer flex justify-between items-center',
-                    activeTab == role.id
-                      ? 'bg-neutral-50 '
-                      : 'text-neutral-500',
+                    "group p-4 hover:bg-neutral-100 text-neutral-700 border-b border-neutral-100 cursor-pointer flex justify-between items-center",
+                    activeTab == role.id ? "bg-neutral-50 " : "text-neutral-500"
                   )}
                 >
                   <div className="flex gap-4 items-center">
@@ -259,8 +257,8 @@ const Roles = () => {
                   </div>
                   <i
                     className={classNames(
-                      'group-hover:text-neutral-800 transition-all duration-200',
-                      activeTab == role?.id ? '' : 'text-white',
+                      "group-hover:text-neutral-800 transition-all duration-200",
+                      activeTab == role?.id ? "" : "text-white"
                     )}
                   >
                     <FaChevronRight size={18} className="text-lg mt-0.5" />
@@ -296,15 +294,15 @@ const Roles = () => {
                     <ActionButtons
                       extraActions={[
                         {
-                          label: 'Editar rol',
+                          label: "Editar rol",
                           action: () => {
                             setEditMode(true);
                             setIsModalOpen(true);
                           },
-                          color: 'transparent',
+                          color: "transparent",
                           icon: FiEdit,
                           className:
-                            'md:min-w-full border-none hover:bg-neutral-100',
+                            "md:min-w-full border-none hover:bg-neutral-100",
                         },
                       ]}
                     />
@@ -313,13 +311,13 @@ const Roles = () => {
                     <ActionButtons
                       extraActions={[
                         {
-                          label: 'Eliminar rol',
+                          label: "Eliminar rol",
                           action: () => setIsDeleteModalOpen(true),
-                          color: 'transparent',
+                          color: "transparent",
                           filled: true,
                           icon: MdRemoveModerator,
                           className:
-                            'md:min-w-full border-none hover:bg-neutral-100',
+                            "md:min-w-full border-none hover:bg-neutral-100",
                         },
                       ]}
                     />
@@ -338,7 +336,7 @@ const Roles = () => {
           onClose={closeModal}
           dismissible
           isOpenModal={isModalOpen}
-          title={editMode ? 'Editar Rol' : 'Crear Rol'}
+          title={editMode ? "Editar Rol" : "Crear Rol"}
           schema={RoleFormSchema}
           initialValues={
             editMode
@@ -347,13 +345,13 @@ const Roles = () => {
                   id: activeTab,
                 }
               : {
-                  name: '',
-                  id: '',
+                  name: "",
+                  id: "",
                 }
           }
           onSubmit={handleSubmit}
           formFields={<RoleFormFields />}
-          saveLabel={editMode ? 'Actualizar Rol' : 'Crear Rol'}
+          saveLabel={editMode ? "Actualizar Rol" : "Crear Rol"}
         />
       )}
       {isDeleteModalOpen && (
@@ -367,6 +365,6 @@ const Roles = () => {
   );
 };
 
-const ProtectedRolesView = withPermission(Roles, 'view_roles');
+const ProtectedRolesView = withPermission(Roles, "view_roles");
 
 export default React.memo(ProtectedRolesView);

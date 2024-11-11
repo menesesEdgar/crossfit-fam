@@ -1,19 +1,20 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createUser,
   updateUser,
   deleteUser,
   changePasswordUser,
-} from '../services/api';
-import { useLoading } from '../context/LoadingContext';
-import Notifies from '../components/Notifies/Notifies';
+} from "../services/api";
+import { createPendingUser } from "../services/public.api";
+import { useLoading } from "../context/LoadingContext";
+import Notifies from "../components/Notifies/Notifies";
 
 const useUser = ({ dispatch }) => {
   const queryClient = useQueryClient();
   const { dispatch: loadingDispatch } = useLoading();
 
   const setLoading = (loading) => {
-    loadingDispatch({ type: 'SET_LOADING', payload: loading });
+    loadingDispatch({ type: "SET_LOADING", payload: loading });
   };
 
   const useCreateUser = useMutation({
@@ -22,16 +23,34 @@ const useUser = ({ dispatch }) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'CREATE_USER', payload: data });
-      Notifies('success', 'Usuario creado correctamente');
+      dispatch({ type: "CREATE_USER", payload: data });
+      Notifies("success", "Usuario creado correctamente");
     },
     onError: (error) => {
-      console.log('error on createUser', error);
-      Notifies('error', error?.response?.data?.message);
+      console.log("error on createUser", error);
+      Notifies("error", error?.response?.data?.message);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('users');
+      queryClient.invalidateQueries("users");
+      setLoading(false);
+    },
+  });
+
+  const useCreatePendingUser = useMutation({
+    mutationFn: createPendingUser,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      Notifies("success", "Registro guardado correctamente");
+    },
+    onError: (error) => {
+      console.log("error on createPendingUser", error);
+      Notifies("error", error?.response?.data?.message);
+      setLoading(false);
+    },
+    onSettled: () => {
       setLoading(false);
     },
   });
@@ -42,15 +61,15 @@ const useUser = ({ dispatch }) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'UPDATE_USER', payload: data });
-      Notifies('success', 'Usuario actualizado correctamente');
+      dispatch({ type: "UPDATE_USER", payload: data });
+      Notifies("success", "Usuario actualizado correctamente");
     },
     onError: (error) => {
-      console.log('error on updateUser', error);
+      console.log("error on updateUser", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('users');
+      queryClient.invalidateQueries("users");
       setLoading(false);
     },
   });
@@ -61,14 +80,14 @@ const useUser = ({ dispatch }) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      Notifies('success', 'Contraseña actualizada correctamente');
+      Notifies("success", "Contraseña actualizada correctamente");
     },
     onError: (error) => {
-      console.log('error on changePasswordUser', error);
+      console.log("error on changePasswordUser", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('users');
+      queryClient.invalidateQueries("users");
       setLoading(false);
     },
   });
@@ -79,15 +98,15 @@ const useUser = ({ dispatch }) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: 'DELETE_USER', payload: data });
-      Notifies('success', 'Usuario eliminado correctamente');
+      dispatch({ type: "DELETE_USER", payload: data });
+      Notifies("success", "Usuario eliminado correctamente");
     },
     onError: (error) => {
-      console.log('error on deleteUser', error);
+      console.log("error on deleteUser", error);
       setLoading(false);
     },
     onSettled: () => {
-      queryClient.invalidateQueries('users');
+      queryClient.invalidateQueries("users");
       setLoading(false);
     },
   });
@@ -104,6 +123,9 @@ const useUser = ({ dispatch }) => {
     },
     useChangePasswordUser: (values) => {
       return useChangePasswordUser.mutateAsync(values);
+    },
+    useCreatePendingUser: (values) => {
+      return useCreatePendingUser.mutateAsync(values);
     },
   };
 };

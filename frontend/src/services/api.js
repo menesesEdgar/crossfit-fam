@@ -2,7 +2,7 @@ import axios from "axios";
 // import { saveAs } from 'file-saver';
 
 export const BASE_API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:4000/";
+  import.meta.env.VITE_API_URL || "http://localhost:4000";
 export const API_URL = `${BASE_API_URL}/api` || "http://localhost:4000/api";
 const api = axios.create({
   baseURL: API_URL,
@@ -138,6 +138,7 @@ export const searchUsers = async ({
   page,
   pageSize,
   role,
+  contestId,
   signal,
 }) => {
   try {
@@ -149,6 +150,7 @@ export const searchUsers = async ({
         page,
         pageSize,
         role,
+        contestId,
       },
       signal: signal,
     });
@@ -179,7 +181,8 @@ export const getUser = async (userId) => {
     console.error(error);
     throw error;
   }
-};export const createUser = async (user) => {
+};
+export const createUser = async (user) => {
   try {
     const response = await api.post(`/users`, user);
     return response.data;
@@ -330,6 +333,16 @@ export const updateContest = async (contest) => {
   }
 };
 
+export const setContestNextStep = async ({ id, step }) => {
+  try {
+    const response = await api.put(`/contests/${id}/nextStep`, { step });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const deleteContest = async (contestId) => {
   try {
     const response = await api.delete(`/contests/${contestId}`);
@@ -342,9 +355,19 @@ export const deleteContest = async (contestId) => {
 
 // Assign/remove categories to contest
 export const addCategory = async (data) => {
-  const { contestId, categoryId} = data
+  const { contestId, categoryId } = data;
   try {
-    const response = await api.post(`/contests/${contestId}/${categoryId}` );
+    const response = await api.post(`/contests/${contestId}/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const addAllCategories = async (id) => {
+  try {
+    const response = await api.put(`/contests/${id}/addAllCategories`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -353,10 +376,139 @@ export const addCategory = async (data) => {
 };
 
 export const deleteContestCategory = async (data) => {
-  console.log("data ", data)
-  const { contestId, categoryId} = data
+  const { contestId, categoryId } = data;
   try {
     const response = await api.delete(`/contests/${contestId}/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const removeAllContestCategories = async (id) => {
+  try {
+    const response = await api.put(`/contests/${id}/removeAllCategories`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Assign/remove wod to contest
+export const addWod = async (data) => {
+  const { contestId, wodId } = data;
+  try {
+    const response = await api.post(`/contests/${contestId}/wod/${wodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const addAllWods = async (id) => {
+  try {
+    const response = await api.put(`/contests/${id}/addAllWods`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deleteContestWod = async (data) => {
+  const { contestId, wodId } = data;
+  try {
+    const response = await api.delete(`/contests/${contestId}/wod/${wodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const removeAllContestWods = async (id) => {
+  try {
+    const response = await api.put(`/contests/${id}/removeAllWods`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Wods por categoria
+export const addWodToCategory = async (data) => {
+  const { categoryId, wodId } = data;
+  try {
+    const response = await api.post(
+      `/contests/category/${categoryId}/wod/${wodId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const getWodsByCategory = async (categoryId) => {
+  try {
+    const response = await api.get(`/contests/category/wods/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const deleteWodOfCategory = async (data) => {
+  const { categoryId, wodId } = data;
+  try {
+    const response = await api.delete(
+      `/contests/category/${categoryId}/wod/${wodId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const addAllWodsToCategory = async ({categoryId, contestId}) => {
+  try {
+    const response = await api.put(`/contests/${contestId}/category/${categoryId}/addAllWods`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const removeAllCategoryWods = async (id) => {
+  try {
+    const response = await api.put(`/contests/category/${id}/removeAllWods`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const addAthleteToContest = async (data) => {
+  // Data must contain the conCatId and the userId
+  try {
+    const response = await api.post("/contests/athlete", data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const removeAthleteFromContest = async (athleteId) => {
+  console.log("athleteId ", athleteId);
+  try {
+    const response = await api.delete(`/contests/athlete/${athleteId}`);
     return response.data;
   } catch (error) {
     console.error(error);

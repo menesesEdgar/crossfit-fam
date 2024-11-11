@@ -9,6 +9,7 @@ const Navbar = ({
   toggled,
   setToggled = () => {},
   broken,
+  children,
 }) => {
   return (
     <div className="flex justify-between items-center bg-white shadow-md p-2 w-full h-16 absolute top-0 left-0 z-50">
@@ -25,6 +26,7 @@ const Navbar = ({
         alt="Familia Crossfit Logo"
         className="h-7 block md:hidden"
       />
+      {children}
     </div>
   );
 };

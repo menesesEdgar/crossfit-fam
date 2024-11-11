@@ -1,6 +1,5 @@
 import { db } from "../lib/db.js";
 import bcrypt from "bcryptjs";
-import { parseStatus } from "../utils/generateToken.js";
 import { generateRandomPassword } from "../utils/generatePassword.js";
 
 export const getUsers = async (req, res) => {
@@ -41,8 +40,17 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, role, birthDate, gender, password } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      role,
+      birthDate,
+      status,
+      gender,
+      password,
+    } = req.body;
 
     const userExists = await db.user.findFirst({
       where: { email, enabled: true },
@@ -52,7 +60,8 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ message: "El email ya está registrado." });
     }
 
-    const newPassword = role === "Athlete" ? generateRandomPassword() : password;
+    const newPassword =
+      role === "Athlete" ? generateRandomPassword() : password;
 
     let athleteRol;
     if (role === "Athlete") {
@@ -95,9 +104,17 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { id, firstName, lastName, email, phone, role, status, birthDate, gender } =
-      req.body;
-
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      phone,
+      role,
+      status,
+      birthDate,
+      gender,
+    } = req.body;
 
     const userExists = await db.user.findFirst({ where: { id } });
 
@@ -112,6 +129,7 @@ export const updateUser = async (req, res) => {
     if (emailExists) {
       return res.status(400).json({ message: "El email ya está registrado." });
     }
+
     const updatedUser = await db.user.update({
       where: { id },
       data: {
@@ -119,9 +137,9 @@ export const updateUser = async (req, res) => {
         lastName,
         email,
         phone,
-        birthdate:  birthDate ? new Date(birthDate) : null,
-        gender,
-        status: parseStatus(status),
+        birthdate: birthDate ? new Date(birthDate) : null,
+        gender: gender || null,
+        status: status,
         roleId: parseInt(role),
       },
       include: {
@@ -138,16 +156,6 @@ export const updateUser = async (req, res) => {
         },
       },
     });
-
-    // const today = new Date();
-    // const birthDateParts = newUser.birthDate.split("-");
-    // const birthDateObj = new Date(
-    //   birthDateParts[0],
-    //   birthDateParts[1] - 1,
-    //   birthDateParts[2]
-    // );
-    // const age = today.getFullYear() - birthDateObj.getFullYear();
-    // newUser.age = age;
 
     newUser.password = undefined;
 
@@ -216,6 +224,7 @@ export const searchUsers = async (req, res) => {
       page = 1,
       pageSize = 10,
       role,
+      contestId,
     } = req.query;
     const { user: currentUser } = req;
     const validSortColumns = [
@@ -262,7 +271,6 @@ export const searchUsers = async (req, res) => {
       }
       return obj;
     };
-
     const orderField = validSortColumns.includes(sortBy) ? sortBy : "firstName";
     const orderDirection = order === "asc" ? "asc" : "desc";
     const skip = (page - 1) * pageSize;
@@ -275,7 +283,17 @@ export const searchUsers = async (req, res) => {
       enabled: true,
       role: athleteRol,
     };
-
+    const ahtleteWhere = contestId ? {
+      contestCategoryAthlete: {
+        where: {
+          contestCategory: {
+            contestId: {
+              in: [parseInt(contestId)]
+            }
+          }
+        }
+      }
+    } : {}
     const users = await db.user.findMany({
       where: whereConditions,
       include: {
@@ -283,6 +301,7 @@ export const searchUsers = async (req, res) => {
         photo: {
           where: { enabled: true },
         },
+      ...ahtleteWhere
       },
       orderBy: formSortBy(orderField, orderDirection),
       skip,

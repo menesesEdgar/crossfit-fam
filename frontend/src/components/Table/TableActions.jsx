@@ -1,11 +1,11 @@
-import React from 'react';
-import TableSearchByHeader from './TableSearchByHeader';
-import { TextInput, Dropdown } from 'flowbite-react';
-import { TbFilter } from 'react-icons/tb';
-import { LuSearch } from 'react-icons/lu';
-import { getButtonClassNames } from '../../utils/getButtonClassNames';
-import ActionButtons from '../ActionButtons/ActionButtons';
-import { IoMdRefresh } from 'react-icons/io';
+import React from "react";
+import TableSearchByHeader from "./TableSearchByHeader";
+import { TextInput, Dropdown } from "flowbite-react";
+import { TbFilter } from "react-icons/tb";
+import { LuSearch } from "react-icons/lu";
+import { getButtonClassNames } from "../../utils/getButtonClassNames";
+import ActionButtons from "../ActionButtons/ActionButtons";
+import { IoMdRefresh } from "react-icons/io";
 
 const TableActions = ({
   handleSearchTerm,
@@ -24,12 +24,12 @@ const TableActions = ({
           id={name}
           type="checkbox"
           checked={selectedFilters?.includes(name)}
-          className="w-4 h-4 bg-gray-100 border-gray-300 cursor-pointer rounded text-purple-600 focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+          className="w-4 h-4 bg-neutral-100 border-neutral-300 cursor-pointer rounded text-purple-600 focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-neutral-700 focus:ring-2 dark:bg-neutral-600 dark:border-neutral-500"
           onChange={() => onCheckFilter(name)}
         />
         <label
           htmlFor={name}
-          className="ml-2 text-sm font-medium cursor-pointer text-gray-900 dark:text-gray-100"
+          className="ml-2 text-sm font-medium cursor-pointer text-neutral-800 dark:text-neutral-100"
         >
           {name}
         </label>
@@ -46,13 +46,12 @@ const TableActions = ({
                 icon={LuSearch}
                 type="search"
                 placeholder="Buscar"
-                className="bg-transparent"
                 onChange={handleSearchTerm}
+                className="h-10 w-full"
                 style={{
-                  backgroundColor: 'transparent',
-                  borderRadius: '5px',
-                  border: '1px solid #e2e8f0',
-                  height: '36px',
+                  backgroundColor: "#fff",
+                  borderRadius: "5px",
+                  border: "1px solid #e5e5e5",
                 }}
               />
             </div>
@@ -62,7 +61,7 @@ const TableActions = ({
           {filters && (
             <Dropdown
               renderTrigger={() => (
-                <button className={getButtonClassNames('indigo', false)}>
+                <button className={getButtonClassNames("indigo", false)}>
                   <i>
                     <TbFilter size={18} />
                   </i>
@@ -84,8 +83,8 @@ const TableActions = ({
                   key="all"
                   name={
                     filters?.length === selectedFilters?.length
-                      ? 'Quitar todos'
-                      : 'Seleccionar todos'
+                      ? "Quitar todos"
+                      : "Seleccionar todos"
                   }
                 />
                 <Dropdown.Divider />
@@ -102,9 +101,9 @@ const TableActions = ({
           <ActionButtons
             extraActions={[
               {
-                label: 'Refrescar',
+                label: "Refrescar",
                 action: onRefreshData || null,
-                color: 'stone',
+                color: "stone",
                 icon: IoMdRefresh,
                 filled: true,
               },
