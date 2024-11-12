@@ -8,7 +8,8 @@ import classNames from "classnames";
 import { IoLocationOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
-const CardContest = ({ contest, actions, collapsedActions }) => {
+const CardContest = ({ contest, actions, collapsedActions, role }) => {
+  console.log("role ", role);
   return (
     <article
       className={classNames(
@@ -70,12 +71,16 @@ const CardContest = ({ contest, actions, collapsedActions }) => {
               <FiUsers size={20} className="text-neutral-400" />
             </span>
             <p className="text-sm md:text-base text-neutral-800">
-              <Link
-                className="hover:underline hover:text-blue-400"
-                to={`/contest/${contest.id}/register`}
-              >
-                {contest?.quantityAthletes} atletas inscritos
-              </Link>
+              {role === "Athlete" ? (
+                <span>{contest?.quantityAthletes} atletas inscritos</span>
+              ) : (
+                <Link
+                  className="hover:underline hover:text-blue-400"
+                  to={`/contest/${contest.id}/register`}
+                >
+                  {contest?.quantityAthletes} atletas inscritos
+                </Link>
+              )}
             </p>
           </div>
           <div className="w-full flex gap-2 items-start mt-2">
@@ -114,7 +119,7 @@ const CardContest = ({ contest, actions, collapsedActions }) => {
         <div className="w-full rounded-b-lg bg-white flex gap-2 p-4">
           <>
             {actions && <ActionButtons extraActions={actions} />}
-            {collapsedActions && (
+            {collapsedActions && role !== "Athlete" && (
               <Dropdown
                 renderTrigger={() => (
                   <button className="w-fit bg-white hover:bg-neutral-200 md:w-fit h-9 xl:h-10 text-sm xl:text-base cursor-pointer transition ease-in-out duration-200 p-4 flex items-center justify-center rounded-md border text-stone-800">

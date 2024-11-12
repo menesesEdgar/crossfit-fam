@@ -102,12 +102,79 @@ const CatalogReducer = (state, action) => {
         wods: action.payload,
         loading: false,
       };
-    case "FETCH_CONTESTS":
+    case "FETCH_CONTESTS": {
+      const { id: userId } = action.payload?.user
+      const updatedContests = action.payload?.data?.map((contest) => {
+        const allAthletes = contest.categories?.reduce((acc, contest) => {
+          return acc.concat(contest.contestCategoryAthlete);
+        }, []);
+        const findUserRegister = allAthletes.find((athlete) => athlete.userId === userId)
+        console.log("findUserRegister ", findUserRegister)
+        return {
+          ...contest,
+          athletes: allAthletes,
+          isRegistered: allAthletes?.length > 0 ? !!findUserRegister : false,
+          registerId: findUserRegister ? findUserRegister?.id : null
+        }
+      })
+
       return {
         ...state,
-        contests: action.payload,
+        contests: updatedContests,
         loading: false,
       };
+      
+    }
+
+    case "DELETE_ATHLETE_FROM_CONTEST": {
+      const currentContests = state.contests
+        const newContestIndex = state.contests.findIndex((contest) => contest.id === parseInt(action.payload.data.contestId))
+        if (newContestIndex !== -1) {
+          const currentContest = currentContests[newContestIndex]
+          if (currentContest.isRegistered && action.payload?.data?.athletes) {
+            const updatedContest = {
+              ...currentContest,
+              athletes: [...action.payload.data.athletes],
+              isRegistered: false,
+              registerId: null
+            }
+            currentContests[newContestIndex] = updatedContest
+          }
+
+        }
+    return {
+      ...state,
+      contests: currentContests,
+      loading: false,
+    };
+    }    
+    case "ADD_ATHLETE_TO_CONTEST":
+      {
+        const contestId = action.payload?.contestCategory?.contestId
+        const currentContests = state.contests
+        if (contestId) {
+          const newContestIndex = state.contests.findIndex((contest) => contest.id === parseInt(contestId))
+          if (newContestIndex !== -1) {
+            const currentContest = currentContests[newContestIndex]
+            if (!currentContest.isRegistered) {
+              const updatedContest = {
+                ...currentContest,
+                athletes: [...currentContest.athletes, action.payload],
+                isRegistered: true,
+                registerId: action.payload?.id
+              }
+              currentContests[newContestIndex] = updatedContest
+            }
+  
+          }
+        }
+        return {
+          ...state,
+          contests: currentContests,
+          loading: false,
+        };
+      }
+
     case "FETCH_CONTEST":
       return {
         ...state,

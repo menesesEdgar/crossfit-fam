@@ -729,6 +729,13 @@ export const addAthleteToContest = async (req, res) => {
         userId: userId,
         contestCategoryId: parseInt(categoryId),
       },
+      include: {
+        contestCategory: {
+          select: {
+            contestId: true,
+          }
+        }
+      }
     });
     res.json(contest);
   } catch (error) {
@@ -765,7 +772,7 @@ export const removeAthleteFromContest = async (req, res) => {
         },
       },
     });
-    res.json({ message: "Athlete removed", athletes });
+    res.json({ message: "Athlete removed", data: {athletes, contestId: athlete?.contestCategory?.contestId}});
   } catch (error) {
     console.log("error on deleteContest", error);
     res.status(500).json({ message: error.message });

@@ -15,6 +15,7 @@ const ContestProvider = ({ children }) => {
   const {
     fetchContest,
     getWodsByCategoryId,
+    fetchAthletesByCategory,
     addCategory,
     deleteCategory,
     addWodToCategory,
@@ -42,6 +43,7 @@ const ContestProvider = ({ children }) => {
         ...state,
         fetchContest,
         getWodsByCategoryId,
+        fetchAthletesByCategory,
         addCategory,
         deleteCategory,
         removeAllContestCategories,
