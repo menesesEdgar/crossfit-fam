@@ -5,7 +5,7 @@ import { AiOutlineUserAdd } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import ActionButtons from "../components/ActionButtons/ActionButtons";
 import FamCrossLogo from "../assets/logo/logo-pink-filled.svg";
-import ModalRegisterUser from "../components/Modals/ModalRegisterUser";
+import ModalAuthUser from "../components/Modals/ModalAuthUser";
 
 const PublicLayout = ({ children }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -28,9 +28,7 @@ const PublicLayout = ({ children }) => {
   return (
     <div className="flex flex-col h-full w-full  overflow-y-auto overflow-x-hidden">
       <Navbar>
-        <div
-          className={`hidden md:flex w-fit whitespace-nowrap text-nowrap justify-start gap-4 items-center p-2`}
-        >
+        <div className="hidden md:flex w-fit whitespace-nowrap text-nowrap justify-start gap-4 items-center p-2">
           <img
             src={FamCrossLogo}
             alt="Familia Crossfit ICON"
@@ -45,13 +43,16 @@ const PublicLayout = ({ children }) => {
             <br /> Crossfit
           </span>
         </div>
-        <div className="w-fit flex items-center justify-end gap-4 text-nowrap">
+        <div
+          className="w-fit col-span-4 flex items-center justify-end gap-4 text-nowrap"
+          style={{ marginLeft: "auto" }}
+        >
           <ActionButtons extraActions={actions} />
         </div>
       </Navbar>
       <div className="flex-1 h-full mt-16">{children}</div>
       {openModal && (
-        <ModalRegisterUser
+        <ModalAuthUser
           openModal={openModal}
           setOpenModal={() => setOpenModal(!openModal)}
         />

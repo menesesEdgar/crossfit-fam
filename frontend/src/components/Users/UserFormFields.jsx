@@ -6,10 +6,9 @@ import { BiUser } from "react-icons/bi";
 import { FaEnvelope } from "react-icons/fa";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
-import { MdManageAccounts } from "react-icons/md";
 import { PiUserCircleCheckBold } from "react-icons/pi";
 
-const UserFormFields = ({ roles, editMode }) => {
+const UserFormFields = ({ editMode }) => {
   return (
     <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))]">
       <Field
@@ -41,7 +40,7 @@ const UserFormFields = ({ roles, editMode }) => {
         id="phone"
         component={TextInput}
         label="Teléfono"
-        type="text"
+        type="tel"
         icon={FaPhoneAlt}
       />
       {!editMode && (
@@ -64,17 +63,7 @@ const UserFormFields = ({ roles, editMode }) => {
           icon={FaLock}
         />
       )}
-      <Field
-        name="role"
-        id="role"
-        component={SelectInput}
-        label="Rol"
-        options={roles?.map((role) => ({
-          value: role.id,
-          label: role.name,
-        }))}
-        icon={MdManageAccounts}
-      />
+
       {editMode && (
         <Field
           name="status"
@@ -82,8 +71,8 @@ const UserFormFields = ({ roles, editMode }) => {
           component={SelectInput}
           label="Estado"
           options={[
-            { value: true, label: "Habilitado" },
-            { value: false, label: "Deshabilitado" },
+            { value: "Habilitado", label: "Habilitado" },
+            { value: "Deshabilitado", label: "Deshabilitado" },
           ]}
           icon={PiUserCircleCheckBold}
         />

@@ -47,7 +47,6 @@ export const createUser = async (req, res) => {
       phone,
       role,
       birthDate,
-      status,
       gender,
       password,
     } = req.body;
@@ -82,7 +81,7 @@ export const createUser = async (req, res) => {
         password: hashedPassword,
         roleId: role === "Athlete" ? athleteRol.id : parseInt(role),
         enabled: true,
-        status: true,
+        status: "Habilitado",
       },
     });
 
@@ -104,18 +103,9 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const {
-      id,
-      firstName,
-      lastName,
-      email,
-      phone,
-      role,
-      status,
-      birthDate,
-      gender,
-    } = req.body;
-
+    const { id, firstName, lastName, email, phone, status, birthDate, gender } =
+      req.body;
+    console.log(status);
     const userExists = await db.user.findFirst({ where: { id } });
 
     if (!userExists) {
@@ -140,7 +130,6 @@ export const updateUser = async (req, res) => {
         birthdate: birthDate ? new Date(birthDate) : null,
         gender: gender || null,
         status: status,
-        roleId: parseInt(role),
       },
       include: {
         role: true,
@@ -226,13 +215,16 @@ export const searchUsers = async (req, res) => {
       role,
       contestId,
     } = req.query;
-    const { user: currentUser } = req;
+
     const validSortColumns = [
       "firstName",
       "lastName",
       "email",
       "phone",
       "role",
+      "status",
+      "birthdate",
+      "gender",
     ];
 
     const textSearchConditions = searchTerm
@@ -271,29 +263,36 @@ export const searchUsers = async (req, res) => {
       }
       return obj;
     };
+
     const orderField = validSortColumns.includes(sortBy) ? sortBy : "firstName";
+
     const orderDirection = order === "asc" ? "asc" : "desc";
     const skip = (page - 1) * pageSize;
     const take = parseInt(pageSize);
+
     const athleteRol = role
       ? { name: { not: "Root", equals: "Athlete" } }
-      : { name: { not: "Root" } };
+      : { name: { not: "Root", equals: "Admin" } };
+
     const whereConditions = {
       ...textSearchConditions,
       enabled: true,
       role: athleteRol,
     };
-    const ahtleteWhere = contestId ? {
-      contestCategoryAthlete: {
-        where: {
-          contestCategory: {
-            contestId: {
-              in: [parseInt(contestId)]
-            }
-          }
+    const ahtleteWhere = contestId
+      ? {
+          contestCategoryAthlete: {
+            where: {
+              contestCategory: {
+                contestId: {
+                  in: [parseInt(contestId)],
+                },
+              },
+            },
+          },
         }
-      }
-    } : {}
+      : {};
+
     const users = await db.user.findMany({
       where: whereConditions,
       include: {
@@ -301,7 +300,7 @@ export const searchUsers = async (req, res) => {
         photo: {
           where: { enabled: true },
         },
-      ...ahtleteWhere
+        ...ahtleteWhere,
       },
       orderBy: formSortBy(orderField, orderDirection),
       skip,

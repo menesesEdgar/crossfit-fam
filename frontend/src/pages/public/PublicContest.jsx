@@ -15,7 +15,7 @@ import { IoPersonAddOutline } from "react-icons/io5";
 import { RiBarChart2Fill } from "react-icons/ri";
 import { Checkbox, Dropdown, Label } from "flowbite-react";
 import { MdOutlineFilterList } from "react-icons/md";
-import ModalRegisterUser from "../../components/Modals/ModalRegisterUser";
+import ModalAuthUser from "../../components/Modals/ModalAuthUser";
 
 const PublicContest = () => {
   const { publicContests: allContests, loading } = useCatalogContext();
@@ -197,7 +197,7 @@ const PublicContest = () => {
                   <CardContest
                     key={contest.id}
                     contest={parseContest}
-                    extraActions={[handleAction(contest.status, contest)]}
+                    actions={[handleAction(contest.status, contest)]}
                   />
                 );
               })}
@@ -212,7 +212,7 @@ const PublicContest = () => {
         )}
       </div>
       {openModal && (
-        <ModalRegisterUser
+        <ModalAuthUser
           openModal={openModal}
           setOpenModal={() => setOpenModal(!openModal)}
         />

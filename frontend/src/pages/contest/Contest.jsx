@@ -313,7 +313,7 @@ const Contest = () => {
                     {
                       label: "Configurar",
                       action: isEditPermissions.hasPermission
-                        ? () => onEditContest(contest.id)
+                        ? () => onEditContest(contest)
                         : null,
                       icon: FaCog,
                     },
