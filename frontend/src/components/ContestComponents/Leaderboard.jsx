@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSort, FaEdit, FaSave, FaTimes, FaUndo } from "react-icons/fa";
 import AccountFields from "../AccountFields/AccountFields";
 import { TbClockBolt, TbNumber123 } from "react-icons/tb";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import { BiTargetLock } from "react-icons/bi";
 
-const Leaderboard = ({ competition, categories, wods, athletes }) => {
+const Leaderboard = ({ competition, wods, athletes, category }) => {
+  console.log("athletes ", athletes)
   // Estado para almacenar las filas en modo de edición
   const [editingAthleteId, setEditingAthleteId] = useState(null);
   const [editableAthletes, setEditableAthletes] = useState(athletes);
+  useEffect(() => {
+    if (athletes) {
+      setEditableAthletes(athletes)
+    }
+  }, [athletes])
 
   // Función para activar el modo de edición en una fila específica
   const handleEditClick = (athleteId) => {
@@ -47,10 +53,10 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
     });
     setEditableAthletes(updatedAthletes);
   };
-
+  console.log("editable Atletes ", editableAthletes)
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">{competition.name}</h2>
+      <h2 className="text-xl font-semibold mb-4">{competition.name} - {category?.name}</h2>
       <table className="min-w-full bg-white">
         <thead className="bg-crossfit-primary text-white">
           <tr>

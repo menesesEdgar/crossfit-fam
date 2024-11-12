@@ -9,7 +9,9 @@ const ContestProvider = ({ children }) => {
     categories: [],
     wods: [],
     athlete: {},
-    categoryWods: []
+    athletes: [],
+    categoryWods: [],
+    loading: true,
   });
   const { id } = useParams()
   const {
