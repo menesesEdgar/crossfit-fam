@@ -1,5 +1,5 @@
-import React from 'react';
-import classNames from 'classnames';
+import React from "react";
+import classNames from "classnames";
 
 const AccountFields = ({
   id,
@@ -9,7 +9,8 @@ const AccountFields = ({
   onChange,
   allowEdit,
   isEditing,
-  inputType = 'text',
+  inputType = "text",
+  icon: Icon,
 }) => {
   return (
     <div className="flex flex-col gap-1 relative">
@@ -17,21 +18,40 @@ const AccountFields = ({
         {label}
       </label>
       {allowEdit && isEditing ? (
-        <input
-          id={id}
-          name={name}
-          value={value}
-          onChange={onChange}
-          disabled={!allowEdit}
-          type={inputType}
-          className="w-full p-2 bg-stone-100 border-t-0 border-l-0 border-r-0 border-b border-2 border-stone-700"
-        />
+        <div className="relative">
+          <input
+            id={id}
+            name={name}
+            value={value}
+            onChange={onChange}
+            disabled={!allowEdit}
+            type={inputType}
+            className={classNames(
+              "w-full p-2 bg-stone-50 border-none rounded-md",
+              Icon ? "pl-10" : "pl-2"
+            )}
+          />
+          {Icon && (
+            <span className="absolute top-3 left-2">
+              <Icon className="text-neutral-400" />
+            </span>
+          )}
+        </div>
       ) : (
         <p
-          className={classNames('p-2 border-b border-b-white', {
-            'text-stone-800': !isEditing,
-          })}
+          className={classNames(
+            "p-2 border-b border-b-white flex gap-2 items-center",
+            {
+              "text-stone-800": !isEditing,
+            }
+          )}
         >
+          {Icon && (
+            <span>
+              {" "}
+              <Icon className="text-neutral-400 mr-2" />
+            </span>
+          )}
           {value}
         </p>
       )}

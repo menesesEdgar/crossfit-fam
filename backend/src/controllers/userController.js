@@ -105,7 +105,6 @@ export const updateUser = async (req, res) => {
   try {
     const { id, firstName, lastName, email, phone, status, birthDate, gender } =
       req.body;
-    console.log(status);
     const userExists = await db.user.findFirst({ where: { id } });
 
     if (!userExists) {
