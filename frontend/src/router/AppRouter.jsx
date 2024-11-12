@@ -4,10 +4,13 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import ContestProvider from "../context/ContestProvider";
+import PublicProvider from "../context/PublicProvider";
+import AuthContext from "../context/AuthContext";
 import NotFound from "../pages/notFound/NotFound";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { Suspense, useContext } from "react";
-import AuthContext from "../context/AuthContext";
+
 import ProtectedRoute from "./ProtectedRoute";
 // import LoadingModal from '../components/loadingModal/LoadingModal';
 import Login from "../pages/login/Login";
@@ -18,9 +21,7 @@ import Account from "../pages/account/Account";
 import Roles from "../pages/roles/Roles";
 import Contest from "../pages/contest/Contest";
 import ContestView from "../pages/contest/ContestView";
-import ContestProvider from "../context/ContestProvider";
-import PublicProvider from "../context/PublicProvider";
-
+import Score from "../pages/score/Score";
 // public routes
 import PublicContest from "../pages/public/PublicContest";
 import PublicLayout from "../Layout/PublicLayout";
@@ -88,6 +89,7 @@ const AuthorizedRoute = ({ user }) => {
                     </ContestProvider>
                   }
                 />
+                <Route path="/scores" element={<Score />} />
                 <Route path="/catalogs" element={<Catalogs />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/account-settings" element={<Account />} />

@@ -182,8 +182,8 @@ model Score {
   id         Int             @id @default(autoincrement())
   contestCategoryAthleteId     Int
   contestCategoryAthlete       ContestCategoryAthlete @relation(fields: [contestCategoryAthleteId], references: [id])
-  score      String
-  measure    String         // reps or time
+  quantity      String
+  time          String
   contestCategoryWodId Int // It's a WOD for an specific category
   contestCategoryWod       ConCateConWod @relation(fields: [contestCategoryWodId], references: [id])
   createdAt  DateTime    @default(now())

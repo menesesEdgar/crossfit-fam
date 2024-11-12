@@ -9,12 +9,15 @@ const ContestProvider = ({ children }) => {
     categories: [],
     wods: [],
     athlete: {},
-    categoryWods: []
+    athletes: [],
+    categoryWods: [],
+    loading: true,
   });
   const { id } = useParams()
   const {
     fetchContest,
     getWodsByCategoryId,
+    fetchAthletesByCategory,
     addCategory,
     deleteCategory,
     addWodToCategory,
@@ -42,6 +45,7 @@ const ContestProvider = ({ children }) => {
         ...state,
         fetchContest,
         getWodsByCategoryId,
+        fetchAthletesByCategory,
         addCategory,
         deleteCategory,
         removeAllContestCategories,

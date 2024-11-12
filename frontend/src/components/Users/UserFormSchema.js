@@ -20,9 +20,7 @@ export const UserFormSchema = Yup.object().shape({
     /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/,
     "El teléfono debe tener el formato 123-456-7890"
   ),
-  photo: Yup.array().of(Yup.mixed()),
-  role: Yup.string().required("El rol es requerido"),
-  status: Yup.boolean(),
+  status: Yup.string().required("El estado es requerido"),
   id: Yup.string(),
 });
 
@@ -33,10 +31,8 @@ export const UserFormInitialValues = {
   phone: "",
   password: "",
   repeatPassword: "",
-  role: "",
   status: "Habilitado",
   category: "",
-  photo: [],
   id: "",
 };
 
@@ -50,8 +46,7 @@ export const UserFormUpdateSchema = Yup.object().shape({
     /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/,
     "El teléfono debe tener el formato 123-456-7890"
   ),
-  role: Yup.string().required("El rol es requerido"),
-  status: Yup.boolean(),
+  status: Yup.string().required("El estado es requerido"),
   id: Yup.string(),
 });
 
@@ -79,7 +74,6 @@ export const UserFormAddAthleteSchema = Yup.object().shape({
     /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/,
     "El teléfono debe tener el formato 123-456-7890"
   ),
-  role: Yup.string().required("El rol es requerido"),
-  status: Yup.boolean(),
+  status: Yup.string().required("El estado es requerido"),
   id: Yup.string(),
 });

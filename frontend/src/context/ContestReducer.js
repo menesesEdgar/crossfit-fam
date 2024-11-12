@@ -107,6 +107,12 @@ const contestReducer = (state, action) => {
         categoryWods: [...state.categoryWods, action.payload],
         loading: false,
       };
+    case "FETCH_ATHLETES_BY_CATEGORY":
+      return {
+        ...state,
+        athletes: action.payload,
+        loading: false,
+      };
     case "DELETE_WOD_OF_CATEGORY":
       return {
         ...state,

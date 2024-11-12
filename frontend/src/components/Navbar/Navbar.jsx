@@ -12,7 +12,7 @@ const Navbar = ({
   children,
 }) => {
   return (
-    <div className="flex justify-between items-center bg-white shadow-md p-2 w-full h-16 absolute top-0 left-0 z-50">
+    <div className="flex justify-between gap-4 items-center bg-white shadow-md p-2 w-full h-16 absolute top-0 left-0 z-50">
       <Button
         onClick={broken ? setToggled : setCollapsed}
         color="light"

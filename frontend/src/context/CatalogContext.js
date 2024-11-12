@@ -13,6 +13,8 @@ const CatalogContext = createContext({
   publicContests: [],
   publicContest: {},
   loading: true,
+  addAthleteToContest: async () => {},
+  removeAthleteFromContest: async () => {},
   fetchContests: async () => {},
   fetchAthletes: async () => {},
   fetchAthlete: async () => {},

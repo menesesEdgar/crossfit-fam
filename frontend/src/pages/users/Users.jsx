@@ -9,10 +9,8 @@ import { searchUsers } from "../../services/api";
 import usersColumns from "../../utils/usersColumns";
 import ActionButtons from "../../components/ActionButtons/ActionButtons";
 import Notifies from "../../components/Notifies/Notifies";
-import ImageViewer from "../../components/ImageViewer/ImageViewer";
 import { useAuthContext } from "../../context/AuthContext";
 import { FaLock, FaUserShield } from "react-icons/fa";
-import { useRoleContext } from "../../context/RoleContext";
 import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import {
   UserFormChangePasswordSchema,
@@ -42,7 +40,6 @@ import useCheckPermissions from "../../hooks/useCheckPermissions";
 const Users = () => {
   const lastChange = useRef();
   const { user: sesionUser } = useAuthContext();
-  const { roles } = useRoleContext();
   const { useCreateUser, useDeleteUser, useUpdateUser, useChangePasswordUser } =
     useUserContext();
   const [columns, setColumns] = useState(usersColumns);
@@ -55,8 +52,6 @@ const Users = () => {
     lastName: "",
     email: "",
     phone: "",
-    role: "",
-    photo: "",
     status: "",
     password: "",
     repeatPassword: "",
@@ -178,10 +173,8 @@ const Users = () => {
       firstName: item.firstName,
       lastName: item.lastName,
       email: item.email,
-      phone: item.phone,
-      role: item.role.id,
-      photo: "",
       status: item.status,
+      phone: item.phone,
       password: "",
       repeatPassword: "",
     });
@@ -190,6 +183,7 @@ const Users = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      console.log(values);
       editMode ? await useUpdateUser(values) : await useCreateUser(values);
       setSubmitting(false);
       resetForm();
@@ -197,10 +191,8 @@ const Users = () => {
         firstName: "",
         lastName: "",
         email: "",
-        phone: "",
-        role: "",
-        photo: "",
         status: "",
+        phone: "",
         password: "",
         repeatPassword: "",
       });
@@ -220,12 +212,11 @@ const Users = () => {
       lastName: "",
       email: "",
       phone: "",
-      role: "",
-      photo: "",
       status: "",
       password: "",
       repeatPassword: "",
     });
+    setChangePasswordModal(false);
   };
 
   const onRemoveUser = (id) => {
@@ -298,42 +289,18 @@ const Users = () => {
               >
                 {users?.data?.map((user) => {
                   const formatedUser = {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    phone: user.phone,
-                    "role.name": user.role.name,
-                    photo: user?.photo?.[0] ? [user.photo?.[0]] : [],
-                    status: user.status,
+                    ...user,
                   };
                   return (
-                    <T.Row key={user.id}>
+                    <T.Row
+                      className="border-b border-neutral-100"
+                      key={user.id}
+                    >
                       {columns.map((column) =>
-                        column.id === "photo" ? (
-                          <T.Cell key={column.id}>
-                            {formatedUser[column.id] &&
-                            formatedUser[column.id].length > 0 ? (
-                              <ImageViewer
-                                containerClassNames={
-                                  "first:w-12 first:h-12 first:rounded-md"
-                                }
-                                images={formatedUser[column.id]}
-                                alt={`${formatedUser.firstName} ${formatedUser.lastName}`}
-                              />
-                            ) : (
-                              <div className="h-12 w-12 rounded-lg bg-stone-200 flex justify-center items-center gap-2">
-                                <span className="text-stone-500 font-bold text-2xl">
-                                  {formatedUser.firstName[0] +
-                                    formatedUser.lastName[0]}
-                                </span>
-                              </div>
-                            )}
-                          </T.Cell>
-                        ) : column.id === "firstName" ||
-                          column.id === "lastName" ||
-                          column.id === "email" ||
-                          column.id === "phone" ||
-                          column.id === "role.name" ? (
+                        column.id === "firstName" ||
+                        column.id === "lastName" ||
+                        column.id === "email" ||
+                        column.id === "phone" ? (
                           <T.Cell
                             className={`${
                               column?.id === "firstName" ? "font-bold" : ""
@@ -401,10 +368,6 @@ const Users = () => {
             <div className="md:hidden flex py-2 flex-col gap-6">
               {users?.data?.map((user) => {
                 const formatedUser = {
-                  image: {
-                    key: "Foto",
-                    value: user.photo[0] ?? [],
-                  },
                   title: {
                     key: "Nombre",
                     value: `${user.firstName} ${user.lastName}`,
@@ -412,10 +375,6 @@ const Users = () => {
                   phone: {
                     key: "Teléfono",
                     value: user.phone,
-                  },
-                  subtitle: {
-                    key: "Rol",
-                    value: user.role.name,
                   },
                   status: {
                     key: "Estado",
@@ -489,7 +448,7 @@ const Users = () => {
           schema={editMode ? UserFormUpdateSchema : UserFormSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          formFields={<UserFormFields editMode={editMode} roles={roles} />}
+          formFields={<UserFormFields editMode={editMode} />}
           saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}

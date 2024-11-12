@@ -12,7 +12,7 @@ import TextInput from "../../components/Inputs/TextInput";
 import { MdOutlineAlternateEmail, MdOutlinePassword } from "react-icons/md";
 import { Button } from "flowbite-react";
 import ActionButtons from "../../components/ActionButtons/ActionButtons";
-import ModalRegisterUser from "../../components/Modals/ModalRegisterUser";
+import ModalAuthUser from "../../components/Modals/ModalAuthUser";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -172,7 +172,7 @@ const Login = () => {
         </div>
       </div>
       {openModal && (
-        <ModalRegisterUser
+        <ModalAuthUser
           openModal={openModal}
           setOpenModal={() => setOpenModal(!openModal)}
         />

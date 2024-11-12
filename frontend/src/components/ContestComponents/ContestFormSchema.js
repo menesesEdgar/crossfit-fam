@@ -17,3 +17,7 @@ export const  ContestFormSchema = Yup.object().shape({
   organizer: Yup.string().required('Organizador requerido'),
   id: Yup.number(),
 });
+
+export const  RegisterAthleteSchema = Yup.object().shape({
+  category: Yup.string().required('Categoría requerida.'),
+});

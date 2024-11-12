@@ -340,7 +340,10 @@ const Athletes = () => {
                   !isPending &&
                   athletes?.data?.map((athlete) => {
                     return (
-                      <T.Row key={athlete.id}>
+                      <T.Row
+                        className="border-b border-b-neutral-100"
+                        key={athlete.id}
+                      >
                         {columns.map((column) => {
                           let cellValue;
                           if (column.id === "firstName") {

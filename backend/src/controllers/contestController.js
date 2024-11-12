@@ -155,7 +155,7 @@ export const getContestById = async (req, res) => {
         },
       },
     });
-
+    console.log("contest ", contest)
     if (!contest) {
       res.status(404).json({ message: "Contest not found" });
       return;
@@ -729,6 +729,13 @@ export const addAthleteToContest = async (req, res) => {
         userId: userId,
         contestCategoryId: parseInt(categoryId),
       },
+      include: {
+        contestCategory: {
+          select: {
+            contestId: true,
+          }
+        }
+      }
     });
     res.json(contest);
   } catch (error) {
@@ -765,7 +772,7 @@ export const removeAthleteFromContest = async (req, res) => {
         },
       },
     });
-    res.json({ message: "Athlete removed", athletes });
+    res.json({ message: "Athlete removed", data: {athletes, contestId: athlete?.contestCategory?.contestId}});
   } catch (error) {
     console.log("error on deleteContest", error);
     res.status(500).json({ message: error.message });
@@ -817,20 +824,26 @@ export const getAthletesByCategory = async (req, res) => {
         score: {
           select: {
             id: true,
-            score: true,
-            measure: true,
+            quantity: true,
+            time: true,
             contestCategoryWodId: true,
             contestCategoryAthleteId: true
           }
         }
       },
     });
+
     const formattedData = contestAthletes.map((athlete) => {
       const newObj = {
         ...athlete,
-        ...athlete.user,
+        name: `${athlete.user.firstName} ${athlete.user.lastName}`,
+        scores: athlete.score.reduce((acc, item) => {
+            acc[item.contestCategoryWodId] = item; // Using contestCategoryWodId as the key
+            return acc;
+        }, {})
       }
       delete newObj.user;
+      delete newObj.score;
       return newObj
     })
     

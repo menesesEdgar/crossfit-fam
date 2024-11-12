@@ -3,11 +3,12 @@ import { ErrorMessage } from "formik";
 import { TextInput as Input, Label } from "flowbite-react";
 import classNames from "classnames";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 
 const TextInput = ({
   className,
   field,
-  form: { touched, errors },
+  form: { touched, errors, setFieldValue },
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +19,15 @@ const TextInput = ({
 
   const inputType =
     props.type === "password" && showPassword ? "text" : props.type;
+
+  const handleChange = (e) => {
+    if (props.type === "tel") {
+      const formattedValue = formatPhoneNumber(e.target.value);
+      setFieldValue(field.name, formattedValue);
+    } else {
+      field.onChange(e);
+    }
+  };
 
   return (
     <div className={classNames("relative w-full", className)}>
@@ -33,7 +43,8 @@ const TextInput = ({
           {...props}
           type={inputType}
           color={touched[field.name] && errors[field.name] ? "failure" : ""}
-          className="mt-1 text-neutral-800" // Espacio extra a la derecha para el icono
+          className="mt-1 text-neutral-800"
+          onChange={handleChange}
         />
         {props.type === "password" && (
           <button
