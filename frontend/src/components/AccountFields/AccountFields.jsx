@@ -33,23 +33,19 @@ const AccountFields = ({
           />
           {Icon && (
             <span className="absolute top-3 left-2">
-              <Icon className="text-neutral-400" />
+              <Icon className="text-neutral-600" />
             </span>
           )}
         </div>
       ) : (
         <p
-          className={classNames(
-            "p-2 border-b border-b-white flex gap-2 items-center",
-            {
-              "text-stone-800": !isEditing,
-            }
-          )}
+          className={classNames("p-2 flex gap-2 items-center", {
+            "text-stone-800": !isEditing,
+          })}
         >
           {Icon && (
             <span>
-              {" "}
-              <Icon className="text-neutral-400 mr-2" />
+              <Icon className="text-neutral-600 mr-2" />
             </span>
           )}
           {value}

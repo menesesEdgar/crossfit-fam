@@ -65,8 +65,8 @@ const Score = () => {
   };
 
   return (
-    <div className="flex p-4 min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
-      <div className="flex justify-between">
+    <div className="flex min-h-[77dvh] h-full bg-white max-h-[92dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4 shadow-md rounded-md dark:bg-gray-900 antialiased">
+      <div className="flex justify-between p-4">
         <TableHeader icon={MdOutlineLeaderboard} title={"Puntajes"} />
         <Dropdown
           renderTrigger={() => (
@@ -108,7 +108,7 @@ const Score = () => {
           ))}
         </Dropdown>
       </div>
-      <div>
+      <div className="w-full flex-1 overflow-y-auto">
         <Leaderboard
           competition={competition}
           athletes={athletes}
