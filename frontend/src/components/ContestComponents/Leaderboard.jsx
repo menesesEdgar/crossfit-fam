@@ -49,25 +49,24 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="p-4">
       <h2 className="text-xl font-semibold mb-4">{competition.name}</h2>
-
       <table className="min-w-full bg-white">
         <thead className="bg-crossfit-primary text-white">
           <tr>
             <th className="py-2 px-4 text-left w-10">#</th>
-            <th className="py-2 px-4 text-left w-40">Athlete</th>
+            <th className="py-2 px-4 text-left w-full md:w-40">Athlete</th>
             {wods.map((wod, index) => (
-              <th key={index} className="py-2 px-4 text-left max-w-40 ">
+              <th key={index} className="py-2 px-4 text-left w-full md:w-40 ">
                 {wod.name} <FaSort className="inline ml-1" />
               </th>
             ))}
-            <th className="py-2 px-4 text-left w-60">Acciones</th>
+            <th className="py-2 px-4 text-left w-full md:w-60">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="w-full">
           {editableAthletes.map((athlete, idx) => (
-            <tr key={athlete.id} className="border-b">
+            <tr key={athlete.id} className="border-b overflow-x-auto w-full">
               <td className="py-2 px-4">{idx + 1}</td>
               <td className="py-2 px-4">
                 <div>
@@ -76,7 +75,7 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
                 </div>
               </td>
               {wods.map((wod) => (
-                <td key={wod.id} className="py-2 px-4 w-60">
+                <td key={wod.id} className="py-2 px-4 w-full md:w-60">
                   <div className="w-full grid grid-cols-2 gap-2">
                     <AccountFields
                       name="quantity"
@@ -110,7 +109,7 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
                   </div>
                 </td>
               ))}
-              <td className="p-2 w-64 py-3">
+              <td className="p-2 w-full md:w-64 py-3">
                 {editingAthleteId === athlete.id ? (
                   <div className="flex gap-2 items-center">
                     <ActionButtons
