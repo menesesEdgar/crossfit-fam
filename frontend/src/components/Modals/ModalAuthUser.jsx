@@ -254,7 +254,7 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
         initialValues={isLogin === "Register" ? initRegisterValues : initLoginValues}
         onSubmit={handleSubmit}
         formFields={<AuthLayoutContent />}
-        saveLabel={isLogin ? "Iniciar sesión" : "Registrarse"}
+        saveLabel={isLogin === "Login" ? "Iniciar sesión" : "Registrarse"}
       />
       {isModalViewerOpen && (
         <ModalViewer
