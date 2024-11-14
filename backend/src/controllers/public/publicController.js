@@ -4,7 +4,7 @@ import { generateRandomPassword } from "../../utils/generatePassword.js";
 
 export const createPendingUser = async (req, res) => {
   try {
-    const { email, firstName, lastName, gender, phone } = req.body;
+    const { email, firstName, lastName, gender, phone, birthDate } = req.body;
 
     const userExists = await db.user.findFirst({
       where: { email, enabled: true },
@@ -30,6 +30,7 @@ export const createPendingUser = async (req, res) => {
         lastName,
         phone,
         gender,
+        birthdate: birthDate ? new Date(birthDate) : null,
         roleId: athleteRol?.id,
         enabled: true,
         status: "Pendiente",

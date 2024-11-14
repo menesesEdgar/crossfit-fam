@@ -9,7 +9,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 const CardContest = ({ contest, actions, collapsedActions, role }) => {
-  console.log("role ", role);
+
   return (
     <article
       className={classNames(

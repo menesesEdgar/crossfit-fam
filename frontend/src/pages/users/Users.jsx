@@ -183,7 +183,6 @@ const Users = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      console.log(values);
       editMode ? await useUpdateUser(values) : await useCreateUser(values);
       setSubmitting(false);
       resetForm();

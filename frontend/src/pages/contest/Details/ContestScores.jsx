@@ -15,11 +15,9 @@ const competition = {
 
 const ContestScores = () => {
   const { fetchAthletesByCategory, athletes, contest, loading, categories, wods: allWods  } = useContestContext()
-  console.log("allWods ", allWods)
   const { id } = useParams()
   const [wods, setWods] = useState([])
   const [selectedCategory, setSelectedCategory] = useState(null);
-  console.log("categories ", categories)
   useEffect(() => {
       async function getAthletesByCategory () {
         await fetchAthletesByCategory({contestId: id, categoryId: selectedCategory?.conCatId })
@@ -29,7 +27,6 @@ const ContestScores = () => {
         if (category) {
           const { categoryWods } = category
           const newWods = categoryWods.map((wod) => {
-            console.log("wod ", wod)
             return {
               ...wod,
               name: allWods.find((c) => c.conWodId === wod.contestWodId)?.name
@@ -46,7 +43,6 @@ const ContestScores = () => {
       setSelectedCategory(categories[0])
     }
   }, [categories])
-  console.log("wods ",wods)
 
   if (!contest && athletes.length === 0) return ;
   return (

@@ -36,7 +36,6 @@ const Roles = () => {
   const [activeTab, setActiveTab] = useState(
     roles?.length > 0 ? roles[0]?.id : null
   );
-  console.log("roles ", roles);
   const [isDisabled, setIsDisabled] = useState(false);
   const [groupedPermissions, setGroupedPermissions] = useState({});
   const [roleName, setRoleName] = useState();

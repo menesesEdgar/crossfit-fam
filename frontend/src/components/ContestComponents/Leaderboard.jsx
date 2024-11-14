@@ -6,7 +6,6 @@ import ActionButtons from "../ActionButtons/ActionButtons";
 import { BiTargetLock } from "react-icons/bi";
 
 const Leaderboard = ({ competition, wods, athletes, category }) => {
-  console.log("athletes ", athletes)
   // Estado para almacenar las filas en modo de edición
   const [editingAthleteId, setEditingAthleteId] = useState(null);
   const [editableAthletes, setEditableAthletes] = useState(athletes);
@@ -30,7 +29,6 @@ const Leaderboard = ({ competition, wods, athletes, category }) => {
   // Función para guardar los cambios en una fila específica
   const handleSaveClick = () => {
     // Aquí puedes enviar `editableAthletes` a tu API o backend
-    console.log("Datos guardados:", editableAthletes);
     setEditingAthleteId(null);
   };
 
@@ -53,7 +51,7 @@ const Leaderboard = ({ competition, wods, athletes, category }) => {
     });
     setEditableAthletes(updatedAthletes);
   };
-  console.log("editable Atletes ", editableAthletes)
+
   return (
     <div className="p-4">
       <h2 className="text-xl font-semibold mb-4">{competition.name} - {category?.name}</h2>
