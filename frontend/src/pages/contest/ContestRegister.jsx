@@ -34,7 +34,6 @@ const CategoryWods = ({ setActiveTab }) => {
     role: "Athlete",
     contestId: id
   });  const lastChange = useRef()
-  // console.log("categoryWods ", categoryWods);
   const [activeCategory, setActiveCategory] = useState(
     contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null
   );
@@ -44,7 +43,6 @@ const CategoryWods = ({ setActiveTab }) => {
       setActiveCategory(contestCategories[0]?.conCatId)
     }
   }, [contestCategories])
-  console.log("contestCategories ", contestCategories)
   const {
   data: athletes,
   refetch,
@@ -55,7 +53,6 @@ const CategoryWods = ({ setActiveTab }) => {
   queryFn: ({ signal }) => searchAthletes({ ...searchFilters, signal }),
   staleTime: Infinity,
   });
-  console.log("athletes ", athletes)
   useEffect(() => {
     refetch();
   }, [searchFilters]);
