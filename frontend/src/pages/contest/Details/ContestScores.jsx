@@ -14,7 +14,7 @@ const competition = {
 };
 
 const ContestScores = () => {
-  const { fetchAthletesByCategory, athletes, contest, loading, categories, wods: allWods  } = useContestContext()
+  const { fetchAthletesByCategory, athletes, contest, loading, categories, wods: allWods, addScoreToAthlete  } = useContestContext()
   const { id } = useParams()
   const [wods, setWods] = useState([])
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -43,7 +43,8 @@ const ContestScores = () => {
       setSelectedCategory(categories[0])
     }
   }, [categories])
-
+  console.log("athletes ", athletes)
+  console.log("wods ", wods)
   if (!contest && athletes.length === 0) return ;
   return (
     <div className="flex p-4 min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
@@ -80,6 +81,7 @@ const ContestScores = () => {
           competition={contest}
           athletes={athletes}
           wods={wods}
+          addScoreToAthlete={addScoreToAthlete}
         />
         )}
 

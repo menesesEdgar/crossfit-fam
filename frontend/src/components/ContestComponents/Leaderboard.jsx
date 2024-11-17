@@ -4,8 +4,9 @@ import AccountFields from "../AccountFields/AccountFields";
 import { TbClockBolt, TbNumber123 } from "react-icons/tb";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import { BiTargetLock } from "react-icons/bi";
+import { useParams } from "react-router-dom";
 
-const Leaderboard = ({ competition, wods, athletes, category }) => {
+const Leaderboard = ({ competition, wods, athletes, category, addScoreToAthlete }) => {
   // Estado para almacenar las filas en modo de edición
   const [editingAthleteId, setEditingAthleteId] = useState(null);
   const [editableAthletes, setEditableAthletes] = useState(athletes);
@@ -14,7 +15,7 @@ const Leaderboard = ({ competition, wods, athletes, category }) => {
       setEditableAthletes(athletes)
     }
   }, [athletes])
-
+  const { id } = useParams()
   // Función para activar el modo de edición en una fila específica
   const handleEditClick = (athleteId) => {
     setEditingAthleteId(athleteId);
@@ -27,8 +28,14 @@ const Leaderboard = ({ competition, wods, athletes, category }) => {
   };
 
   // Función para guardar los cambios en una fila específica
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     // Aquí puedes enviar `editableAthletes` a tu API o backend
+    const athleteData = editableAthletes?.find((athlete) => athlete.id === parseInt(editingAthleteId))
+    await addScoreToAthlete({
+      contestId: id,
+      athleteId: editingAthleteId,
+      ...athleteData
+    })
     setEditingAthleteId(null);
   };
 
@@ -154,4 +161,4 @@ const Leaderboard = ({ competition, wods, athletes, category }) => {
   );
 };
 
-export default Leaderboard;
+export default React.memo(Leaderboard);

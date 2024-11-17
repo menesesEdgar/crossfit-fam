@@ -16,7 +16,8 @@ import {
   removeAllCategoryWods,
   addAthleteToContest,
   removeAthleteFromContest,
-  getAthletesByCategory
+  getAthletesByCategory,
+  addScoreToAthlete
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -322,6 +323,26 @@ const useContest = (dispatch) => {
       setLoading(false);
     },
   });
+  // Scores
+  const useAddScoreToAthlete = useMutation({
+    mutationFn: addScoreToAthlete,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "ADD_SCORE_TO_ATHLETE", payload: data });
+      Notifies("success", "Registro actualizado");
+    },
+    onError: (error) => {
+      console.log("error adding score", error);
+      Notifies("error", error?.response?.data?.message);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contestsAthleteScore");
+      setLoading(false);
+    },
+  });
   return {
     fetchContest: fetchContest.mutate,
     getWodsByCategoryId: getWodsByCategoryId.mutate,
@@ -367,6 +388,9 @@ const useContest = (dispatch) => {
     },
     addAllWodsToCategory: (values) => {
       return useAddAllWodsToCategory.mutateAsync(values);
+    },
+    addScoreToAthlete: (values) => {
+      return useAddScoreToAthlete.mutateAsync(values);
     },
   };
 };

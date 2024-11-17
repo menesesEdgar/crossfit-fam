@@ -33,7 +33,7 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       await login(values);
-      navigate("/dashboard");
+      navigate("/contest");
     },
   });
 

@@ -109,7 +109,6 @@ const CatalogReducer = (state, action) => {
           return acc.concat(contest.contestCategoryAthlete);
         }, []);
         const findUserRegister = allAthletes.find((athlete) => athlete.userId === userId)
-        console.log("findUserRegister ", findUserRegister)
         return {
           ...contest,
           athletes: allAthletes,

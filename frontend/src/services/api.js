@@ -522,3 +522,16 @@ export const getAthletesByCategory = async ({contestId, categoryId}) => {
     throw error;
   }
 };
+
+// Score
+export const addScoreToAthlete = async (data) => {
+  const {contestId, athleteId} = data
+  console.log("data ", data)
+  try {
+    const response = await api.post(`/contests/${contestId}/athlete/${athleteId}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

@@ -12,7 +12,7 @@ import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import { formatMxnDate } from "../../utils/formatDates";
 import { useNavigate } from "react-router-dom";
-import { FaCog, FaEdit, FaTrash, FaTrophy, FaCheck } from "react-icons/fa";
+import { FaCog, FaEdit, FaTrash, FaTrophy, FaCheck, FaFlagCheckered } from "react-icons/fa";
 import CardContest from "../../components/Card/CardContest";
 import ModalViewer from "../../components/Modals/ModalViewer";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
@@ -31,6 +31,7 @@ import ContestRegisterFields from "../../components/ContestComponents/ContestReg
 import { useContestContext } from "../../context/ContestContext";
 import { getContests } from "../../services/api";
 import { useQuery } from "@tanstack/react-query";
+import { BsFileBarGraphFill } from "react-icons/bs";
 
 // import BgPublicContest from "../../assets/bg/bg-public-contest.webp";
 
@@ -397,14 +398,20 @@ const Contest = () => {
                       color: "neutral",
                       icon: FaEdit,
                     },
+                    // {
+                    //   label: "Publicar",
+                    //   action: () => {
+                    //     setContestToUpdateStep(contest);
+                    //     setModalNextStep(true);
+                    //   },
+                    //   color: "neutral",
+                    //   icon: HiOutlineSpeakerphone,
+                    // },
                     {
-                      label: "Publicar",
-                      action: () => {
-                        setContestToUpdateStep(contest);
-                        setModalNextStep(true);
-                      },
+                      label: "Puntajes",
+                      action: () => navigate(`/contest/${contest.id}/scores`),
                       color: "neutral",
-                      icon: HiOutlineSpeakerphone,
+                      icon: FaFlagCheckered  ,
                     },
                   ] : [
                     {

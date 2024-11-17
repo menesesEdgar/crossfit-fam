@@ -155,7 +155,6 @@ export const getContestById = async (req, res) => {
         },
       },
     });
-    console.log("contest ", contest)
     if (!contest) {
       res.status(404).json({ message: "Contest not found" });
       return;
@@ -859,19 +858,54 @@ export const getAthletesByCategory = async (req, res) => {
   }
 };export const addScoreToAthlete = async (req, res) => {
   try {
-    const { athleteId, score, measure, wodId } = req.body;
+    const { athleteId, scores } = req.body;
+    const scoresData = []
+    const updateData = []
+    for (const [key, value] of Object.entries(scores)) {
+      const scoreObj = {
+        contestCategoryAthleteId: parseInt(athleteId),
+        quantity: value.quantity || "",
+        time: value.time || "",
+        contestCategoryWodId: parseInt(key)  
+      }
+      const score = await db.score.findMany({
+        where: { contestCategoryAthleteId: parseInt(athleteId), contestCategoryWodId:  parseInt(key)},
+        select: {
+          id: true
+        }
+      })
+      if (score?.length > 0 || value?.id) {
+        updateData.push({
+          ...scoreObj,
+          id: value?.id || score[0]?.id
+        })
+      } else {
+        scoresData.push(scoreObj)
+      }
 
-    const contest = await db.score.create({
-      data: {
-        contestCategoryAthleteId: athleteId,
-        score,
-        measure: measure ? measure : 'reps',
-        contestCategoryWodId: wodId
-      },
-    });
-    res.json(contest);
+    }
+    const score = await db.$transaction(async (prisma) => {
+      await prisma.score.createMany({
+        data: scoresData
+      })
+      if (updateData && updateData.length > 0) {
+        await Promise.all(
+          updateData.map((val) =>
+            prisma.score.update({
+              where: { id: val.id },
+              data: {
+                time: val?.time || "",
+                quantity: val?.quantity || "",
+              },
+            })
+          )
+        );
+      }
+    })
+    
+    res.json(score);
   } catch (error) {
-    console.log("error adding athlete to contest", error);
+    console.log("error updating score", error);
     res.status(500).json({ message: error.message });
   }
 };
