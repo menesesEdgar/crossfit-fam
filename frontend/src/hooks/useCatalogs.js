@@ -28,7 +28,6 @@ import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
 
 const useCatalogs = (dispatch, user) => {
-  console.log("userId ", user)
   const queryClient = useQueryClient();
   const { dispatch: loadingDispatch } = useLoading();
 
