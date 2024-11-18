@@ -66,7 +66,7 @@ const Leaderboard = ({ competition, wods, athletes, category, addScoreToAthlete 
         <thead className="bg-crossfit-primary text-white">
           <tr>
             <th className="py-2 px-4 text-left w-10">#</th>
-            <th className="py-2 px-4 text-left w-full md:w-40">Athlete</th>
+            <th className="py-2 px-4 text-left w-full md:w-40">Atleta</th>
             {wods.map((wod, index) => (
               <th key={index} className="py-2 px-4 text-left w-full md:w-40 ">
                 {wod.name} <FaSort className="inline ml-1" />

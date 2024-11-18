@@ -49,8 +49,8 @@ const Contest = () => {
 
   const {
     createContest,
-    updateContest,
     deleteContest,
+    updateContest,
     loading,
     setContestNextStep,
     addAthleteToContest,
@@ -252,7 +252,7 @@ const Contest = () => {
       setSubmitting(false);
     }
   }
-
+  console.log("all contest ", allContests)
   return (
     <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
       <div className="flex flex-col gap-2 px-2 md:px-4 pt-4">

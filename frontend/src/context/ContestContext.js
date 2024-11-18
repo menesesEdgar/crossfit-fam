@@ -30,7 +30,6 @@ const ContestContext = createContext({
   getRegisteredAthletes: async () => {},
   fetchAthletesByCategory: async () => {},
   addScoreToAthlete: async () => {},
-  updateScoreToAthlete: async () => {},
   loading: true,
 });
 

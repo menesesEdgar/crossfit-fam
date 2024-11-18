@@ -210,7 +210,50 @@ export const updateContest = async (req, res) => {
         status,
       },
     });
-    res.json(contest);
+
+        const categories = await db.contestCategory.findMany({
+          where: { contestId: parseInt(req.params.id) },
+          include: {
+            category: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+            contestCategoryAthlete: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    role: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const categoriesWithAthletes = categories.map((cat) => ({
+          ...cat,
+          athletes: cat.contestCategoryAthlete
+            .filter((athleteEntry) => athleteEntry.user.role.name === "Athlete")
+            .map((athleteEntry) => athleteEntry.user),
+        }));
+        const newContestData = {
+          ...contest,
+          categories: categoriesWithAthletes
+        }
+      //   return {
+      //     ...contest,
+      //     categories: categoriesWithAthletes,
+      //   };
+      // })
+
+    res.json(newContestData);
   } catch (error) {
     console.log("error on updateContest", error);
     res.status(500).json({ message: error.message });
@@ -906,24 +949,6 @@ export const getAthletesByCategory = async (req, res) => {
     res.json(score);
   } catch (error) {
     console.log("error updating score", error);
-    res.status(500).json({ message: error.message });
-  }
-};
-export const updateScoreToAthlete = async (req, res) => {
-  try {
-    const { id, score, measure } = req.body;
-
-    const athleteScore = await db.score.update({
-      where: { id: parseInt(id)},
-      data: {
-        score,
-        measure: measure ? measure : 'reps',
-      },
-    });
-
-    res.json(athleteScore);
-  } catch (error) {
-    console.log("error adding athlete to contest", error);
     res.status(500).json({ message: error.message });
   }
 };
