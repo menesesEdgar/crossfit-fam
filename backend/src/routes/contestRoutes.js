@@ -22,7 +22,8 @@ import {
   removeAllWodsFromCategory,
   addAthleteToContest,
   removeAthleteFromContest,
-  getAthletesByCategory
+  getAthletesByCategory,
+  addScoreToAthlete
 } from "../controllers/contestController.js";
 
 const router = express.Router();
@@ -68,5 +69,8 @@ router
 router
   .route("/category/:categoryId/removeAllWods")
   .put(protect, removeAllWodsFromCategory);
+// Adding scores
+router.route("/:contestId/athlete/:athleteId")
+.post(protect, addScoreToAthlete)
 
 export default router;

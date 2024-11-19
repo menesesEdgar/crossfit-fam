@@ -155,7 +155,6 @@ export const getContestById = async (req, res) => {
         },
       },
     });
-    console.log("contest ", contest)
     if (!contest) {
       res.status(404).json({ message: "Contest not found" });
       return;
@@ -211,7 +210,50 @@ export const updateContest = async (req, res) => {
         status,
       },
     });
-    res.json(contest);
+
+        const categories = await db.contestCategory.findMany({
+          where: { contestId: parseInt(req.params.id) },
+          include: {
+            category: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+            contestCategoryAthlete: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    role: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const categoriesWithAthletes = categories.map((cat) => ({
+          ...cat,
+          athletes: cat.contestCategoryAthlete
+            .filter((athleteEntry) => athleteEntry.user.role.name === "Athlete")
+            .map((athleteEntry) => athleteEntry.user),
+        }));
+        const newContestData = {
+          ...contest,
+          categories: categoriesWithAthletes
+        }
+      //   return {
+      //     ...contest,
+      //     categories: categoriesWithAthletes,
+      //   };
+      // })
+
+    res.json(newContestData);
   } catch (error) {
     console.log("error on updateContest", error);
     res.status(500).json({ message: error.message });
@@ -779,29 +821,8 @@ export const removeAthleteFromContest = async (req, res) => {
   }
 };
 
-// where: {
-//   contestCategoryAthlete: {
-//       contestCategoryId: {
-//         in: [parseInt(categoryId)]
-//       }
-//   }
-// },
-// include: {
-//   contestCategoryAthlete: {
-//     select: {
-//       user: {
-//         select: {
-//           firstName: true,
-//           lastName: true,
-//           email: true,
-//           phone: true,
-//         },
-//       },          }
-//   },
-
-// }
 export const getAthletesByCategory = async (req, res) => {
-  const { categoryId, contestId } = req.params;
+  const { categoryId } = req.params;
   try {
     const contestAthletes = await db.contestCategoryAthlete.findMany({
       where: {
@@ -851,45 +872,78 @@ export const getAthletesByCategory = async (req, res) => {
       res.status(404).json({ message: "Athletes not found for this category" });
       return;
     }
-
-    res.json(formattedData);
+    // Find a way to set the position
+    const athletes = formattedData.map((athlete) => {
+      ;
+      return {
+        ...athlete,
+        totalScore: Object.values(athlete?.scores || []).reduce((sum, item) => sum + Number(item.quantity), 0)
+      }
+    }).sort((a, b) => {
+      const scoreA = a.totalScore === null ? -Infinity : a.totalScore;
+      const scoreB = b.totalScore === null ? -Infinity : b.totalScore;
+      return scoreB - scoreA;
+    }).map((athlete, index) => {
+      return {
+        ...athlete,
+        position: parseInt(index)
+      }
+    })
+    res.json(athletes);
   } catch (error) {
     console.log("error on getAthletesByCategory", error);
     res.status(500).json({ message: error.message });
   }
 };export const addScoreToAthlete = async (req, res) => {
   try {
-    const { athleteId, score, measure, wodId } = req.body;
+    const { athleteId, scores } = req.body;
+    const scoresData = []
+    const updateData = []
+    for (const [key, value] of Object.entries(scores)) {
+      const scoreObj = {
+        contestCategoryAthleteId: parseInt(athleteId),
+        quantity: value.quantity || "",
+        time: value.time || "",
+        contestCategoryWodId: parseInt(key)  
+      }
+      const score = await db.score.findMany({
+        where: { contestCategoryAthleteId: parseInt(athleteId), contestCategoryWodId:  parseInt(key)},
+        select: {
+          id: true
+        }
+      })
+      if (score?.length > 0 || value?.id) {
+        updateData.push({
+          ...scoreObj,
+          id: value?.id || score[0]?.id
+        })
+      } else {
+        scoresData.push(scoreObj)
+      }
 
-    const contest = await db.score.create({
-      data: {
-        contestCategoryAthleteId: athleteId,
-        score,
-        measure: measure ? measure : 'reps',
-        contestCategoryWodId: wodId
-      },
-    });
-    res.json(contest);
+    }
+    const score = await db.$transaction(async (prisma) => {
+      await prisma.score.createMany({
+        data: scoresData
+      })
+      if (updateData && updateData.length > 0) {
+        await Promise.all(
+          updateData.map((val) =>
+            prisma.score.update({
+              where: { id: val.id },
+              data: {
+                time: val?.time || "",
+                quantity: val?.quantity || "",
+              },
+            })
+          )
+        );
+      }
+    })
+    
+    res.json(score);
   } catch (error) {
-    console.log("error adding athlete to contest", error);
-    res.status(500).json({ message: error.message });
-  }
-};
-export const updateScoreToAthlete = async (req, res) => {
-  try {
-    const { id, score, measure } = req.body;
-
-    const athleteScore = await db.score.update({
-      where: { id: parseInt(id)},
-      data: {
-        score,
-        measure: measure ? measure : 'reps',
-      },
-    });
-
-    res.json(athleteScore);
-  } catch (error) {
-    console.log("error adding athlete to contest", error);
+    console.log("error updating score", error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -28,7 +28,6 @@ import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
 
 const useCatalogs = (dispatch, user) => {
-  console.log("userId ", user)
   const queryClient = useQueryClient();
   const { dispatch: loadingDispatch } = useLoading();
 
@@ -255,7 +254,7 @@ const useCatalogs = (dispatch, user) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: "UPDATE_CONTEST", payload: data });
+      dispatch({ type: "UPDATE_CONTEST", payload: {data, user} });
       Notifies("success", "Competencia actualizada correctamente");
     },
     onError: (error) => {

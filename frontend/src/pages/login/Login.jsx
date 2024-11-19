@@ -13,6 +13,7 @@ import { MdOutlineAlternateEmail, MdOutlinePassword } from "react-icons/md";
 import { Button } from "flowbite-react";
 import ActionButtons from "../../components/ActionButtons/ActionButtons";
 import ModalAuthUser from "../../components/Modals/ModalAuthUser";
+import { CiCreditCard1 } from "react-icons/ci";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       await login(values);
-      navigate("/dashboard");
+      navigate("/contest");
     },
   });
 
@@ -110,7 +111,7 @@ const Login = () => {
               </Button>
             </div>
           </Form>
-          <div className="flex flex-col items-center justify-center mt-8">
+          {/* <div className="flex flex-col items-center justify-center mt-8">
             <p className="text-sm text-white md:text-gray-500">
               ¿Problemas para iniciar sesión?
             </p>
@@ -125,7 +126,7 @@ const Login = () => {
                 },
               ]}
             />
-          </div>
+          </div> */}
           <section className="text-white md:text-neutral-800">
             <div className="flex justify-center items-center  w-full h-16">
               <p className="text-sm">
@@ -150,6 +151,15 @@ const Login = () => {
             >
               <span style={{ padding: "0 20px" }}></span>
             </p>
+            <div className="flex flex-row gap-2 md:bg-neutral-100 rounded-lg py-2 px-5 justify-left items-center w-full mt-2">
+              <span>
+                <CiCreditCard1 size={40} className="text-gray-500" />
+              </span>
+              <p className="text-sm">
+                Nombre: <span className="font-bold">Julia Jazmin Covarrubias Aceves</span> <br />
+                Banamex: <span className="font-bold"> 5204-1674-5048-9794</span>
+              </p>
+            </div>
             <div className="flex flex-col gap-3 md:bg-neutral-100 rounded-lg py-6 justify-center items-center w-full mt-4">
               <span>
                 <FaTrophy size={50} className="text-yellow-300" />

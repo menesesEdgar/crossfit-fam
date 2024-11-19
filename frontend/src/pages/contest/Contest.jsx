@@ -12,7 +12,7 @@ import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import { formatMxnDate } from "../../utils/formatDates";
 import { useNavigate } from "react-router-dom";
-import { FaCog, FaEdit, FaTrash, FaTrophy, FaCheck } from "react-icons/fa";
+import { FaCog, FaEdit, FaTrash, FaTrophy, FaCheck, FaFlagCheckered } from "react-icons/fa";
 import CardContest from "../../components/Card/CardContest";
 import ModalViewer from "../../components/Modals/ModalViewer";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
@@ -31,6 +31,7 @@ import ContestRegisterFields from "../../components/ContestComponents/ContestReg
 import { useContestContext } from "../../context/ContestContext";
 import { getContests } from "../../services/api";
 import { useQuery } from "@tanstack/react-query";
+import { BsFileBarGraphFill } from "react-icons/bs";
 
 // import BgPublicContest from "../../assets/bg/bg-public-contest.webp";
 
@@ -48,8 +49,8 @@ const Contest = () => {
 
   const {
     createContest,
-    updateContest,
     deleteContest,
+    updateContest,
     loading,
     setContestNextStep,
     addAthleteToContest,
@@ -251,7 +252,7 @@ const Contest = () => {
       setSubmitting(false);
     }
   }
-
+  console.log("all contest ", allContests)
   return (
     <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
       <div className="flex flex-col gap-2 px-2 md:px-4 pt-4">
@@ -397,14 +398,20 @@ const Contest = () => {
                       color: "neutral",
                       icon: FaEdit,
                     },
+                    // {
+                    //   label: "Publicar",
+                    //   action: () => {
+                    //     setContestToUpdateStep(contest);
+                    //     setModalNextStep(true);
+                    //   },
+                    //   color: "neutral",
+                    //   icon: HiOutlineSpeakerphone,
+                    // },
                     {
-                      label: "Publicar",
-                      action: () => {
-                        setContestToUpdateStep(contest);
-                        setModalNextStep(true);
-                      },
+                      label: "Puntajes",
+                      action: () => navigate(`/contest/${contest.id}/scores`),
                       color: "neutral",
-                      icon: HiOutlineSpeakerphone,
+                      icon: FaFlagCheckered  ,
                     },
                   ] : [
                     {
