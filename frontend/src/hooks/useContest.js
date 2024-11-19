@@ -15,7 +15,9 @@ import {
   addAllWodsToCategory,
   removeAllCategoryWods,
   addAthleteToContest,
-  removeAthleteFromContest
+  removeAthleteFromContest,
+  getAthletesByCategory,
+  addScoreToAthlete
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -41,6 +43,14 @@ const useContest = (dispatch) => {
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
       dispatch({ type: "FETCH_WODS_BY_CATEGORY", payload: data });
+    },
+    onSettled: () => setLoading(false),
+  });
+  const fetchAthletesByCategory = useMutation({
+    mutationFn: getAthletesByCategory,
+    onMutate: () => setLoading(true),
+    onSuccess: (data) => {
+      dispatch({ type: "FETCH_ATHLETES_BY_CATEGORY", payload: data });
     },
     onSettled: () => setLoading(false),
   });
@@ -300,7 +310,7 @@ const useContest = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: "ADD_ATHLETE_TO_CONTEST", payload: data });
+      // dispatch({ type: "ADD_ATHLETE_TO_CONTEST", payload: data });
       Notifies("success", "Atleta agregado correctamente");
     },
     onError: (error) => {
@@ -313,9 +323,30 @@ const useContest = (dispatch) => {
       setLoading(false);
     },
   });
+  // Scores
+  const useAddScoreToAthlete = useMutation({
+    mutationFn: addScoreToAthlete,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "ADD_SCORE_TO_ATHLETE", payload: data });
+      Notifies("success", "Registro actualizado");
+    },
+    onError: (error) => {
+      console.log("error adding score", error);
+      Notifies("error", error?.response?.data?.message);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contestsAthleteScore");
+      setLoading(false);
+    },
+  });
   return {
     fetchContest: fetchContest.mutate,
     getWodsByCategoryId: getWodsByCategoryId.mutate,
+    fetchAthletesByCategory: fetchAthletesByCategory.mutate,
     addCategory: (values) => {
       return useAddCategory.mutateAsync(values);
     },
@@ -357,6 +388,9 @@ const useContest = (dispatch) => {
     },
     addAllWodsToCategory: (values) => {
       return useAddAllWodsToCategory.mutateAsync(values);
+    },
+    addScoreToAthlete: (values) => {
+      return useAddScoreToAthlete.mutateAsync(values);
     },
   };
 };

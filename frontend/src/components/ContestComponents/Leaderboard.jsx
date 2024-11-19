@@ -1,21 +1,43 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { FaSort, FaEdit, FaSave, FaTimes, FaUndo } from "react-icons/fa";
 import React, { useState } from "react";
 import { FaSort, FaEdit, FaSave, FaUndo } from "react-icons/fa";
 import AccountFields from "../AccountFields/AccountFields";
 import { TbClockBolt, TbNumber123 } from "react-icons/tb";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import { BiTargetLock } from "react-icons/bi";
+import { useParams } from "react-router-dom";
+import { TextInput } from "flowbite-react";
+import { LuSearch } from "react-icons/lu";
+import classNames from "classnames";
 import { Accordion } from "flowbite-react";
 
-const Leaderboard = ({ competition, categories, wods, athletes }) => {
+const Leaderboard = ({
+  competition,
+  wods,
+  athletes,
+  category,
+  addScoreToAthlete,
+}) => {
   // Estado para almacenar las filas en modo de edición
   const [editingAthleteId, setEditingAthleteId] = useState(null);
   const [editableAthletes, setEditableAthletes] = useState(athletes);
-
+  const lastChange = useRef();
+  useEffect(() => {
+    if (athletes) {
+      setEditableAthletes(athletes);
+    }
+  }, [athletes]);
+  const { id } = useParams();
   // Función para activar el modo de edición en una fila específica
   const handleEditClick = (athleteId) => {
     setEditingAthleteId(athleteId);
   };
-
+  const [searchFilters, setSearchFilters] = useState({
+    searchTerm: "",
+    sortBy: "firstName",
+    order: "asc",
+  });
   // Función para cancelar la edición en una fila específica
   const handleCancelClick = () => {
     setEditingAthleteId(null);
@@ -23,9 +45,16 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
   };
 
   // Función para guardar los cambios en una fila específica
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     // Aquí puedes enviar `editableAthletes` a tu API o backend
-    console.log("Datos guardados:", editableAthletes);
+    const athleteData = editableAthletes?.find(
+      (athlete) => athlete.id === parseInt(editingAthleteId)
+    );
+    await addScoreToAthlete({
+      contestId: id,
+      athleteId: editingAthleteId,
+      ...athleteData,
+    });
     setEditingAthleteId(null);
   };
 
@@ -48,17 +77,58 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
     });
     setEditableAthletes(updatedAthletes);
   };
+  const handleSearchTerm = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (lastChange.current) {
+        clearTimeout(lastChange.current);
+      }
+      lastChange.current = setTimeout(() => {
+        lastChange.current = null;
+        setSearchFilters((prevState) => {
+          return {
+            ...prevState,
+            searchTerm: e.target.value,
+          };
+        });
+      }, 600);
+    },
+    [searchFilters?.searchTerm]
+  );
 
+  const filteredAthletes = editableAthletes?.filter((score) =>
+    JSON.stringify(score)
+      .toLowerCase()
+      .includes(searchFilters.searchTerm.toLowerCase())
+  );
   return (
-    <div className="flex-1 md:overflow-hidden overflow-y-auto md:p-4 w-full md:text-nowrap">
-      <h2 className="pl-4 md:pl-0 text-crossfit-secondary text-xl font-semibold mb-4">
-        {competition.name}
+    <div className="p-4">
+      <h2 className="text-xl font-semibold mb-4">
+        {competition.name} - {category?.name}
       </h2>
-      <table className="min-w-full w-full bg-white">
-        <thead className="bg-crossfit-light-purple text-white">
+      <div className="w-full md:w-[40vw] py-2">
+        <form className="flex items-center">
+          <div className="relative w-full">
+            <TextInput
+              icon={LuSearch}
+              type="search"
+              placeholder="Buscar"
+              onChange={handleSearchTerm}
+              className="h-10 w-full"
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: "5px",
+                border: "1px solid #e5e5e5",
+              }}
+            />
+          </div>
+        </form>
+      </div>
+      <table className="min-w-full bg-white">
+        <thead className="bg-crossfit-primary text-white">
           <tr>
-            <th className="py-2 px-4 text-left w-10">#</th>
-            <th className="py-2 px-4 text-left w-full md:w-40">Atletas</th>
+            <th className="py-2 px-4 text-left w-20">#</th>
+            <th className="py-2 px-4 text-left w-full md:w-40">Atleta</th>
             {wods.map((wod, index) => (
               <th
                 key={index}
@@ -72,16 +142,18 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
             </th>
           </tr>
         </thead>
-        <tbody className="max-h-[70vh] overflow-y-auto">
-          {editableAthletes?.map((athlete, idx) => (
-            <tr
-              key={athlete.id}
-              className="md:border-b w-full md:hover:bg-purple-100 odd:bg-purple-50/80 border-b border-b-neutral-100"
-            >
-              <td className="py-2 px-4">{idx + 1}</td>
-              <td className="md:py-2 md:px-4">
-                <div className="hidden md:table-cell">
-                  <p>{athlete?.name}</p>
+        <tbody className="w-full">
+          {filteredAthletes.map((athlete, idx) => (
+            <tr key={athlete.id} className="border-b overflow-x-auto w-full">
+              <td className="py-2 px-4 flex flex-col justify-center text-center">
+                {parseInt(athlete.position) + 1}{" "}
+                <span className="text-[12px]">
+                  ({athlete?.totalScore || 0} pts)
+                </span>
+              </td>
+              <td className="py-2 px-4">
+                <div>
+                  <p>{athlete.name}</p>
                   <p className="text-xs text-gray-500">{athlete.category}</p>
                 </div>
                 <div className="md:hidden">
@@ -193,11 +265,13 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
                 </div>
               </td>
               {wods.map((wod) => (
-                <td
-                  key={wod.id}
-                  className="hidden md:table-cell py-2 px-4 w-full md:w-60"
-                >
-                  <div className="w-full grid grid-cols-2 gap-2">
+                <td key={wod.id} className="py-2 px-4 w-full md:w-60">
+                  <div
+                    className={classNames(
+                      "w-full  gap-2",
+                      editingAthleteId === athlete.id ? "grid grid-cols-2" : ""
+                    )}
+                  >
                     <AccountFields
                       name="quantity"
                       id={`quantity-${athlete.id}-${wod.id}`}
@@ -213,7 +287,9 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
                       }
                       allowEdit={true}
                       isEditing={editingAthleteId === athlete.id}
-                      icon={BiTargetLock}
+                      icon={
+                        editingAthleteId === athlete.id ? BiTargetLock : null
+                      }
                     />
                     <AccountFields
                       name="time"
@@ -225,7 +301,9 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
                       }
                       allowEdit={true}
                       isEditing={editingAthleteId === athlete.id}
-                      icon={TbClockBolt}
+                      icon={
+                        editingAthleteId === athlete.id ? TbClockBolt : null
+                      }
                     />
                   </div>
                 </td>
@@ -273,4 +351,4 @@ const Leaderboard = ({ competition, categories, wods, athletes }) => {
   );
 };
 
-export default Leaderboard;
+export default React.memo(Leaderboard);

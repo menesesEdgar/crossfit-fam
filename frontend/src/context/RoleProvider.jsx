@@ -2,13 +2,14 @@ import { useReducer, useEffect } from 'react';
 import RoleReducer from './RoleReducer';
 import RoleContext from './RoleContext';
 import useRole from '../hooks/useRole';
+import { useAuthContext } from './AuthContext';
 
 const RoleProvider = ({ children }) => {
   const [state, dispatch] = useReducer(RoleReducer, {
     roles: [],
     role: null,
   });
-
+  const { user, loading } = useAuthContext();
   const {
     useCreateRole,
     useDeleteRole,
@@ -22,9 +23,11 @@ const RoleProvider = ({ children }) => {
   } = useRole(dispatch);
 
   useEffect(() => {
+    if (!user || loading) {
+      return;
+    }
     useGetRoles();
-  }, []);
-
+  }, [user]);
   return (
     <RoleContext.Provider
       value={{

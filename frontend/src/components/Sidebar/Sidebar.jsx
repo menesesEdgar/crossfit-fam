@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar as ProSidebar,
   Menu,
@@ -165,6 +165,7 @@ const Sidebar = ({ children }) => {
   const isAthletesPermission = useCheckPermissions("view_athletes");
   const isScoresPermission = useCheckPermissions("view_scores");
   const isContestPermission = useCheckPermissions("view_contest");
+  const navigate = useNavigate();
   return (
     <div
       style={{
@@ -206,9 +207,10 @@ const Sidebar = ({ children }) => {
                   src={FamCrossLogo}
                   alt="Familia Crossfit ICON"
                   className={classNames(
-                    "h-12 w-auto min-w-10 transition-all duration-300 ease-in-out",
+                    "h-12 w-auto min-w-10 transition-all duration-300 ease-in-out cursor-pointer",
                     collapsed && "scale-90"
                   )}
+                  onClick={() => navigate("/contest")}
                 />
                 <span
                   className={`text-xl text-white truncate tracking-wider font-black`}
@@ -226,7 +228,7 @@ const Sidebar = ({ children }) => {
             />
             <div className="border-t border-gray-300 py-1" />
             <Menu menuItemStyles={menuItemStyles}>
-              {isDashBoardPermission.hasPermission && (
+              {/* {isDashBoardPermission.hasPermission && (
                 <MenuItem
                   component={<Link to={"/dashboard"} />}
                   active={isActivePath("/dashboard")}
@@ -234,7 +236,7 @@ const Sidebar = ({ children }) => {
                 >
                   Dashboard
                 </MenuItem>
-              )}
+              )} */}
               {isContestPermission.hasPermission && (
                 <MenuItem
                   component={<Link to={"/contest"} />}
@@ -244,7 +246,7 @@ const Sidebar = ({ children }) => {
                   Competencias
                 </MenuItem>
               )}
-              {isContestPermission.hasPermission && (
+              {/* {isContestPermission.hasPermission && (
                 <MenuItem
                   component={<Link to={"/scores"} />}
                   active={isActivePath("/scores")}
@@ -252,7 +254,7 @@ const Sidebar = ({ children }) => {
                 >
                   Puntajes
                 </MenuItem>
-              )}
+              )} */}
               {isCategoriesPermission.hasPermission && (
                 <MenuItem
                   component={<Link to={"/catalogs"} />}

@@ -43,9 +43,6 @@ const CategoryWods = ({ setActiveTab }) => {
     }, 1000);
   };
 
-  console.log("categoryWods ", categoryWods);
-  console.log("contestCategories ", contestCategories);
-  console.log("contestWods ", contestWods);
   // Contest Wods with the conWodId need to be found with the contestWodId in the other array
   const isEditContestPermission = useCheckPermissions("edit_contest");
 
@@ -53,7 +50,6 @@ const CategoryWods = ({ setActiveTab }) => {
     return !categoryWods || categoryWods?.length === 0;
   };
   const handleSelectAll = async (categoryId, allSelected) => {
-    console.log("categoryId ", categoryId, " allSelected ", allSelected)
     if (allSelected) {
       await removeAllCategoryWods(categoryId);
     } else {

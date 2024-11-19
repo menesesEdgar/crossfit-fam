@@ -9,12 +9,15 @@ const ContestProvider = ({ children }) => {
     categories: [],
     wods: [],
     athlete: {},
-    categoryWods: []
+    athletes: [],
+    categoryWods: [],
+    loading: true,
   });
   const { id } = useParams()
   const {
     fetchContest,
     getWodsByCategoryId,
+    fetchAthletesByCategory,
     addCategory,
     deleteCategory,
     addWodToCategory,
@@ -28,7 +31,8 @@ const ContestProvider = ({ children }) => {
     removeAllCategoryWods,
     addAllWodsToCategory,
     addAthleteToContest,
-    removeAthleteFromContest
+    removeAthleteFromContest,
+    addScoreToAthlete,
   } = useContest(dispatch);
   useEffect(() => {
     if (id) {
@@ -42,6 +46,7 @@ const ContestProvider = ({ children }) => {
         ...state,
         fetchContest,
         getWodsByCategoryId,
+        fetchAthletesByCategory,
         addCategory,
         deleteCategory,
         removeAllContestCategories,
@@ -55,7 +60,9 @@ const ContestProvider = ({ children }) => {
         removeAllCategoryWods,
         addAllWodsToCategory,
         addAthleteToContest,
-        removeAthleteFromContest
+        removeAthleteFromContest,
+        addScoreToAthlete,
+
       }}
     >
       {children}

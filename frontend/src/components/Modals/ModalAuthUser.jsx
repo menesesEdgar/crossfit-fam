@@ -60,23 +60,36 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
   const { useCreatePendingUser } = usePublicContext();
   const { login } = useAuthContext();
   const [isModalViewerOpen, setIsModalViewerOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState("Login");
   const [initialValues, setInitialValues] = useState(
-    isLogin ? initLoginValues : initRegisterValues
+    isLogin === "Login" ? initLoginValues : initRegisterValues
   );
   const [activeTab, setActiveTab] = useState(0);
 
   React.useEffect(() => {
-    setInitialValues(isLogin ? initLoginValues : initRegisterValues);
+    if (isLogin) {
+      setInitialValues((prevState) => {
+        if (isLogin === "Register") {
+          return {
+            ...prevState,
+            ...initRegisterValues
+          }
+        }
+        return {
+          ...prevState,
+          ...initLoginValues
+        }
+      });
+    }
   }, [isLogin]);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      isLogin ? await login(values) : await useCreatePendingUser(values);
+      isLogin === "Login" ? await login(values) : await useCreatePendingUser(values);
       setSubmitting(false);
       resetForm();
       setOpenModal(false);
-      isLogin ? navigate("/contest") : setIsModalViewerOpen(true);
+      isLogin === "Login" ? navigate("/contest") : setIsModalViewerOpen(true);
     } catch (error) {
       console.error(error);
       setSubmitting(false);
@@ -86,17 +99,17 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
   const onCloseModal = () => {
     setOpenModal(false);
     setIsModalViewerOpen(false);
-    setInitialValues(isLogin ? initLoginValues : initRegisterValues);
+    setInitialValues(isLogin === "Login" ? initLoginValues : initRegisterValues);
   };
   const ContentTab = ({ value }) => {
     return (
       <div
         className={classNames(
           "grid gap-4",
-          isLogin ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
+          isLogin === "Login" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
         )}
       >
-        {!value && (
+        {value === "Register" && (
           <>
             <Field
               name="firstName"
@@ -140,7 +153,7 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
           icon={MdEmail}
           placeholder="example@mail.com"
         />
-        {value && (
+        {value === "Login" && (
           <Field
             name="password"
             component={TextInput}
@@ -149,7 +162,7 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
             icon={MdOutlinePassword}
           />
         )}
-        {!value && (
+        {value === "Register" && (
           <Field
             name="phone"
             id="phone"
@@ -169,13 +182,13 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
       id: 0,
       title: "Inicio de sesión",
       icon: <MdLogin size={24} />,
-      component: <ContentTab value={isLogin} />,
+      component: <ContentTab value="Login" />,
     },
     {
       id: 1,
       title: "Registrarse",
       icon: <AiOutlineUserAdd size={24} />,
-      component: <ContentTab value={isLogin} />,
+      component: <ContentTab value="Register" />,
     },
   ];
 
@@ -192,7 +205,7 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
                   : "text-neutral-800 hover:text-crossfit-light-pink"
               }`}
               onClick={() => {
-                setIsLogin(!isLogin);
+                setIsLogin(index === 0 ? "Login" : "Register");
                 setActiveTab(index);
               }}
             >
@@ -229,7 +242,7 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
         dismissible
         title={"Identificate"}
         schema={
-          isLogin
+          isLogin === "Login"
             ? Yup.object({
                 email: Yup.string()
                   .email("Formato de correo electrónico invalido")
@@ -238,10 +251,10 @@ const ModalRegisterUser = ({ openModal = false, setOpenModal }) => {
               })
             : AthleteFormSchema
         }
-        initialValues={initialValues}
+        initialValues={isLogin === "Register" ? initRegisterValues : initLoginValues}
         onSubmit={handleSubmit}
         formFields={<AuthLayoutContent />}
-        saveLabel={isLogin ? "Iniciar sesión" : "Registrarse"}
+        saveLabel={isLogin === "Login" ? "Iniciar sesión" : "Registrarse"}
       />
       {isModalViewerOpen && (
         <ModalViewer

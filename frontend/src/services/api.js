@@ -287,7 +287,6 @@ export const updateWod = async (wod) => {
 };
 export const deleteWod = async (wodId) => {
   try {
-    console.log(wodId);
     const response = await api.delete(`/wods/${wodId}`);
     return response.data;
   } catch (error) {
@@ -506,9 +505,30 @@ export const addAthleteToContest = async (data) => {
 };
 
 export const removeAthleteFromContest = async (athleteId) => {
-  console.log("athleteId ", athleteId);
   try {
     const response = await api.delete(`/contests/athlete/${athleteId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export const getAthletesByCategory = async ({contestId, categoryId}) => {
+  try {
+    const response = await api.get(`/contests/${contestId}/category/${categoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Score
+export const addScoreToAthlete = async (data) => {
+  const {contestId, athleteId} = data
+  console.log("data ", data)
+  try {
+    const response = await api.post(`/contests/${contestId}/athlete/${athleteId}`, data);
     return response.data;
   } catch (error) {
     console.error(error);

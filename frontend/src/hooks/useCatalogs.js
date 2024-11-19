@@ -20,12 +20,14 @@ import {
   setContestNextStep,
   deleteContest,
   getContests,
+  removeAthleteFromContest,
+  addAthleteToContest,
 } from "../services/api";
 import { getPublicContest, getPublicContests } from "../services/public.api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
 
-const useCatalogs = (dispatch) => {
+const useCatalogs = (dispatch, user) => {
   const queryClient = useQueryClient();
   const { dispatch: loadingDispatch } = useLoading();
 
@@ -221,7 +223,7 @@ const useCatalogs = (dispatch) => {
     mutationFn: getContests,
     onMutate: () => setLoading(true),
     onSuccess: (data) => {
-      dispatch({ type: "FETCH_CONTESTS", payload: data });
+      dispatch({ type: "FETCH_CONTESTS", payload: {data, user} });
     },
     onSettled: () => setLoading(false),
   });
@@ -252,7 +254,7 @@ const useCatalogs = (dispatch) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: "UPDATE_CONTEST", payload: data });
+      dispatch({ type: "UPDATE_CONTEST", payload: {data, user} });
       Notifies("success", "Competencia actualizada correctamente");
     },
     onError: (error) => {
@@ -320,7 +322,43 @@ const useCatalogs = (dispatch) => {
     },
     onSettled: () => setLoading(false),
   });
-
+  const useDeleteAthleteFromContest = useMutation({
+    mutationFn: removeAthleteFromContest,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "DELETE_ATHLETE_FROM_CONTEST", payload: data });
+      Notifies("success", "Athleta eliminado correctamente");
+    },
+    onError: (error) => {
+      console.log("error on delete athlete", error);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contestsAthlete");
+      setLoading(false);
+    },
+  });
+  const useAddAthleteToContest = useMutation({
+    mutationFn: addAthleteToContest,
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSuccess: (data) => {
+      dispatch({ type: "ADD_ATHLETE_TO_CONTEST", payload: data });
+      Notifies("success", "Atleta agregado correctamente");
+    },
+    onError: (error) => {
+      console.log("error adding athlete", error);
+      Notifies("error", error?.response?.data?.message);
+      setLoading(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("contestsAthletes");
+      setLoading(false);
+    },
+  });
   return {
     fetchContests: fetchContests.mutate,
     createContest: (values) => {
@@ -364,6 +402,12 @@ const useCatalogs = (dispatch) => {
       return updateWodMutation.mutateAsync(values);
     },
     deleteWod: deleteWodMutation.mutate,
+    addAthleteToContest: (values) => {
+      return useAddAthleteToContest.mutateAsync(values);
+    },
+    removeAthleteFromContest: (values) => {
+      return useDeleteAthleteFromContest.mutateAsync(values);
+    },
   };
 };
 

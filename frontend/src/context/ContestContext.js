@@ -1,5 +1,4 @@
 import { createContext, useContext } from "react";
-import { addAthleteToContest } from "../services/api";
 
 const ContestContext = createContext({
   contest: {},
@@ -28,7 +27,10 @@ const ContestContext = createContext({
   addAllWodsToCategory: async () => {},
   addAthleteToContest: async () => {},
   removeAthleteFromContest: async () => {},
-  getRegisteredAthletes: async () => {}
+  getRegisteredAthletes: async () => {},
+  fetchAthletesByCategory: async () => {},
+  addScoreToAthlete: async () => {},
+  loading: true,
 });
 
 export const useContestContext = () => useContext(ContestContext);
