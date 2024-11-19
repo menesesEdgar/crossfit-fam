@@ -821,29 +821,8 @@ export const removeAthleteFromContest = async (req, res) => {
   }
 };
 
-// where: {
-//   contestCategoryAthlete: {
-//       contestCategoryId: {
-//         in: [parseInt(categoryId)]
-//       }
-//   }
-// },
-// include: {
-//   contestCategoryAthlete: {
-//     select: {
-//       user: {
-//         select: {
-//           firstName: true,
-//           lastName: true,
-//           email: true,
-//           phone: true,
-//         },
-//       },          }
-//   },
-
-// }
 export const getAthletesByCategory = async (req, res) => {
-  const { categoryId, contestId } = req.params;
+  const { categoryId } = req.params;
   try {
     const contestAthletes = await db.contestCategoryAthlete.findMany({
       where: {
@@ -893,8 +872,24 @@ export const getAthletesByCategory = async (req, res) => {
       res.status(404).json({ message: "Athletes not found for this category" });
       return;
     }
-
-    res.json(formattedData);
+    // Find a way to set the position
+    const athletes = formattedData.map((athlete) => {
+      ;
+      return {
+        ...athlete,
+        totalScore: Object.values(athlete?.scores || []).reduce((sum, item) => sum + Number(item.quantity), 0)
+      }
+    }).sort((a, b) => {
+      const scoreA = a.totalScore === null ? -Infinity : a.totalScore;
+      const scoreB = b.totalScore === null ? -Infinity : b.totalScore;
+      return scoreB - scoreA;
+    }).map((athlete, index) => {
+      return {
+        ...athlete,
+        position: parseInt(index)
+      }
+    })
+    res.json(athletes);
   } catch (error) {
     console.log("error on getAthletesByCategory", error);
     res.status(500).json({ message: error.message });
