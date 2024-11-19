@@ -1,13 +1,10 @@
-import React, { useEffect, useState, lazy } from "react";
+import React, { useState, lazy } from "react";
 import { LiaDumbbellSolid } from "react-icons/lia";
 import { BiSolidZap, BiCategory } from "react-icons/bi";
-import { GiBiceps } from "react-icons/gi";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
 import LoadingModal from "../../components/LoadingModal/LoadingModal";
 import withPermission from "../../utils/withPermissions";
-import { useContestContext } from "../../context/ContestContext";
-import { useParams } from "react-router-dom";
 
 const ContestCategories = lazy(() => import("./Details/ContestCategories"));
 const CategoryWods = lazy(() => import("./Details/CategoryWods"));
@@ -24,6 +21,10 @@ const ContestView = () => {
     setActiveTab(activeTab === 3 ? 0 : activeTab + 1);
   };
 
+  const setBackTab = () => {
+    setActiveTab(activeTab === 0 ? 3 : activeTab - 1);
+  };
+
   const tabContent = [
     {
       id: 0,
@@ -36,14 +37,18 @@ const ContestView = () => {
       id: 1,
       title: "WODs",
       icon: <LiaDumbbellSolid size={24} />,
-      component: <ContestWods setActiveTab={setNextTab} />,
+      component: (
+        <ContestWods setActiveTab={setNextTab} setBackTab={setBackTab} />
+      ),
       permission: isViewContestWodsPermission,
     },
     {
       id: 2,
       title: "WOD por categoría",
       icon: <BiSolidZap size={24} />,
-      component: <CategoryWods setActiveTab={setNextTab} />,
+      component: (
+        <CategoryWods setActiveTab={setNextTab} setBackTab={setBackTab} />
+      ),
       permission: isViewCategorieWodsPermission,
     },
   ];

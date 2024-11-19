@@ -1,6 +1,7 @@
 import TableHeader from "../../../components/Table/TableHeader";
 import {
   FaCheckSquare,
+  FaChevronLeft,
   FaChevronRight,
   FaSquare,
   FaUserShield,
@@ -15,7 +16,7 @@ import { useCatalogContext } from "../../../context/CatalogContext";
 import { MdRemoveCircleOutline } from "react-icons/md";
 import { TextInput } from "flowbite-react";
 
-const ContestWods = ({ setActiveTab }) => {
+const ContestWods = ({ setActiveTab, setBackTab }) => {
   // ContestId
   const { id } = useParams();
   const {
@@ -68,6 +69,12 @@ const ContestWods = ({ setActiveTab }) => {
           title="Wods registrados"
           icon={FaUserShield}
           actions={[
+            {
+              label: "Volver",
+              action: () => setBackTab(),
+              icon: FaChevronLeft,
+              color: "indigo",
+            },
             {
               label: "Siguiente",
               disabled: isNextButtonDisabled(),
