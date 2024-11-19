@@ -6,13 +6,23 @@ import { useCatalogContext } from "../../context/CatalogContext";
 import ModalRemove from "../../components/Modals/ModalRemove";
 import ContestFormFields from "../../components/ContestComponents/ContestFormFields";
 import ModalFormikForm from "../../components/Modals/ModalFormikForm";
-import { ContestFormSchema, RegisterAthleteSchema } from "../../components/ContestComponents/ContestFormSchema";
+import {
+  ContestFormSchema,
+  RegisterAthleteSchema,
+} from "../../components/ContestComponents/ContestFormSchema";
 import { CiCircleRemove } from "react-icons/ci";
 import withPermission from "../../utils/withPermissions";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import { formatMxnDate } from "../../utils/formatDates";
 import { useNavigate } from "react-router-dom";
-import { FaCog, FaEdit, FaTrash, FaTrophy, FaCheck, FaFlagCheckered } from "react-icons/fa";
+import {
+  FaCog,
+  FaEdit,
+  FaTrash,
+  FaTrophy,
+  FaCheck,
+  FaFlagCheckered,
+} from "react-icons/fa";
 import CardContest from "../../components/Card/CardContest";
 import ModalViewer from "../../components/Modals/ModalViewer";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
@@ -54,11 +64,11 @@ const Contest = () => {
     loading,
     setContestNextStep,
     addAthleteToContest,
-    removeAthleteFromContest
+    removeAthleteFromContest,
   } = useCatalogContext();
   const { user } = useAuthContext();
   // For security, athlete by default otherwise admin or root
-  const role = user?.role?.name || "Athlete"
+  const role = user?.role?.name || "Athlete";
   const isViewPermissions = useCheckPermissions("view_contest");
   const isCreatePermissions = useCheckPermissions("create_contest");
   const isEditPermissions = useCheckPermissions("edit_contest");
@@ -66,7 +76,7 @@ const Contest = () => {
   const [registerValues, setRegisterValues] = useState({
     userId: user?.id,
     categoryId: null,
-  })
+  });
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
@@ -76,7 +86,8 @@ const Contest = () => {
   const [contestCategories, setContestCategories] = useState([]);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const [isSubscribeEnable, setIsSubscribeEnable] = useState(false);
-  const [isOpenCancelSubscriptionModal , setIsOpenCancelSubscriptionModal ] = useState(false);
+  const [isOpenCancelSubscriptionModal, setIsOpenCancelSubscriptionModal] =
+    useState(false);
   const [registerId, setRegisterId] = useState(null);
   const [search, setSearch] = useState("");
   const [initialValues, setInitialValues] = useState({
@@ -122,8 +133,8 @@ const Contest = () => {
   };
 
   const onCloseModal = () => {
-    setOpenRegisterModal(false)
-    setOpenRegisterModal(false)
+    setOpenRegisterModal(false);
+    setOpenRegisterModal(false);
     setIsOpenModal(false);
     setEditMode(false);
     setInitialValues({
@@ -209,50 +220,54 @@ const Contest = () => {
   };
   const handleRegister = async (contest) => {
     if (contest?.isRegistered && contest?.registerId) {
-      setIsOpenCancelSubscriptionModal(true)
-      setRegisterId(contest.registerId)
-      setRemoveContestId(contest.id)
+      setIsOpenCancelSubscriptionModal(true);
+      setRegisterId(contest.registerId);
+      setRemoveContestId(contest.id);
     }
     if (contest?.categories?.length > 0 && !contest?.isRegistered) {
-      setIsSubscribeEnable(true)
-      setContestCategories(contest.categories)
+      setIsSubscribeEnable(true);
+      setContestCategories(contest.categories);
       setRegisterValues({
         userId: user?.id,
         category: contest.categories[0].id,
       });
-      setOpenRegisterModal(true)
+      setOpenRegisterModal(true);
     }
-  }
+  };
   // This button is no handle the scubription cancellation
   const handleCancelSubscription = async () => {
     if (registerId) {
       await removeAthleteFromContest(registerId);
-      setIsOpenCancelSubscriptionModal(false)
+      setIsOpenCancelSubscriptionModal(false);
     }
-  }
-  const handleRegisterAthlete = async (values, { setSubmitting, resetForm }) => {
+  };
+  const handleRegisterAthlete = async (
+    values,
+    { setSubmitting, resetForm }
+  ) => {
     try {
-      isSubscribeEnable ?
-      await addAthleteToContest({
-        userId: user?.id,
-        categoryId: parseInt(values?.category),
-        contestId: parseInt()
-      }) : () => {};
+      isSubscribeEnable
+        ? await addAthleteToContest({
+            userId: user?.id,
+            categoryId: parseInt(values?.category),
+            contestId: parseInt(),
+          })
+        : () => {};
       resetForm();
       setRegisterValues({
         userId: user?.id,
         categoryId: null,
       });
-      setRegisterId(null)
+      setRegisterId(null);
       setOpenRegisterModal(false);
       setEditMode(false);
-      setIsOpenCancelSubscriptionModal(false)
+      setIsOpenCancelSubscriptionModal(false);
     } catch (error) {
       console.log(error);
       setSubmitting(false);
     }
-  }
-  console.log("all contest ", allContests)
+  };
+  console.log("all contest ", allContests);
   return (
     <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
       <div className="flex flex-col gap-2 px-2 md:px-4 pt-4">
@@ -261,7 +276,7 @@ const Contest = () => {
           title={"Competencias"}
           actions={[
             {
-              label: "Nuevo",
+              label: "Nueva Competencia",
               action: isCreatePermissions.hasPermission
                 ? () => setIsOpenModal(true)
                 : null,
@@ -391,37 +406,44 @@ const Contest = () => {
                       icon: FaTrash,
                     },
                   ]}
-                  actions={role !== "Athlete" ? [
-                    {
-                      label: "Editar",
-                      action: () => navigate(`/contest/${contest.id}`),
-                      color: "neutral",
-                      icon: FaEdit,
-                    },
-                    // {
-                    //   label: "Publicar",
-                    //   action: () => {
-                    //     setContestToUpdateStep(contest);
-                    //     setModalNextStep(true);
-                    //   },
-                    //   color: "neutral",
-                    //   icon: HiOutlineSpeakerphone,
-                    // },
-                    {
-                      label: "Puntajes",
-                      action: () => navigate(`/contest/${contest.id}/scores`),
-                      color: "neutral",
-                      icon: FaFlagCheckered  ,
-                    },
-                  ] : [
-                    {
-                      label: !contest.isRegistered ? "Inscribirse" : "Cancelar inscripción",
-                      disabled: !(contest?.categories?.length > 0),
-                      action: () => handleRegister(contest),
-                      color: !contest.isRegistered ? "neutral" : "red",
-                      icon: FaEdit,
-                    },
-                  ]}
+                  actions={
+                    role !== "Athlete"
+                      ? [
+                          {
+                            label: "Editar",
+                            action: () => navigate(`/contest/${contest.id}`),
+                            color: "neutral",
+                            icon: FaEdit,
+                          },
+                          // {
+                          //   label: "Publicar",
+                          //   action: () => {
+                          //     setContestToUpdateStep(contest);
+                          //     setModalNextStep(true);
+                          //   },
+                          //   color: "neutral",
+                          //   icon: HiOutlineSpeakerphone,
+                          // },
+                          {
+                            label: "Puntajes",
+                            action: () =>
+                              navigate(`/contest/${contest.id}/scores`),
+                            color: "neutral",
+                            icon: FaFlagCheckered,
+                          },
+                        ]
+                      : [
+                          {
+                            label: !contest.isRegistered
+                              ? "Inscribirse"
+                              : "Cancelar inscripción",
+                            disabled: !(contest?.categories?.length > 0),
+                            action: () => handleRegister(contest),
+                            color: !contest.isRegistered ? "neutral" : "red",
+                            icon: FaEdit,
+                          },
+                        ]
+                  }
                 />
               );
             })}
@@ -442,7 +464,12 @@ const Contest = () => {
           schema={RegisterAthleteSchema}
           initialValues={registerValues}
           onSubmit={handleRegisterAthlete}
-          formFields={<ContestRegisterFields isUpdate={editMode} categories={contestCategories}/>}
+          formFields={
+            <ContestRegisterFields
+              isUpdate={editMode}
+              categories={contestCategories}
+            />
+          }
           saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
@@ -526,48 +553,44 @@ const Contest = () => {
       )}
       {isOpenCancelSubscriptionModal && (
         <ModalViewer
-        isOpenModal={isOpenCancelSubscriptionModal}
-        onCloseModal={() => {
-          setIsOpenCancelSubscriptionModal(false)
-        }}
-        title={
-          <span>
-            Cancelar subscripción
-          </span>
-        }
-      >
-        <div className="w-full flex flex-col gap-4">
-          <div>
-            <h3 className="text-2xl text-center font-semibold text-neutral-800">
-              ¿Estás seguro de que deseas cancelar tu subscripción?
-            </h3>
-          </div>
-          <div className="grid items-center justify-center grid-cols-1 md:grid-cols-2 gap-4">
-            <ActionButtons
-              extraActions={[
-                {
-                  label: "No, Cancelar",
-                  action: () => {
-                    setIsOpenCancelSubscriptionModal(false)
-                    setRegisterId(null)
+          isOpenModal={isOpenCancelSubscriptionModal}
+          onCloseModal={() => {
+            setIsOpenCancelSubscriptionModal(false);
+          }}
+          title={<span>Cancelar subscripción</span>}
+        >
+          <div className="w-full flex flex-col gap-4">
+            <div>
+              <h3 className="text-2xl text-center font-semibold text-neutral-800">
+                ¿Estás seguro de que deseas cancelar tu subscripción?
+              </h3>
+            </div>
+            <div className="grid items-center justify-center grid-cols-1 md:grid-cols-2 gap-4">
+              <ActionButtons
+                extraActions={[
+                  {
+                    label: "No, Cancelar",
+                    action: () => {
+                      setIsOpenCancelSubscriptionModal(false);
+                      setRegisterId(null);
+                    },
+                    color: "neutral",
+                    icon: CiCircleRemove,
+                    className: "min-w-full",
                   },
-                  color: "neutral",
-                  icon: CiCircleRemove ,
-                  className: "min-w-full",
-                },
-                {
-                  label: "Si, cancelar subscripción",
-                  action: handleCancelSubscription,
-                  color: "red",
-                  filled: true,
-                  icon: FaCheck,
-                  className: "min-w-full",
-                },
-              ]}
-            />
+                  {
+                    label: "Si, cancelar subscripción",
+                    action: handleCancelSubscription,
+                    color: "red",
+                    filled: true,
+                    icon: FaCheck,
+                    className: "min-w-full",
+                  },
+                ]}
+              />
+            </div>
           </div>
-        </div>
-      </ModalViewer>
+        </ModalViewer>
       )}
       {isOpenDeleteModal && (
         <ModalRemove

@@ -1,5 +1,5 @@
 import TableHeader from "../../../components/Table/TableHeader";
-import { FaChevronRight, FaUserShield } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaUserShield } from "react-icons/fa";
 import useCheckPermissions from "../../../hooks/useCheckPermissions";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
@@ -56,6 +56,12 @@ const ContestCategories = ({ setActiveTab }) => {
           title="Categorías registradas"
           icon={FaUserShield}
           actions={[
+            {
+              label: "Volver",
+              action: () => window.history.back(),
+              icon: FaChevronLeft,
+              color: "indigo",
+            },
             {
               label: "Siguiente",
               disabled: isNextButtonDisabled(),

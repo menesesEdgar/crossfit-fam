@@ -1,5 +1,12 @@
 import TableHeader from "../../components/Table/TableHeader";
-import { FaChevronRight, FaRegCheckCircle, FaUser, FaUserShield } from "react-icons/fa";
+import {
+  FaChevronRight,
+  FaMinusCircle,
+  FaPlusCircle,
+  FaRegCheckCircle,
+  FaUser,
+  FaUserShield,
+} from "react-icons/fa";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import classNames from "classnames";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,18 +20,20 @@ import { Field } from "formik";
 import { MdInfo, MdRemoveCircleOutline } from "react-icons/md";
 import { calculateAge } from "../../utils/formatDates";
 import { useParams } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const CategoryWods = ({ setActiveTab }) => {
   // ContestId
   const {
     categories: contestCategories,
     addAthleteToContest,
-    removeAthleteFromContest
+    removeAthleteFromContest,
+    contest,
   } = useContestContext();
   const [isDisabled, setIsDisabled] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  const { id } = useParams()
-  const [registeredAthletes, setRegisteredAthletes] = useState([])
+  const { id } = useParams();
+  const [registeredAthletes, setRegisteredAthletes] = useState([]);
   const [searchFilters, setSearchFilters] = useState({
     searchTerm: "",
     pageSize: 10,
@@ -32,31 +41,32 @@ const CategoryWods = ({ setActiveTab }) => {
     sortBy: "firstName",
     order: "asc",
     role: "Athlete",
-    contestId: id
-  });  const lastChange = useRef()
+    contestId: id,
+  });
+  const lastChange = useRef();
   const [activeCategory, setActiveCategory] = useState(
     contestCategories?.length > 0 ? contestCategories[0]?.conCatId : null
   );
 
   useEffect(() => {
     if (contestCategories?.length > 0) {
-      setActiveCategory(contestCategories[0]?.conCatId)
+      setActiveCategory(contestCategories[0]?.conCatId);
     }
-  }, [contestCategories])
+  }, [contestCategories]);
   const {
-  data: athletes,
-  refetch,
-  isLoading,
-  isPending,
+    data: athletes,
+    refetch,
+    isLoading,
+    isPending,
   } = useQuery({
-  queryKey: ["athletes", { ...searchFilters }],
-  queryFn: ({ signal }) => searchAthletes({ ...searchFilters, signal }),
-  staleTime: Infinity,
+    queryKey: ["athletes", { ...searchFilters }],
+    queryFn: ({ signal }) => searchAthletes({ ...searchFilters, signal }),
+    staleTime: Infinity,
   });
   useEffect(() => {
     refetch();
   }, [searchFilters]);
-  
+
   const handleSearch = useCallback(
     (e) => {
       e.preventDefault();
@@ -83,10 +93,18 @@ const CategoryWods = ({ setActiveTab }) => {
     <>
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
         <TableHeader
-          title="Registro de atletas"
+          title={`${contest.name} - Registro de atletas`}
           icon={FaUserShield}
+          actions={[
+            {
+              label: "Volver",
+              action: () => window.history.back(),
+              icon: IoMdArrowRoundBack,
+              color: "neutral",
+            },
+          ]}
         />
-        <div className="h-full grid grid-cols-2 gap-8 p-2 pt-4 pb-0">
+        <div className="h-full grid grid-cols-2 xl:grid-cols-3 gap-8 p-2 pt-4 pb-0">
           <div className="col-span-1 lg:col-span-1">
             <div className="md:mb-4">
               <h3 className="text-sm lg:text-lg font-semibold">Categorías</h3>
@@ -103,9 +121,10 @@ const CategoryWods = ({ setActiveTab }) => {
                     key={category.id}
                     onClick={() => changeActiveCategory(category)}
                     className={classNames(
-                      "group p-4   border-b border-neutral-100 flex justify-between items-center text-neutral-700 hover:bg-neutral-100 cursor-pointer",
-                      activeCategory === category.conCatId ? "text-neutral-600 font-bold opacity-80 bg-neutral-700/10" : ""
-                      
+                      "group p-4 border-b border-neutral-100 flex justify-between items-center text-neutral-700 hover:bg-neutral-100 cursor-pointer",
+                      activeCategory === category.conCatId
+                        ? "text-neutral-600 font-bold opacity-80 bg-neutral-700/10"
+                        : ""
                     )}
                   >
                     <div className="flex gap-4 items-center">
@@ -127,7 +146,7 @@ const CategoryWods = ({ setActiveTab }) => {
                   </div>
                 ))}
           </div>
-          <div className="col-span-1 lg:col-span-1 h-full lg:max-h-[76dvh] overflow-hidden">
+          <div className="col-span-1 lg:col-span-1 xl:col-span-2 h-full lg:max-h-[76dvh] overflow-hidden">
             <div className="mb-4 flex flex-col justify-between">
               <div className="w-full flex justify-between flex-col md:flex-row gap-2">
                 <div className="mb-2 md:mb-4">
@@ -137,62 +156,94 @@ const CategoryWods = ({ setActiveTab }) => {
                   </p>
                 </div>
               </div>
-                <div className="relative w-full pb-4">
-                  <TextInput
-                    icon={LuSearch}
-                    type="search"
-                    placeholder="Buscar"
-                    onChange={handleSearch}
-                    className="h-10 w-full"
-                    style={{
-                      backgroundColor: "#fff",
-                      borderRadius: "5px",
-                      border: "1px solid #e5e5e5",
-                    }}
-                  />
-                </div>
+              <div className="relative w-full pb-4">
+                <TextInput
+                  icon={LuSearch}
+                  type="search"
+                  placeholder="Buscar"
+                  onChange={handleSearch}
+                  className="h-10 w-full"
+                  style={{
+                    backgroundColor: "#fff",
+                    borderRadius: "5px",
+                    border: "1px solid #e5e5e5",
+                  }}
+                />
+              </div>
               <div className="h-full max-h-[30dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
-                {activeCategory && athletes?.data &&
+                {activeCategory &&
+                  athletes?.data &&
                   athletes?.data?.length > 0 &&
-                  athletes?.data.filter((athlete) => athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory || athlete.contestCategoryAthlete?.length === 0)
+                  athletes?.data
+                    .filter(
+                      (athlete) =>
+                        athlete.contestCategoryAthlete[0]?.contestCategoryId ===
+                          activeCategory ||
+                        athlete.contestCategoryAthlete?.length === 0
+                    )
                     .map((athlete) => (
                       <div
                         key={athlete.id}
                         onClick={async () => {
-                          !(athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory) ?
-                          await addAthleteToContest({
-                            userId: athlete.id,
-                            categoryId: activeCategory,
-                          }) : await removeAthleteFromContest(athlete.contestCategoryAthlete[0]?.id)
+                          !(
+                            athlete.contestCategoryAthlete[0]
+                              ?.contestCategoryId === activeCategory
+                          )
+                            ? await addAthleteToContest({
+                                userId: athlete.id,
+                                categoryId: activeCategory,
+                              })
+                            : await removeAthleteFromContest(
+                                athlete.contestCategoryAthlete[0]?.id
+                              );
                         }}
                         className={classNames(
-                          "group pl-6 pr-2 hover:bg-neutral-200/80 cursor-pointer py-2 border border-neutral-300 rounded-md flex justify-between items-center",
-                          athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory  ? "bg-green-500 text-white" : "text-neutral-600"
+                          "group transition-all ease-in-out duration-200 pl-6 pr-2 hover:bg-purple-50/80 cursor-pointer py-2 border border-neutral-200 rounded-md flex justify-between items-center",
+                          athlete.contestCategoryAthlete[0]
+                            ?.contestCategoryId === activeCategory
+                            ? "bg-green-500 text-white"
+                            : "text-neutral-600"
                         )}
                       >
-                        <div className="flex gap-4 items-center  group-hover:text-red-500">
-                          <FaUser  size={20} />
+                        <div
+                          className={classNames(
+                            "flex gap-4 items-center ",
+                            athlete.contestCategoryAthlete[0]
+                              ?.contestCategoryId === activeCategory
+                              ? "group-hover:text-red-500"
+                              : "text-neutral-600 group-hover:text-blue-500"
+                          )}
+                        >
+                          <FaUser size={20} />
                           <h3 className="text-sm lg:text-lg font-semibold capitalize">
-                            {`${athlete?.firstName} ${athlete?.lastName} - ${calculateAge(athlete.birthdate)} años`}
+                            {`${athlete?.firstName} ${athlete?.lastName} - ${
+                              calculateAge(athlete.birthdate)
+                                ? calculateAge(athlete.birthdate) + " años"
+                                : "N/A"
+                            }`}
                           </h3>
                         </div>
                         <i className="flex items-center mb-1">
-                          {athlete.contestCategoryAthlete[0]?.contestCategoryId === activeCategory? (
-                            <FaRegCheckCircle 
+                          <FaRegCheckCircle
                             size={22}
-                            className="text-lg mt-0.5 text-white group-hover:text-red-500"
+                            className="text-lg mt-0.5 group-hover:hidden"
+                          />
+                          {athlete.contestCategoryAthlete[0]
+                            ?.contestCategoryId === activeCategory ? (
+                            <FaMinusCircle
+                              size={22}
+                              className="text-lg mt-0.5 text-red-500 hidden group-hover:block"
                             />
                           ) : (
-                            <MdRemoveCircleOutline
-                            size={22}
-                            className="text-lg mt-0.5 text-neutral-600 group-hover:text-red-500"
+                            <FaPlusCircle
+                              size={22}
+                              className="text-lg text-blue-500 mt-0.5 hidden group-hover:block"
                             />
                           )}
-
                         </i>
                       </div>
                     ))}
-            </div>
+              </div>
             </div>
           </div>
         </div>
