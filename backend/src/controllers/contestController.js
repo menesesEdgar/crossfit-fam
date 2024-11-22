@@ -2,7 +2,9 @@ import { db } from "../lib/db.js";
 
 export const getContests = async (req, res) => {
   try {
-    const contests = await db.contest.findMany();
+    const contests = await db.contest.findMany({
+      where: { isDeleted: false },
+    });
 
     const contestsWithDetails = await Promise.all(
       contests.map(async (contest) => {
@@ -57,6 +59,7 @@ export const getPublicContest = async (_, res) => {
   try {
     const contests = await db.contest.findMany({
       where: {
+        isDeleted: false,
         status: {
           in: ["Abierta", "En curso", "Finalizada"],
         },
@@ -115,7 +118,7 @@ export const getPublicContest = async (_, res) => {
 export const getContestById = async (req, res) => {
   try {
     const contest = await db.contest.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: parseInt(req.params.id), isDeleted: false },
       include: {
         contestCategory: {
           select: {
@@ -191,7 +194,7 @@ export const updateContest = async (req, res) => {
   try {
     const { name, location, organizer, startDate, endDate, status } = req.body;
     const ifExistContest = db.contest.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: parseInt(req.params.id), isDeleted: false },
     });
 
     if (!ifExistContest) {
@@ -211,47 +214,47 @@ export const updateContest = async (req, res) => {
       },
     });
 
-        const categories = await db.contestCategory.findMany({
-          where: { contestId: parseInt(req.params.id) },
+    const categories = await db.contestCategory.findMany({
+      where: { contestId: parseInt(req.params.id) },
+      include: {
+        category: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+        contestCategoryAthlete: {
           include: {
-            category: {
+            user: {
               select: {
-                name: true,
                 id: true,
-              },
-            },
-            contestCategoryAthlete: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    email: true,
-                    phone: true,
-                    role: true,
-                  },
-                },
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+                role: true,
               },
             },
           },
-        });
+        },
+      },
+    });
 
-        const categoriesWithAthletes = categories.map((cat) => ({
-          ...cat,
-          athletes: cat.contestCategoryAthlete
-            .filter((athleteEntry) => athleteEntry.user.role.name === "Athlete")
-            .map((athleteEntry) => athleteEntry.user),
-        }));
-        const newContestData = {
-          ...contest,
-          categories: categoriesWithAthletes
-        }
-      //   return {
-      //     ...contest,
-      //     categories: categoriesWithAthletes,
-      //   };
-      // })
+    const categoriesWithAthletes = categories.map((cat) => ({
+      ...cat,
+      athletes: cat.contestCategoryAthlete
+        .filter((athleteEntry) => athleteEntry.user.role.name === "Athlete")
+        .map((athleteEntry) => athleteEntry.user),
+    }));
+    const newContestData = {
+      ...contest,
+      categories: categoriesWithAthletes,
+    };
+    //   return {
+    //     ...contest,
+    //     categories: categoriesWithAthletes,
+    //   };
+    // })
 
     res.json(newContestData);
   } catch (error) {
@@ -277,7 +280,7 @@ export const setContextNextStep = async (req, res) => {
     });
 
     const contestWithDetails = await db.contest.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: parseInt(id), isDeleted: false },
       include: {
         contestCategory: {
           select: {
@@ -328,7 +331,7 @@ export const setContextNextStep = async (req, res) => {
 export const deleteContest = async (req, res) => {
   try {
     const contest = db.contest.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: parseInt(req.params.id), isDeleted: false },
     });
 
     if (!contest) {
@@ -336,8 +339,18 @@ export const deleteContest = async (req, res) => {
       return;
     }
 
-    await db.contest.delete({ where: { id: parseInt(req.params.id) } });
-    const contests = await db.contest.findMany();
+    await db.contest.update({
+      where: { id: parseInt(req.params.id) },
+      data: {
+        isDeleted: true,
+      },
+    });
+
+    const contests = await db.contest.findMany({
+      where: {
+        isDeleted: false,
+      },
+    });
 
     const contestsWithDetails = await Promise.all(
       contests.map(async (contest) => {
@@ -473,6 +486,19 @@ export const removeCategory = async (req, res) => {
       return;
     }
 
+    // check if the category has been used in any category
+    const categoryWod = await db.conCateConWod.findMany({
+      where: { contestCategoryId: parseInt(categoryId) },
+    });
+
+    if (categoryWod.length > 0) {
+      res.status(400).json({
+        message: "La categoría no puede ser eliminada porque está en uso",
+      });
+      console.log("error on deleteContestCategory");
+      return;
+    }
+
     await db.contestCategory.delete({ where: { id: parseInt(categoryId) } });
 
     const contestCat = await db.contestCategory.findMany({
@@ -588,7 +614,20 @@ export const removeWod = async (req, res) => {
     });
 
     if (!wod) {
-      res.status(404).json({ message: "Contest wod not found" });
+      res.status(404).json({ message: "El WOD no fue encontrado" });
+      return;
+    }
+
+    // check if the wod has been used in any category
+    const categoryWod = await db.conCateConWod.findMany({
+      where: { contestWodId: parseInt(wodId) },
+    });
+
+    if (categoryWod.length > 0) {
+      res.status(400).json({
+        message: "El WOD no puede ser eliminado porque está en uso",
+      });
+      console.log("error on deleteContestWod");
       return;
     }
 
@@ -733,13 +772,13 @@ export const addAllCategoryWods = async (req, res) => {
       data: uniqueCategoryWods,
     });
     const contestWod = await db.conCateConWod.findMany({
-      where: { 
+      where: {
         contestCategory: {
           contestId: {
             in: [parseInt(contestId)],
           },
-       },
-      }
+        },
+      },
     });
     res.json({ message: "All wods added to contest", data: contestWod });
   } catch (error) {
@@ -756,7 +795,6 @@ export const removeAllWodsFromCategory = async (req, res) => {
     });
 
     res.json({ message: "All wods removed", data: categoryId });
-
   } catch (error) {
     console.log("error on removeAllWodsFromContest", error);
     res.status(500).json({ message: error.message });
@@ -775,9 +813,9 @@ export const addAthleteToContest = async (req, res) => {
         contestCategory: {
           select: {
             contestId: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
     res.json(contest);
   } catch (error) {
@@ -814,7 +852,10 @@ export const removeAthleteFromContest = async (req, res) => {
         },
       },
     });
-    res.json({ message: "Athlete removed", data: {athletes, contestId: athlete?.contestCategory?.contestId}});
+    res.json({
+      message: "Athlete removed",
+      data: { athletes, contestId: athlete?.contestCategory?.contestId },
+    });
   } catch (error) {
     console.log("error on deleteContest", error);
     res.status(500).json({ message: error.message });
@@ -833,7 +874,7 @@ export const getAthletesByCategory = async (req, res) => {
       select: {
         id: true,
         contestCategoryId: true,
-        userId:true,
+        userId: true,
         user: {
           select: {
             firstName: true,
@@ -848,9 +889,9 @@ export const getAthletesByCategory = async (req, res) => {
             quantity: true,
             time: true,
             contestCategoryWodId: true,
-            contestCategoryAthleteId: true
-          }
-        }
+            contestCategoryAthleteId: true,
+          },
+        },
       },
     });
 
@@ -859,73 +900,81 @@ export const getAthletesByCategory = async (req, res) => {
         ...athlete,
         name: `${athlete.user.firstName} ${athlete.user.lastName}`,
         scores: athlete.score.reduce((acc, item) => {
-            acc[item.contestCategoryWodId] = item; // Using contestCategoryWodId as the key
-            return acc;
-        }, {})
-      }
+          acc[item.contestCategoryWodId] = item; // Using contestCategoryWodId as the key
+          return acc;
+        }, {}),
+      };
       delete newObj.user;
       delete newObj.score;
-      return newObj
-    })
-    
+      return newObj;
+    });
+
     if (!formattedData) {
       res.status(404).json({ message: "Athletes not found for this category" });
       return;
     }
     // Find a way to set the position
-    const athletes = formattedData.map((athlete) => {
-      ;
-      return {
-        ...athlete,
-        totalScore: Object.values(athlete?.scores || []).reduce((sum, item) => sum + Number(item.quantity), 0)
-      }
-    }).sort((a, b) => {
-      const scoreA = a.totalScore === null ? -Infinity : a.totalScore;
-      const scoreB = b.totalScore === null ? -Infinity : b.totalScore;
-      return scoreB - scoreA;
-    }).map((athlete, index) => {
-      return {
-        ...athlete,
-        position: parseInt(index)
-      }
-    })
+    const athletes = formattedData
+      .map((athlete) => {
+        return {
+          ...athlete,
+          totalScore: Object.values(athlete?.scores || []).reduce(
+            (sum, item) => sum + Number(item.quantity),
+            0
+          ),
+        };
+      })
+      .sort((a, b) => {
+        const scoreA = a.totalScore === null ? -Infinity : a.totalScore;
+        const scoreB = b.totalScore === null ? -Infinity : b.totalScore;
+        return scoreB - scoreA;
+      })
+      .map((athlete, index) => {
+        return {
+          ...athlete,
+          position: parseInt(index),
+        };
+      });
     res.json(athletes);
   } catch (error) {
     console.log("error on getAthletesByCategory", error);
     res.status(500).json({ message: error.message });
   }
-};export const addScoreToAthlete = async (req, res) => {
+};
+export const addScoreToAthlete = async (req, res) => {
   try {
     const { athleteId, scores } = req.body;
-    const scoresData = []
-    const updateData = []
+    const scoresData = [];
+    const updateData = [];
     for (const [key, value] of Object.entries(scores)) {
       const scoreObj = {
         contestCategoryAthleteId: parseInt(athleteId),
         quantity: value.quantity || "",
         time: value.time || "",
-        contestCategoryWodId: parseInt(key)  
-      }
+        contestCategoryWodId: parseInt(key),
+      };
       const score = await db.score.findMany({
-        where: { contestCategoryAthleteId: parseInt(athleteId), contestCategoryWodId:  parseInt(key)},
+        where: {
+          contestCategoryAthleteId: parseInt(athleteId),
+          contestCategoryWodId: parseInt(key),
+        },
         select: {
-          id: true
-        }
-      })
+          id: true,
+        },
+      });
       if (score?.length > 0 || value?.id) {
         updateData.push({
           ...scoreObj,
-          id: value?.id || score[0]?.id
-        })
+          id: value?.id || score[0]?.id,
+        });
       } else {
-        scoresData.push(scoreObj)
+        scoresData.push(scoreObj);
       }
-
     }
     const score = await db.$transaction(async (prisma) => {
       await prisma.score.createMany({
-        data: scoresData
-      })
+        data: scoresData,
+      });
       if (updateData && updateData.length > 0) {
         await Promise.all(
           updateData.map((val) =>
@@ -939,8 +988,8 @@ export const getAthletesByCategory = async (req, res) => {
           )
         );
       }
-    })
-    
+    });
+
     res.json(score);
   } catch (error) {
     console.log("error updating score", error);

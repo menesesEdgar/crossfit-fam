@@ -64,18 +64,12 @@ const ContestScores = () => {
   return (
     <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col gap-2 shadow-md rounded-md dark:bg-gray-900 antialiased">
       <div className="pt-6 md:pt-4 p-4 pb-0 flex items-center justify-between">
-        <TableHeader icon={MdOutlineLeaderboard} title={"Puntajes"} />
+        <TableHeader
+          icon={MdOutlineLeaderboard}
+          backAction
+          title={"Puntajes"}
+        />
         <div className="flex gap-2">
-          <ActionButtons
-            extraActions={[
-              {
-                label: "Volver",
-                action: () => window.history.back(),
-                icon: IoMdArrowRoundBack,
-                color: "neutral",
-              },
-            ]}
-          />
           <Dropdown
             renderTrigger={() => (
               <button className="w-fit bg-white hover:bg-neutral-200 md:w-fit h-9 xl:h-10 text-sm xl:text-base cursor-pointer transition ease-in-out duration-200 p-4 flex items-center justify-center rounded-md border text-stone-800">

@@ -111,6 +111,7 @@ model Contest {
   startDate  DateTime
   endDate    DateTime?
   status     String // Abierta, En proceso, cerrada
+  isDeleted  Boolean     @default(false)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   contestWod ContestWod[]
