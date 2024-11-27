@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { TextInput } from "flowbite-react";
 import { LuSearch } from "react-icons/lu";
 import { Accordion } from "flowbite-react";
+import classNames from "classnames";
 
 const Leaderboard = ({
   competition,
@@ -19,6 +20,8 @@ const Leaderboard = ({
   // Estado para almacenar las filas en modo de edición
   const [editingAthleteId, setEditingAthleteId] = useState(null);
   const [editableAthletes, setEditableAthletes] = useState(athletes);
+  const [sortedAthletes, setSortedAthletes] = useState(athletes);
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const lastChange = useRef();
   useEffect(() => {
     if (athletes) {
@@ -74,6 +77,17 @@ const Leaderboard = ({
     });
     setEditableAthletes(updatedAthletes);
   };
+
+  const handleSort = (header) => {
+    let direction = "asc";
+    if (sortConfig.key === header && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+
+    setSortConfig({ key: header, direction });
+    sortAthletes(header, direction);
+  };
+
   const handleSearchTerm = useCallback(
     (e) => {
       e.preventDefault();
@@ -93,13 +107,37 @@ const Leaderboard = ({
     [searchFilters?.searchTerm]
   );
 
-  const filteredAthletes = editableAthletes?.filter((score) =>
-    JSON.stringify(score)
-      .toLowerCase()
-      .includes(searchFilters.searchTerm.toLowerCase())
-  );
+  const sortAthletes = (key, direction) => {
+    const sorted = [...athletes].sort((a, b) => {
+      let aValue = 0;
+      let bValue = 0;
 
-  console.log(athletes);
+      if (key === "name") {
+        aValue = a.name;
+        bValue = b.name;
+      } else if (key === "totalScore") {
+        aValue = a.totalScore;
+        bValue = b.totalScore;
+      } else if (key.startsWith("scores")) {
+        // Para las puntuaciones de los WODs
+        const wodId = key.split(".")[1]; // Obtener el ID del WOD desde la clave
+        aValue = a.scores[wodId]?.quantity || 0;
+        bValue = b.scores[wodId]?.quantity || 0;
+      }
+
+      // Ordenar ascendente o descendente
+      if (aValue < bValue) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setSortedAthletes(sorted);
+  };
+
   return (
     <div className="flex-1 md:overflow-hidden overflow-y-auto md:p-4 w-full md:text-nowrap mt-2 md:mt-0">
       <h2 className="pl-4 md:pl-0 text-crossfit-secondary text-xl font-semibold">
@@ -126,23 +164,26 @@ const Leaderboard = ({
       <table className="min-w-full w-full bg-white mt-4 md:mt-0">
         <thead className="bg-crossfit-light-purple text-white">
           <tr>
-            <th className="py-2 px-4 text-left w-20">#</th>
-            <th className="py-2 px-4 text-left w-full md:w-40">Atleta</th>
+            <th className="py-3 px-4 text-left w-20">#</th>
+            <th className="py-3 px-4 text-left w-full md:w-40 hover:bg-crossfit-secondary cursor-pointer">
+              Atleta
+            </th>
             {wods.map((wod, index) => (
               <th
+                onClick={() => handleSort(`scores.${wod.id}.quantity`)}
                 key={index}
-                className="hidden md:table-cell py-2 px-4 text-left w-[70vw] md:w-40 "
+                className="hidden md:table-cell py-3 px-4 text-left w-[70vw] md:w-40 cursor-pointer hover:bg-crossfit-secondary hover:text-white"
               >
                 {wod.name} <FaSort className="inline ml-1" />
               </th>
             ))}
-            <th className="hidden md:table-cell  py-2 px-4 text-left w-60">
+            <th className="hidden md:table-cell  py-3 px-4 text-left w-60">
               Acciones
             </th>
           </tr>
         </thead>
         <tbody className="w-full max-h-[70vh] overflow-y-auto">
-          {filteredAthletes.map((athlete, idx) => (
+          {sortedAthletes.map((athlete, idx) => (
             <tr
               key={athlete.id}
               className="md:border-b w-full md:hover:bg-purple-100 odd:bg-purple-50/80 border-b border-b-neutral-100"
@@ -184,7 +225,7 @@ const Leaderboard = ({
                           >
                             <p>{wod.name}</p>
                             <div className="grid grid-cols-2 gap-4 w-full border-b-2 border-b-neutral-200">
-                              <div className="w-full min-h-11">
+                              <div className="w-full min-h-11 relative">
                                 <AccountFields
                                   name="quantity"
                                   id={`quantity-${athlete.id}-${wod.id}`}
@@ -202,6 +243,16 @@ const Leaderboard = ({
                                   isEditing={editingAthleteId === athlete.id}
                                   icon={TbNumber123}
                                 />
+                                <span
+                                  className={classNames(
+                                    "absolute left-5 top-1/2 transform -translate-y-1/2",
+                                    editingAthleteId === athlete.id
+                                      ? "hidden"
+                                      : "block"
+                                  )}
+                                >
+                                  2er
+                                </span>
                               </div>
                               <div className="w-full min-h-11">
                                 <AccountFields
@@ -272,23 +323,33 @@ const Leaderboard = ({
                   className="hidden md:table-cell py-2 px-4 w-full md:w-60"
                 >
                   <div className="w-full grid grid-cols-2 gap-2">
-                    <AccountFields
-                      name="quantity"
-                      id={`quantity-${athlete.id}-${wod.id}`}
-                      inputType="text"
-                      value={athlete.scores[wod.id]?.quantity || ""}
-                      onChange={(e) =>
-                        handleChange(
-                          athlete.id,
-                          wod.id,
-                          "quantity",
-                          e.target.value
-                        )
-                      }
-                      allowEdit={true}
-                      isEditing={editingAthleteId === athlete.id}
-                      icon={BiTargetLock}
-                    />
+                    <div className="relative">
+                      <AccountFields
+                        name="quantity"
+                        id={`quantity-${athlete.id}-${wod.id}`}
+                        inputType="text"
+                        value={athlete.scores[wod.id]?.quantity || ""}
+                        onChange={(e) =>
+                          handleChange(
+                            athlete.id,
+                            wod.id,
+                            "quantity",
+                            e.target.value
+                          )
+                        }
+                        allowEdit={true}
+                        isEditing={editingAthleteId === athlete.id}
+                        icon={BiTargetLock}
+                      />
+                      <span
+                        className={classNames(
+                          "absolute bg-crossfit-warning p-1 text-xs rounded-full text-white left-16 ml-2 top-1/2 transform -translate-y-1/2",
+                          editingAthleteId === athlete.id ? "hidden" : "block"
+                        )}
+                      >
+                        2er
+                      </span>
+                    </div>
                     <AccountFields
                       name="time"
                       id={`time-${athlete.id}-${wod.id}`}

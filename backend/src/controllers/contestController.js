@@ -705,33 +705,10 @@ export const removeWodToCategory = async (req, res) => {
 
 export const getWodsByCategory = async (req, res) => {
   const { categoryId } = req.params;
+  console.log("entre aqui");
   try {
     const contest = await db.conCateConWod.findMany({
       where: { contestCategoryId: parseInt(categoryId) },
-      // include: {
-      //   contestCategory: {
-      //     select: {
-      //       id: true,
-      //       category: {
-      //         select: {
-      //           name: true,
-      //           id: true,
-      //         },
-      //       },
-      //     },
-      //   },
-      //   contestWod: {
-      //     select: {
-      //       id: true,
-      //       wod: {
-      //         select: {
-      //           name: true,
-      //           id: true,
-      //         },
-      //       },
-      //     },
-      //   }
-      // },
     });
     if (!contest) {
       res.status(404).json({ message: "Contest not found" });
@@ -864,12 +841,13 @@ export const removeAthleteFromContest = async (req, res) => {
 
 export const getAthletesByCategory = async (req, res) => {
   const { categoryId } = req.params;
+  const { wodId, sortOrder = "desc", filterValue } = req.query; // Nuevos parámetros de consulta
+
   try {
+    // Obtén a los atletas
     const contestAthletes = await db.contestCategoryAthlete.findMany({
       where: {
-        contestCategoryId: {
-          in: [parseInt(categoryId)],
-        },
+        contestCategoryId: parseInt(categoryId),
       },
       select: {
         id: true,
@@ -884,6 +862,7 @@ export const getAthletesByCategory = async (req, res) => {
           },
         },
         score: {
+          where: wodId ? { contestCategoryWodId: parseInt(wodId) } : {}, // Filtrar por WOD si se especifica
           select: {
             id: true,
             quantity: true,
@@ -895,12 +874,13 @@ export const getAthletesByCategory = async (req, res) => {
       },
     });
 
+    // Formatea los datos
     const formattedData = contestAthletes.map((athlete) => {
       const newObj = {
         ...athlete,
         name: `${athlete.user.firstName} ${athlete.user.lastName}`,
         scores: athlete.score.reduce((acc, item) => {
-          acc[item.contestCategoryWodId] = item; // Using contestCategoryWodId as the key
+          acc[item.contestCategoryWodId] = item;
           return acc;
         }, {}),
       };
@@ -913,34 +893,51 @@ export const getAthletesByCategory = async (req, res) => {
       res.status(404).json({ message: "Athletes not found for this category" });
       return;
     }
-    // Find a way to set the position
-    const athletes = formattedData
-      .map((athlete) => {
-        return {
-          ...athlete,
-          totalScore: Object.values(athlete?.scores || []).reduce(
-            (sum, item) => sum + Number(item.quantity),
-            0
-          ),
-        };
-      })
-      .sort((a, b) => {
-        const scoreA = a.totalScore === null ? -Infinity : a.totalScore;
-        const scoreB = b.totalScore === null ? -Infinity : b.totalScore;
-        return scoreB - scoreA;
-      })
-      .map((athlete, index) => {
-        return {
-          ...athlete,
-          position: parseInt(index),
-        };
-      });
+
+    // Procesar los atletas
+    let athletes = formattedData.map((athlete) => ({
+      ...athlete,
+      totalScore: Object.values(athlete?.scores || []).reduce(
+        (sum, item) => sum + Number(item.quantity),
+        0
+      ),
+    }));
+
+    // Filtrar por valor específico si se especifica `filterValue`
+    if (filterValue) {
+      athletes = athletes.filter((athlete) =>
+        Object.values(athlete.scores).some(
+          (score) => score.quantity === filterValue
+        )
+      );
+    }
+
+    // Ordenar por `quantity`
+    athletes = athletes.sort((a, b) => {
+      const scoreA = parseFloat(
+        a.scores[wodId]?.quantity ||
+          (sortOrder === "asc" ? Infinity : -Infinity)
+      );
+      const scoreB = parseFloat(
+        b.scores[wodId]?.quantity ||
+          (sortOrder === "asc" ? Infinity : -Infinity)
+      );
+      return sortOrder === "asc" ? scoreA - scoreB : scoreB - scoreA;
+    });
+
+    // Asignar posiciones
+    athletes = athletes.map((athlete, index) => ({
+      ...athlete,
+      position: index + 1,
+    }));
+
     res.json(athletes);
   } catch (error) {
-    console.log("error on getAthletesByCategory", error);
+    console.error("error on getAthletesByCategory", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 export const addScoreToAthlete = async (req, res) => {
   try {
     const { athleteId, scores } = req.body;

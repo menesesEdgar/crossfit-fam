@@ -192,6 +192,7 @@ model Score {
   @@index([contestCategoryWodId], map: "Score_contestCategoryWodId_fkey")
   @@index([contestCategoryAthleteId], map: "Score_contestCategoryAthleteId_fkey")
 }
+
 model Image {
   id        String   @id @default(uuid())
   url       String
