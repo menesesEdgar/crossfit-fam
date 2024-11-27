@@ -515,27 +515,14 @@ export const removeAthleteFromContest = async (athleteId) => {
     throw error;
   }
 };
-export const getAthletesByCategory = async ({
-  contestId,
-  categoryId,
-  wodId,
-  sortOrder = "desc",
-  filterValue,
-}) => {
+export const getAthletesByCategory = async ({ contestId, categoryId }) => {
   try {
     const response = await api.get(
-      `/contests/${contestId}/category/${categoryId}`,
-      {
-        params: {
-          wodId,
-          sortOrder,
-          filterValue,
-        },
-      }
+      `/contests/${contestId}/category/${categoryId}`
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching athletes by category:", error);
+    console.error(error);
     throw error;
   }
 };
