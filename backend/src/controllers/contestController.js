@@ -680,6 +680,7 @@ export const addWodToCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 export const removeWodToCategory = async (req, res) => {
   const { categoryId, wodId } = req.params; // categoryWodId
   try {
@@ -800,6 +801,7 @@ export const removeAllWodsFromCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 export const addAthleteToContest = async (req, res) => {
   try {
     const { userId, categoryId } = req.body;
@@ -823,6 +825,7 @@ export const addAthleteToContest = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 export const removeAthleteFromContest = async (req, res) => {
   const { id } = req.params;
   try {
@@ -906,6 +909,7 @@ export const getAthletesByCategory = async (req, res) => {
       },
     });
 
+    // Transform the data
     const formattedData = contestAthletes.map((athlete) => {
       const newObj = {
         ...athlete,
@@ -924,59 +928,53 @@ export const getAthletesByCategory = async (req, res) => {
       res.status(404).json({ message: "Athletes not found for this category" });
       return;
     }
-    const scores = new Map();
-    const athletes = formattedData
-      .map((athlete) => {
-        const wodIds = Object.keys(athlete?.scores || [])
-        wodIds.forEach((wodId) => {
-          if (athlete?.scores[wodId]) {
-            const lastScore = scores.get(wodId) || []
-            const score = athlete.scores[wodId]?.quantity
-            if (score) {
-              lastScore.push(score)
-              scores.set(wodId, lastScore);
-            }
-        }
-        })
 
-        return {
-          ...athlete,
-          totalScore: Object.values(athlete?.scores || []).reduce(
-            (sum, item) => sum + Number(item.quantity),
-            0
-          ),
-        };
-      })
-      .sort((a, b) => {
-        const scoreA = a.totalScore === null ? -Infinity : a.totalScore;
-        const scoreB = b.totalScore === null ? -Infinity : b.totalScore;
-        return scoreB - scoreA;
-      })
-      .map((athlete, index) => {
-        return {
-          ...athlete,
-          position: parseInt(index),
-        };
+    // Group scores by WOD and calculate positions
+    const wodScores = {};
+    formattedData.forEach((athlete) => {
+      Object.keys(athlete.scores).forEach((wodId) => {
+        if (!wodScores[wodId]) wodScores[wodId] = [];
+        wodScores[wodId].push({
+          athleteId: athlete.id,
+          quantity: athlete.scores[wodId]?.quantity || 0,
+        });
       });
-      const sortedMap = sortMapValues(scores)
-      console.log("scores ", sortedMap)
+    });
+
+    // Sort each WOD's scores and assign positions
+    Object.keys(wodScores).forEach((wodId) => {
+      wodScores[wodId]
+        .sort((a, b) => b.quantity - a.quantity) // Descending order
+        .forEach((item, index) => {
+          const athlete = formattedData.find((a) => a.id === item.athleteId);
+          if (athlete) {
+            athlete.scores[wodId].position = index + 1; // Assign position
+          }
+        });
+    });
+
+    // Calculate total score and assign overall position
+    const athletes = formattedData
+      .map((athlete) => ({
+        ...athlete,
+        totalScore: Object.values(athlete.scores || []).reduce(
+          (sum, item) => sum + Number(item.quantity),
+          0
+        ),
+      }))
+      .sort((a, b) => b.totalScore - a.totalScore) // Sort by total score
+      .map((athlete, index) => ({
+        ...athlete,
+        position: athlete.totalScore === 0 ? null : index + 1,
+      }));
+
     res.json(athletes);
   } catch (error) {
-    console.log("error on getAthletesByCategory", error);
+    console.error("error on getAthletesByCategory", error);
     res.status(500).json({ message: error.message });
   }
 };
-function sortMapValues(map) {
-  // Create a new Map to store sorted values without modifying the original map
-  const sortedMap = new Map();
-  
-  map.forEach((values, key) => {
-    // Sort each array of values in descending order and store the result
-    sortedMap.set(key, values.sort((a, b) => parseInt(b) - parseInt(a)));  // Sorting in descending order
-  });
 
-  return sortedMap;
-}
 export const addScoreToAthlete = async (req, res) => {
   try {
     const { athleteId, scores } = req.body;

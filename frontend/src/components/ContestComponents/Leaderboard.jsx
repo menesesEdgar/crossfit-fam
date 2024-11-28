@@ -1,14 +1,22 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaSort, FaEdit, FaSave, FaUndo } from "react-icons/fa";
+import {
+  FaSort,
+  FaEdit,
+  FaSave,
+  FaUndo,
+  FaMinus,
+  FaInfoCircle,
+} from "react-icons/fa";
 import AccountFields from "../AccountFields/AccountFields";
 import { TbClockBolt, TbNumber123 } from "react-icons/tb";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import { BiTargetLock } from "react-icons/bi";
 import { useParams } from "react-router-dom";
-import { TextInput } from "flowbite-react";
-import { LuSearch } from "react-icons/lu";
+import { TextInput, Tooltip } from "flowbite-react";
+import { LuMinus, LuSearch } from "react-icons/lu";
 import { Accordion } from "flowbite-react";
 import classNames from "classnames";
+import AthletePosition from "./AthletePosition";
 
 const Leaderboard = ({
   competition,
@@ -162,8 +170,8 @@ const Leaderboard = ({
       <table className="min-w-full w-full bg-white mt-4 md:mt-0">
         <thead className="bg-crossfit-light-purple text-white">
           <tr>
-            <th className="py-3 px-4 text-left w-20">#</th>
-            <th className="py-3 px-4 text-left w-full md:w-40 hover:bg-crossfit-secondary cursor-pointer">
+            <th className="py-3 px-4 text-left w-20 rounded-tl-xl">#</th>
+            <th className="py-3 px-4 text-left w-full md:w-40 rounded-tr-xl md:rounded-none hover:bg-crossfit-secondary cursor-pointer">
               Atleta
             </th>
             {wods.map((wod, index) => (
@@ -175,7 +183,7 @@ const Leaderboard = ({
                 {wod.name} <FaSort className="inline ml-1" />
               </th>
             ))}
-            <th className="hidden md:table-cell  py-3 px-4 text-left w-60">
+            <th className="hidden md:table-cell  py-3 px-4 text-left w-60 rounded-tr-xl">
               Acciones
             </th>
           </tr>
@@ -184,10 +192,12 @@ const Leaderboard = ({
           {editableAthletes.map((athlete, idx) => (
             <tr
               key={athlete.id}
-              className="md:border-b w-full md:hover:bg-purple-100 odd:bg-purple-50/80 border-b border-b-neutral-100"
+              className="md:border-b w-full md:hover:bg-purple-200 odd:bg-purple-50 border-b border-b-neutral-100"
             >
-              <td className="py-2 px-4 flex flex-col justify-center text-center w-20">
-                {parseInt(athlete.position) + 1}{" "}
+              <td className="py-2 px-4 flex flex-col justify-center text-center w-20 min-h-16">
+                <div className="w-fit mx-auto">
+                  <AthletePosition position={athlete.position} />
+                </div>
                 <span className="text-xs">
                   ({athlete?.totalScore || 0} pts)
                 </span>
@@ -195,7 +205,6 @@ const Leaderboard = ({
               <td className="md:py-2 md:px-4">
                 <div className="hidden md:table-cell">
                   <p>{athlete?.name}</p>
-                  <p className="text-xs text-gray-500">{athlete.category}</p>
                 </div>
                 <div className="md:hidden">
                   <Accordion className="border-none" collapseAll>
@@ -222,54 +231,93 @@ const Leaderboard = ({
                             className="w-full flex flex-col mb-4"
                           >
                             <p>{wod.name}</p>
-                            <div className="grid grid-cols-2 gap-4 w-full border-b-2 border-b-neutral-200">
-                              <div className="w-full min-h-11 relative">
-                                <AccountFields
-                                  name="quantity"
-                                  id={`quantity-${athlete.id}-${wod.id}`}
-                                  inputType="text"
-                                  value={athlete.scores[wod.id]?.quantity || ""}
-                                  onChange={(e) =>
-                                    handleChange(
-                                      athlete.id,
-                                      wod.id,
-                                      "quantity",
-                                      e.target.value
-                                    )
-                                  }
-                                  allowEdit={true}
-                                  isEditing={editingAthleteId === athlete.id}
-                                  icon={TbNumber123}
-                                />
-                                {/* <span
-                                  className={classNames(
-                                    "absolute left-5 top-1/2 transform -translate-y-1/2",
-                                    editingAthleteId === athlete.id
-                                      ? "hidden"
-                                      : "block"
-                                  )}
-                                >
-                                  2er
-                                </span> */}
+                            <div className="grid grid-cols-2 gap-4 w-full">
+                              <div className="w-full min-h-11">
+                                <div className="flex items-center gap-2 h-full">
+                                  <div className="w-fit">
+                                    <AthletePosition
+                                      position={
+                                        athlete?.scores[wod.id]?.position
+                                      }
+                                    />
+                                  </div>
+                                  <div className="flex items-center justify-center">
+                                    {athlete.scores[wod.id]?.quantity ||
+                                    editingAthleteId === athlete.id ? (
+                                      <AccountFields
+                                        name="quantity"
+                                        id={`quantity-${athlete.id}-${wod.id}`}
+                                        inputType="text"
+                                        value={
+                                          athlete.scores[wod.id]?.quantity || ""
+                                        }
+                                        onChange={(e) =>
+                                          handleChange(
+                                            athlete.id,
+                                            wod.id,
+                                            "quantity",
+                                            e.target.value
+                                          )
+                                        }
+                                        allowEdit={true}
+                                        isEditing={
+                                          editingAthleteId === athlete.id
+                                        }
+                                      />
+                                    ) : (
+                                      <span className="pl-2 text-xs text-gray-500">
+                                        <LuMinus className="text-gray-500" />
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                               <div className="w-full min-h-11">
-                                <AccountFields
-                                  name="time"
-                                  id={`time-${athlete.id}-${wod.id}`}
-                                  inputType="text"
-                                  value={athlete.scores[wod.id]?.time || ""}
-                                  onChange={(e) =>
-                                    handleChange(
-                                      athlete.id,
-                                      wod.id,
-                                      "time",
-                                      e.target.value
-                                    )
-                                  }
-                                  allowEdit={true}
-                                  isEditing={editingAthleteId === athlete.id}
-                                  icon={TbClockBolt}
-                                />
+                                {athlete.scores[wod.id]?.time ||
+                                editingAthleteId === athlete.id ? (
+                                  <div className="flex items-center gap-2 h-full">
+                                    <div className="w-fit">
+                                      <TbClockBolt className="text-gray-500" />
+                                    </div>
+                                    <AccountFields
+                                      name="time"
+                                      id={`time-${athlete.id}-${wod.id}`}
+                                      inputType="text"
+                                      value={athlete.scores[wod.id]?.time || ""}
+                                      onChange={(e) =>
+                                        handleChange(
+                                          athlete.id,
+                                          wod.id,
+                                          "time",
+                                          e.target.value
+                                        )
+                                      }
+                                      allowEdit={true}
+                                      isEditing={
+                                        editingAthleteId === athlete.id
+                                      }
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="flex gap-2 items-center min-w-8 w-full h-full">
+                                    <Tooltip
+                                      content="A la espera del tiempo del ejercicio"
+                                      position="top"
+                                    >
+                                      <span className="text-base">
+                                        <FaInfoCircle
+                                          className="text-blue-400"
+                                          title="A la espera del tiempo del ejercicio"
+                                        />
+                                      </span>
+                                    </Tooltip>
+                                    <div className="pl-2 flex items-center justify-center">
+                                      <span className="text-xs text-gray-500">
+                                        <LuMinus className="text-gray-500" />
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -321,45 +369,83 @@ const Leaderboard = ({
                   className="hidden md:table-cell py-2 px-4 w-full md:w-60"
                 >
                   <div className="w-full grid grid-cols-2 gap-2">
-                    <div className="relative">
-                      <AccountFields
-                        name="quantity"
-                        id={`quantity-${athlete.id}-${wod.id}`}
-                        inputType="text"
-                        value={athlete.scores[wod.id]?.quantity || ""}
-                        onChange={(e) =>
-                          handleChange(
-                            athlete.id,
-                            wod.id,
-                            "quantity",
-                            e.target.value
-                          )
-                        }
-                        allowEdit={true}
-                        isEditing={editingAthleteId === athlete.id}
-                        icon={BiTargetLock}
-                      />
-                      <span
-                        className={classNames(
-                          "absolute bg-crossfit-warning p-1 text-xs rounded-full text-white left-16 ml-2 top-1/2 transform -translate-y-1/2",
-                          editingAthleteId === athlete.id ? "hidden" : "block"
+                    <div className="flex items-center gap-2">
+                      <div className="w-fit">
+                        <AthletePosition
+                          position={athlete?.scores[wod.id]?.position}
+                        />
+                      </div>
+                      <div className="flex items-center justify-center">
+                        {athlete.scores[wod.id]?.quantity ||
+                        editingAthleteId === athlete.id ? (
+                          <AccountFields
+                            name="quantity"
+                            id={`quantity-${athlete.id}-${wod.id}`}
+                            inputType="text"
+                            value={athlete.scores[wod.id]?.quantity || ""}
+                            onChange={(e) =>
+                              handleChange(
+                                athlete.id,
+                                wod.id,
+                                "quantity",
+                                e.target.value
+                              )
+                            }
+                            allowEdit={true}
+                            isEditing={editingAthleteId === athlete.id}
+                          />
+                        ) : (
+                          <span className="pl-2 text-xs text-gray-500">
+                            <LuMinus className="text-gray-500" />
+                          </span>
                         )}
-                      >
-                        {athlete.scores[wod.id]?.position}
-                      </span>
+                      </div>
                     </div>
-                    <AccountFields
-                      name="time"
-                      id={`time-${athlete.id}-${wod.id}`}
-                      inputType="text"
-                      value={athlete.scores[wod.id]?.time || ""}
-                      onChange={(e) =>
-                        handleChange(athlete.id, wod.id, "time", e.target.value)
-                      }
-                      allowEdit={true}
-                      isEditing={editingAthleteId === athlete.id}
-                      icon={TbClockBolt}
-                    />
+                    <div className="flex items-center w-full">
+                      {athlete.scores[wod.id]?.time ||
+                      editingAthleteId === athlete.id ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-fit">
+                            <TbClockBolt className="text-gray-500" />
+                          </div>
+                          <AccountFields
+                            name="time"
+                            id={`time-${athlete.id}-${wod.id}`}
+                            inputType="text"
+                            value={athlete.scores[wod.id]?.time || ""}
+                            onChange={(e) =>
+                              handleChange(
+                                athlete.id,
+                                wod.id,
+                                "time",
+                                e.target.value
+                              )
+                            }
+                            allowEdit={true}
+                            isEditing={editingAthleteId === athlete.id}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 items-center min-w-8 w-full">
+                          <Tooltip
+                            content="A la espera del tiempo del ejercicio"
+                            position="top"
+                          >
+                            <span className="text-base">
+                              <FaInfoCircle
+                                className="text-blue-400"
+                                title="A la espera del tiempo del ejercicio"
+                              />
+                            </span>
+                          </Tooltip>
+                          <div className="pl-2 flex items-center justify-center">
+                            <span className="text-xs text-gray-500">
+                              <LuMinus className="text-gray-500" />
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </td>
               ))}
