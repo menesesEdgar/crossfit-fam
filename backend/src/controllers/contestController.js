@@ -826,6 +826,17 @@ export const addAthleteToContest = async (req, res) => {
 export const removeAthleteFromContest = async (req, res) => {
   const { id } = req.params;
   try {
+    // check if the athlete has scores
+    const athleteScores = await db.score.findMany({
+      where: { contestCategoryAthleteId: parseInt(id) },
+    });
+
+    if (athleteScores.length > 0) {
+      await db.score.deleteMany({
+        where: { contestCategoryAthleteId: parseInt(id) },
+      });
+    }
+
     const athlete = await db.ContestCategoryAthlete.findUnique({
       where: { id: parseInt(id) },
       include: {
