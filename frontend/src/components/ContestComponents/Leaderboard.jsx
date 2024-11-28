@@ -20,7 +20,6 @@ const Leaderboard = ({
   // Estado para almacenar las filas en modo de edición
   const [editingAthleteId, setEditingAthleteId] = useState(null);
   const [editableAthletes, setEditableAthletes] = useState(athletes);
-  const [sortedAthletes, setSortedAthletes] = useState(athletes);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const lastChange = useRef();
   useEffect(() => {
@@ -135,9 +134,8 @@ const Leaderboard = ({
       return 0;
     });
 
-    setSortedAthletes(sorted);
+    setEditableAthletes(sorted);
   };
-
   return (
     <div className="flex-1 md:overflow-hidden overflow-y-auto md:p-4 w-full md:text-nowrap mt-2 md:mt-0">
       <h2 className="pl-4 md:pl-0 text-crossfit-secondary text-xl font-semibold">
@@ -183,7 +181,7 @@ const Leaderboard = ({
           </tr>
         </thead>
         <tbody className="w-full max-h-[70vh] overflow-y-auto">
-          {sortedAthletes.map((athlete, idx) => (
+          {editableAthletes.map((athlete, idx) => (
             <tr
               key={athlete.id}
               className="md:border-b w-full md:hover:bg-purple-100 odd:bg-purple-50/80 border-b border-b-neutral-100"
@@ -243,7 +241,7 @@ const Leaderboard = ({
                                   isEditing={editingAthleteId === athlete.id}
                                   icon={TbNumber123}
                                 />
-                                <span
+                                {/* <span
                                   className={classNames(
                                     "absolute left-5 top-1/2 transform -translate-y-1/2",
                                     editingAthleteId === athlete.id
@@ -252,7 +250,7 @@ const Leaderboard = ({
                                   )}
                                 >
                                   2er
-                                </span>
+                                </span> */}
                               </div>
                               <div className="w-full min-h-11">
                                 <AccountFields
@@ -347,7 +345,7 @@ const Leaderboard = ({
                           editingAthleteId === athlete.id ? "hidden" : "block"
                         )}
                       >
-                        2er
+                        {athlete.scores[wod.id]?.position}
                       </span>
                     </div>
                     <AccountFields
