@@ -24,6 +24,7 @@ const Leaderboard = ({
   athletes,
   category,
   addScoreToAthlete,
+  setUpdateScores
 }) => {
   // Estado para almacenar las filas en modo de edición
   const [editingAthleteId, setEditingAthleteId] = useState(null);
@@ -62,6 +63,7 @@ const Leaderboard = ({
       athleteId: editingAthleteId,
       ...athleteData,
     });
+    setUpdateScores((prevState) => !prevState)
     setEditingAthleteId(null);
   };
 
@@ -95,7 +97,7 @@ const Leaderboard = ({
     sortAthletes(header, direction);
   };
 
-  const handleSearchTerm = useCallback(
+  const handleSearchTerm = 
     (e) => {
       e.preventDefault();
       if (lastChange.current) {
@@ -103,16 +105,13 @@ const Leaderboard = ({
       }
       lastChange.current = setTimeout(() => {
         lastChange.current = null;
-        setSearchFilters((prevState) => {
-          return {
-            ...prevState,
-            searchTerm: e.target.value,
-          };
-        });
+        const filteredAthletes = athletes?.filter(
+          (athlete) =>
+            JSON.stringify(athlete).toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setEditableAthletes(filteredAthletes)
       }, 600);
-    },
-    [searchFilters?.searchTerm]
-  );
+    }
 
   const sortAthletes = (key, direction) => {
     const sorted = [...athletes].sort((a, b) => {
@@ -128,8 +127,8 @@ const Leaderboard = ({
       } else if (key.startsWith("scores")) {
         // Para las puntuaciones de los WODs
         const wodId = key.split(".")[1]; // Obtener el ID del WOD desde la clave
-        aValue = a.scores[wodId]?.quantity || 0;
-        bValue = b.scores[wodId]?.quantity || 0;
+        aValue = a.scores[wodId]?.position || 0;
+        bValue = b.scores[wodId]?.position || 0;
       }
 
       // Ordenar ascendente o descendente
@@ -144,6 +143,7 @@ const Leaderboard = ({
 
     setEditableAthletes(sorted);
   };
+  console.log("editable athletes ", editableAthletes)
   return (
     <div className="flex-1 md:overflow-hidden overflow-y-auto md:p-4 w-full md:text-nowrap mt-2 md:mt-0">
       <h2 className="pl-4 md:pl-0 text-crossfit-secondary text-xl font-semibold">
@@ -170,8 +170,9 @@ const Leaderboard = ({
       <table className="min-w-full w-full bg-white mt-4 md:mt-0">
         <thead className="bg-crossfit-light-purple text-white">
           <tr>
-            <th className="py-3 px-4 text-left w-20 rounded-tl-xl">#</th>
-            <th className="py-3 px-4 text-left w-full md:w-40 rounded-tr-xl md:rounded-none hover:bg-crossfit-secondary cursor-pointer">
+            <th className="py-3 px-4 text-left w-20 rounded-tl-xl hidden md:table-cell cursor-pointer hover:bg-crossfit-secondary hover:text-white" onClick={() => handleSort('totalScore')}>#</th>
+            <th className="py-3 px-4 text-left w-full md:w-40 rounded-tr-xl md:rounded-none hover:bg-crossfit-secondary cursor-pointer"
+            onClick={() => handleSort('name')}>
               Atleta
             </th>
             {wods.map((wod, index) => (

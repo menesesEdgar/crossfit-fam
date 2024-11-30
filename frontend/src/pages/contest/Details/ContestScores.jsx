@@ -28,6 +28,7 @@ const ContestScores = () => {
   const { id } = useParams();
   const [wods, setWods] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [updateScores, setUpdateScores] = useState(false)
   useEffect(() => {
     async function getAthletesByCategory() {
       await fetchAthletesByCategory({
@@ -51,7 +52,7 @@ const ContestScores = () => {
       }
       getAthletesByCategory();
     }
-  }, [contest, selectedCategory]);
+  }, [contest, selectedCategory, updateScores]);
 
   useEffect(() => {
     if (categories && categories?.length > 0) {
@@ -99,6 +100,7 @@ const ContestScores = () => {
       <div className="w-full flex-1 overflow-y-auto">
         {contest && athletes && wods && (
           <Leaderboard
+            setUpdateScores={setUpdateScores}
             category={selectedCategory}
             competition={contest}
             athletes={athletes}
