@@ -69,24 +69,27 @@ const CardContest = ({ contest, actions, collapsedActions, role }) => {
             <span>
               <FiUsers size={20} className="text-neutral-400" />
             </span>
-            <Tooltip
+            {(role === "Athlete" || contest.categories?.length === 0 || ["Finalizada", "Borrador"].includes(contest?.status)) ? (
+              <p className="text-sm md:text-base text-neutral-800">
+                <span>{contest?.quantityAthletes} atletas inscritos</span>
+              </p>
+            ) : (
+              <Tooltip
               content="Registrar atletas"
               placement="right"
               animation="duration-500"
             >
               <p className="text-sm md:text-base text-neutral-800">
-                {role === "Athlete" ? (
-                  <span>{contest?.quantityAthletes} atletas inscritos</span>
-                ) : (
                   <Link
                     className="hover:underline hover:text-blue-400"
                     to={`/contest/${contest.id}/register`}
                   >
                     {contest?.quantityAthletes} atletas inscritos
                   </Link>
-                )}
               </p>
             </Tooltip>
+            )
+            }
           </div>
           <div className="w-full flex gap-2 items-start mt-2">
             {contest?.categories?.map((category, index) => {

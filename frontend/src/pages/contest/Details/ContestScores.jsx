@@ -2,18 +2,10 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/Table/TableHeader";
 import { MdOutlineLeaderboard } from "react-icons/md";
 import Leaderboard from "../../../components/ContestComponents/Leaderboard";
-import { Checkbox, Dropdown } from "flowbite-react";
+import { Dropdown } from "flowbite-react";
 import { IoFilterSharp } from "react-icons/io5";
-import { FaRegSquare, FaVenusMars } from "react-icons/fa";
-import { FaSquareCheck } from "react-icons/fa6";
 import { useContestContext } from "../../../context/ContestContext";
-import { Select } from "flowbite-react";
 import { useParams } from "react-router-dom";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import ActionButtons from "../../../components/ActionButtons/ActionButtons";
-const competition = {
-  name: "Gordoton Supremo",
-};
 
 const ContestScores = () => {
   const {
@@ -59,8 +51,7 @@ const ContestScores = () => {
       setSelectedCategory(categories[0]);
     }
   }, [categories]);
-  // console.log("athletes ", athletes);
-  // console.log("wods ", wods);
+
   if (!contest && athletes.length === 0) return;
   return (
     <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col gap-2 shadow-md rounded-md dark:bg-gray-900 antialiased">

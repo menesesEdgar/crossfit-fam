@@ -38,10 +38,6 @@ import { MdInfo, MdOutlineFilterList } from "react-icons/md";
 import { Checkbox, Dropdown, Label } from "flowbite-react";
 import { useAuthContext } from "../../context/AuthContext";
 import ContestRegisterFields from "../../components/ContestComponents/ContestRegisterFields";
-import { useContestContext } from "../../context/ContestContext";
-import { getContests } from "../../services/api";
-import { useQuery } from "@tanstack/react-query";
-import { BsFileBarGraphFill } from "react-icons/bs";
 
 // import BgPublicContest from "../../assets/bg/bg-public-contest.webp";
 
@@ -55,7 +51,7 @@ const initValues = {
   id: "",
 };
 const Contest = () => {
-  const { contests: allContests } = useCatalogContext();
+  const { contests: allContests, fetchContests } = useCatalogContext();
 
   const {
     createContest,
@@ -98,11 +94,20 @@ const Contest = () => {
   const [contestToUpdateStep, setContestToUpdateStep] = useState(null);
   const navigate = useNavigate();
   const filteredContests = contests?.filter(
-    (contest) =>
-      JSON.stringify(contest).toLowerCase().includes(search.toLowerCase()) &&
-      (statusFilter.length === 0 || statusFilter.includes(contest.status))
-  );
+    (contest) => {
+      if (role === "Athlete") {
+        return JSON.stringify(contest).toLowerCase().includes(search.toLowerCase()) &&
+        (statusFilter.length === 0 || statusFilter.includes(contest.status)) && contest.status !== "Borrador"
+      } else {
+        return JSON.stringify(contest).toLowerCase().includes(search.toLowerCase()) &&
+        (statusFilter.length === 0 || statusFilter.includes(contest.status))
+      }
+    }
 
+  );
+  useEffect(() => {
+    fetchContests()
+  }, [])
   useEffect(() => {
     setContests(allContests);
   }, [allContests]);
@@ -161,12 +166,6 @@ const Contest = () => {
   const onOpenDeleteModal = (contestId) => {
     setIsOpenDeleteModal(true);
     setRemoveContestId(contestId);
-  };
-
-  const extractAthletesFromCategories = (categories) => {
-    return categories?.reduce((acc, category) => {
-      return acc + category?.athletes?.length;
-    }, 0);
   };
 
   const extractCategoryNames = (categories) => {
@@ -267,7 +266,6 @@ const Contest = () => {
       setSubmitting(false);
     }
   };
-  console.log("all contest ", allContests);
   return (
     <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
       <div className="flex flex-col gap-2 px-2 md:px-4 pt-4">
@@ -408,22 +406,25 @@ const Contest = () => {
                   ]}
                   actions={
                     role !== "Athlete"
-                      ? [
+                       ? [
+                        ["Borrador"].includes(contest.status) &&
                           {
                             label: "Editar",
                             action: () => navigate(`/contest/${contest.id}`),
                             color: "neutral",
                             icon: FaEdit,
                           },
-                          // {
-                          //   label: "Publicar",
-                          //   action: () => {
-                          //     setContestToUpdateStep(contest);
-                          //     setModalNextStep(true);
-                          //   },
-                          //   color: "neutral",
-                          //   icon: HiOutlineSpeakerphone,
-                          // },
+                          (["Borrador"].includes(contest.status) && contest?.categories.length > 0 && contest?.wods.length > 0) &&
+                          {
+                            label: "Publicar",
+                            action: () => {
+                              setContestToUpdateStep(contest);
+                              setModalNextStep(true);
+                            },
+                            color: "neutral",
+                            icon: HiOutlineSpeakerphone,
+                          },
+                          ["Finalizada", "En curso"].includes(contest.status) &&
                           {
                             label: "Puntajes",
                             action: () =>
@@ -432,7 +433,9 @@ const Contest = () => {
                             icon: FaFlagCheckered,
                           },
                         ]
-                      : [
+                      : 
+                      [
+                        ["Abierta"].includes(contest?.status) &&
                           {
                             label: !contest.isRegistered
                               ? "Inscribirse"
@@ -441,6 +444,14 @@ const Contest = () => {
                             action: () => handleRegister(contest),
                             color: !contest.isRegistered ? "neutral" : "red",
                             icon: FaEdit,
+                          },
+                          ["Finalizada", "En curso"].includes(contest.status) &&
+                          {
+                            label: "Puntajes",
+                            action: () =>
+                              navigate(`/contest/${contest.id}/scores`),
+                            color: "neutral",
+                            icon: FaFlagCheckered,
                           },
                         ]
                   }

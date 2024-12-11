@@ -75,7 +75,7 @@ const PublicContest = () => {
       case "Finalizada":
         return {
           label: "Ver resultados",
-          action: () => navigate(`/public/contest/${selectedContest.id}`),
+          action: () => navigate(`/public/contest/${selectedContest.id}/scores`),
           icon: FaMedal,
           color: "neutral",
         };
@@ -83,7 +83,7 @@ const PublicContest = () => {
       case "En curso":
         return {
           label: "Ver progreso",
-          action: () => navigate(`/public/contest/${selectedContest.id}`),
+          action: () => navigate(`/public/contest/${selectedContest.id}/scores`),
           icon: RiBarChart2Fill,
           color: "neutral",
         };

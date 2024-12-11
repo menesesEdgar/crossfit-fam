@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   FaSort,
   FaEdit,
@@ -17,6 +17,7 @@ import { LuMinus, LuSearch } from "react-icons/lu";
 import { Accordion } from "flowbite-react";
 import classNames from "classnames";
 import AthletePosition from "./AthletePosition";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Leaderboard = ({
   competition,
@@ -31,6 +32,9 @@ const Leaderboard = ({
   const [editableAthletes, setEditableAthletes] = useState(athletes);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const lastChange = useRef();
+  const { user } = useAuthContext();
+  // For security, athlete by default otherwise admin or root
+  const role = useMemo(() => user?.role?.name || "Athlete", [user]);
   useEffect(() => {
     if (athletes) {
       setEditableAthletes(athletes);
@@ -41,11 +45,7 @@ const Leaderboard = ({
   const handleEditClick = (athleteId) => {
     setEditingAthleteId(athleteId);
   };
-  const [searchFilters, setSearchFilters] = useState({
-    searchTerm: "",
-    sortBy: "firstName",
-    order: "asc",
-  });
+
   // Función para cancelar la edición en una fila específica
   const handleCancelClick = () => {
     setEditingAthleteId(null);
@@ -143,7 +143,6 @@ const Leaderboard = ({
 
     setEditableAthletes(sorted);
   };
-  console.log("editable athletes ", editableAthletes)
   return (
     <div className="flex-1 md:overflow-hidden overflow-y-auto md:p-4 w-full md:text-nowrap mt-2 md:mt-0">
       <h2 className="pl-4 md:pl-0 text-crossfit-secondary text-xl font-semibold">
@@ -184,9 +183,12 @@ const Leaderboard = ({
                 {wod.name} <FaSort className="inline ml-1" />
               </th>
             ))}
+            { role !== "Athlete" && (
             <th className="hidden md:table-cell  py-3 px-4 text-left w-60 rounded-tr-xl">
               Acciones
             </th>
+            )}
+
           </tr>
         </thead>
         <tbody className="w-full max-h-[70vh] overflow-y-auto">
@@ -323,42 +325,47 @@ const Leaderboard = ({
                             </div>
                           </div>
                         ))}
-                        {editingAthleteId === athlete.id ? (
-                          <div className="flex gap-2 items-center pt-4">
-                            <ActionButtons
-                              extraActions={[
-                                {
-                                  label: "Guardar",
-                                  action: handleSaveClick,
-                                  icon: FaSave,
-                                  color: "purple",
-                                  filled: true,
-                                },
-                                {
-                                  label: "Cancelar",
-                                  action: handleCancelClick,
-                                  icon: FaUndo,
-                                  color: "red",
-                                  filled: true,
-                                },
-                              ]}
-                            />
-                          </div>
-                        ) : (
-                          <div className="flex gap-2 items-center pt-4">
-                            <ActionButtons
-                              extraActions={[
-                                {
-                                  label: "Editar",
-                                  action: () => handleEditClick(athlete.id),
-                                  icon: FaEdit,
-                                  color: "blue",
-                                  filled: true,
-                                },
-                              ]}
-                            />
-                          </div>
+                        {role !== "Athlete" && (
+                          <>
+                            {editingAthleteId === athlete.id ? (
+                                <div className="flex gap-2 items-center pt-4">
+                                  <ActionButtons
+                                    extraActions={[
+                                      {
+                                        label: "Guardar",
+                                        action: handleSaveClick,
+                                        icon: FaSave,
+                                        color: "purple",
+                                        filled: true,
+                                      },
+                                      {
+                                        label: "Cancelar",
+                                        action: handleCancelClick,
+                                        icon: FaUndo,
+                                        color: "red",
+                                        filled: true,
+                                      },
+                                    ]}
+                                  />
+                                </div>
+                              ) : (
+                                <div className="flex gap-2 items-center pt-4">
+                                  <ActionButtons
+                                    extraActions={[
+                                      {
+                                        label: "Editar",
+                                        action: () => handleEditClick(athlete.id),
+                                        icon: FaEdit,
+                                        color: "blue",
+                                        filled: true,
+                                      },
+                                    ]}
+                                  />
+                                </div>
+                              )}
+                          </>
                         )}
+
                       </Accordion.Content>
                     </Accordion.Panel>
                   </Accordion>
@@ -450,6 +457,7 @@ const Leaderboard = ({
                   </div>
                 </td>
               ))}
+              {role !== "Athlete" && (
               <td className="hidden md:table-cell p-2 md:w-64 py-3">
                 {editingAthleteId === athlete.id ? (
                   <div className="flex gap-2 items-center">
@@ -485,6 +493,7 @@ const Leaderboard = ({
                   </div>
                 )}
               </td>
+              )}
             </tr>
           ))}
         </tbody>

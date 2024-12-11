@@ -33,7 +33,9 @@ export const getContests = async (req, res) => {
             },
           },
         });
-
+        const wods = await db.contestWod.findMany({
+          where: { contestId: contest.id },
+        })
         const categoriesWithAthletes = categories.map((cat) => ({
           ...cat,
           athletes: cat.contestCategoryAthlete
@@ -43,6 +45,7 @@ export const getContests = async (req, res) => {
 
         return {
           ...contest,
+          wods,
           categories: categoriesWithAthletes,
         };
       })

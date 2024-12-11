@@ -28,7 +28,7 @@ const PublicLayout = ({ children }) => {
   return (
     <div className="flex flex-col h-full w-full  overflow-y-auto overflow-x-hidden">
       <Navbar>
-        <div className="hidden md:flex w-fit whitespace-nowrap text-nowrap justify-start gap-4 items-center p-2">
+        <div className="hidden md:flex w-fit whitespace-nowrap text-nowrap justify-start gap-4 items-center p-2 cursor-pointer" onClick={() => window.history.back()}>
           <img
             src={FamCrossLogo}
             alt="Familia Crossfit ICON"
