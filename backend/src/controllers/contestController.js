@@ -100,7 +100,7 @@ export const getPublicContest = async (_, res) => {
         const categoriesWithAthletes = categories.map((cat) => ({
           ...cat,
           athletes: cat.contestCategoryAthlete
-            .filter((athleteEntry) => athleteEntry.user.role === "athlete")
+            .filter((athleteEntry) => athleteEntry.user.role.name === "Athlete")
             .map((athleteEntry) => athleteEntry.user),
         }));
 
