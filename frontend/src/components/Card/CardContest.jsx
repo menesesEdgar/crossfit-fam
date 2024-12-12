@@ -69,7 +69,7 @@ const CardContest = ({ contest, actions, collapsedActions, role }) => {
             <span>
               <FiUsers size={20} className="text-neutral-400" />
             </span>
-            {(role === "Athlete" || contest.categories?.length === 0 || ["Finalizada", "Borrador"].includes(contest?.status)) ? (
+            {(role === "Athlete" || contest.categories?.length === 0 || ["Finalizada", "Borrador", "En curso"].includes(contest?.status)) ? (
               <p className="text-sm md:text-base text-neutral-800">
                 <span>{contest?.quantityAthletes} atletas inscritos</span>
               </p>

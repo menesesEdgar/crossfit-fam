@@ -22,6 +22,8 @@ import {
   FaTrophy,
   FaCheck,
   FaFlagCheckered,
+  FaRunning,
+  FaUsers,
 } from "react-icons/fa";
 import CardContest from "../../components/Card/CardContest";
 import ModalViewer from "../../components/Modals/ModalViewer";
@@ -125,6 +127,7 @@ const Contest = () => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       editMode ? await updateContest(values) : await createContest(values);
+      fetchContests()
       resetForm();
       setInitialValues({
         ...initValues,
@@ -174,11 +177,14 @@ const Contest = () => {
 
   const handleContestNextStep = useCallback(async () => {
     try {
-      await setContestNextStep({
+      const response = await setContestNextStep({
         id: contestToUpdateStep.id,
         step: contestToUpdateStep.status,
       });
-      setModalNextStep(false);
+      if (response) {
+        setModalNextStep(false);
+        fetchContests()
+      }
     } catch (error) {
       console.error(error);
     }
@@ -414,7 +420,7 @@ const Contest = () => {
                             color: "neutral",
                             icon: FaEdit,
                           },
-                          (["Borrador"].includes(contest.status) && contest?.categories.length > 0 && contest?.wods.length > 0) &&
+                          (["Borrador"].includes(contest.status) && contest?.categories?.length > 0 && contest?.wods?.length > 0) &&
                           {
                             label: "Publicar",
                             action: () => {
@@ -423,6 +429,23 @@ const Contest = () => {
                             },
                             color: "neutral",
                             icon: HiOutlineSpeakerphone,
+                          },
+                          ["Abierta"].includes(contest?.status) &&
+                          {
+                            label: "Atletas",
+                            action: () => navigate(`/contest/${contest.id}/register`),
+                            color: "neutral",
+                            icon: FaUsers,
+                          },
+                          ["Abierta"].includes(contest?.status) && contest?.athletes?.length > 0 &&
+                          {
+                            label: "Comenzar",
+                            action: () => {
+                              setContestToUpdateStep(contest);
+                              setModalNextStep(true);
+                            },
+                            color: "neutral",
+                            icon: FaRunning,
                           },
                           ["Finalizada", "En curso"].includes(contest.status) &&
                           {
@@ -497,7 +520,7 @@ const Contest = () => {
           saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
-      {modalNextStep && (
+      {modalNextStep && contestToUpdateStep?.status === "Borrador" && (
         <ModalViewer
           isOpenModal={modalNextStep}
           onCloseModal={() => {
@@ -554,6 +577,69 @@ const Contest = () => {
                     color: "crossfit",
                     filled: true,
                     icon: HiOutlineSpeakerphone,
+                    className: "min-w-full",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </ModalViewer>
+      )}
+      {modalNextStep && contestToUpdateStep?.status === "Abierta" && (
+        <ModalViewer
+          isOpenModal={modalNextStep}
+          onCloseModal={() => {
+            setModalNextStep(false), setContestToUpdateStep(null);
+          }}
+          title={
+            <span>
+              <HiOutlineSpeakerphone size={32} className="inline-block mr-2" />
+              Comenzar Competencia
+            </span>
+          }
+        >
+          <div className="w-full flex flex-col gap-4">
+            <div>
+              <img
+                src={PublishImage}
+                alt="Publicar Competencia"
+                className="w-1/2 mx-auto"
+              />
+              <h3 className="text-2xl text-center font-semibold text-neutral-800">
+                ¿Deseas comenzar la competencia?
+              </h3>
+              <p className="text-center text-neutral-600 mb-4">
+                Al comenzar la competencia, ya no podrás registrar más atletas y el estatus cambiará a en curso.
+              </p>
+              <div className="flex gap-4 p-2 rounded-md items-center text-white bg-crossfit-info/80">
+                <i>
+                  <MdInfo size={24} />
+                </i>
+                <p>
+                  <strong>¡Atención! </strong>
+                  Recuerda que una vez que la competencía este en curso, no podrás agregar o modificar los atletas inscritos.
+                </p>
+              </div>
+            </div>
+            <div className="grid items-center justify-center grid-cols-1 md:grid-cols-2 gap-4">
+              <ActionButtons
+                extraActions={[
+                  {
+                    label: "Cancelar",
+                    action: () => {
+                      setContestNextStep(contestToUpdateStep.id);
+                      setModalNextStep(false);
+                    },
+                    color: "neutral",
+                    icon: TbArrowBackUp,
+                    className: "min-w-full",
+                  },
+                  {
+                    label: "Comenzar",
+                    action: handleContestNextStep,
+                    color: "green",
+                    filled: true,
+                    icon: FaRunning,
                     className: "min-w-full",
                   },
                 ]}

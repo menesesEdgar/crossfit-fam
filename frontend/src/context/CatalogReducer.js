@@ -199,17 +199,20 @@ const CatalogReducer = (state, action) => {
         contests: [...state.contests, action.payload],
         loading: false,
       };
-    case "UPDATE_CONTEST":
+    case "UPDATE_CONTEST": {
       const { id: userId } = action.payload?.user
+      console.log("contest data ", action.payload.data)
+      console.log("state contests ", state.contests)
       const updatedContestIndex = state?.contests?.findIndex((c) => c.id = action.payload.data.id)
       const allContest = state?.contests
       let updatedContest = []
+      console.log("updatedContestIndex ", updatedContestIndex)
       if (updatedContestIndex !== -1) {
         const newContest = action.payload.data
         const allAthletes = newContest?.categories?.reduce((acc, contest) => {
           return acc.concat(contest.contestCategoryAthlete);
         }, []);
-        const findUserRegister = allAthletes.find((athlete) => athlete.userId === userId)
+        const findUserRegister = allAthletes ? allAthletes.find((athlete) => athlete.userId === userId) : null
         updatedContest = {
           ...newContest,
           athletes: allAthletes,
@@ -218,12 +221,14 @@ const CatalogReducer = (state, action) => {
         }
         allContest[updatedContestIndex] = updatedContest
       }
+      console.log("all contest ", allContest)
       return {
         ...state,
         contest: action.payload,
         contests: allContest,
         loading: false,
       };
+    }
     case "DELETE_CONTEST":
       return {
         ...state,

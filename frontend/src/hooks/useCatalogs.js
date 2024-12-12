@@ -254,7 +254,7 @@ const useCatalogs = (dispatch, user) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: "UPDATE_CONTEST", payload: {data, user} });
+      // dispatch({ type: "UPDATE_CONTEST", payload: {data, user} });
       Notifies("success", "Competencia actualizada correctamente");
     },
     onError: (error) => {
@@ -273,7 +273,7 @@ const useCatalogs = (dispatch, user) => {
       setLoading(true);
     },
     onSuccess: (data) => {
-      dispatch({ type: "UPDATE_CONTEST", payload: {data, user} });
+      // dispatch({ type: "UPDATE_CONTEST", payload: {data, user} });
       Notifies("success", "Competencia actualizada correctamente");
     },
     onError: (error) => {
