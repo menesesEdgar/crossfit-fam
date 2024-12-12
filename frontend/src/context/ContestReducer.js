@@ -2,7 +2,6 @@ const contestReducer = (state, action) => {
   switch (action.type) {
     
     case "FETCH_CONTEST":
-      console.log("fetch contest ", action.payload)
       return {
         ...state,
         categories: action.payload?.contestCategory?.map((category) => {
@@ -101,7 +100,6 @@ const contestReducer = (state, action) => {
         loading: false,
       };
     case "ADD_WOD_TO_CATEGORY":
-      console.log("ADD_WOD_TO_CATEGORY ",action.payload)
       return {
         ...state,
         categoryWods: [...state.categoryWods, action.payload],
@@ -127,7 +125,6 @@ const contestReducer = (state, action) => {
         loading: false,
       };
     case "REMOVE_ALL_WODS_FROM_CATEGORY":
-      console.log("REMOVE_ALL_WODS_FROM_CATEGORY", action.payload)
       return {
         ...state,
         categoryWods: state.categoryWods?.length > 0 ? 

@@ -1,26 +1,24 @@
 import TableHeader from "../../components/Table/TableHeader";
 import {
-  FaChevronRight,
   FaMinusCircle,
   FaPlusCircle,
   FaRegCheckCircle,
   FaUser,
-  FaUserShield,
+  FaUserMinus,
+  FaUserPlus,
 } from "react-icons/fa";
-import useCheckPermissions from "../../hooks/useCheckPermissions";
 import classNames from "classnames";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LiaDumbbellSolid } from "react-icons/lia";
 import { useContestContext } from "../../context/ContestContext";
-import { TextInput } from "flowbite-react";
+import { Select, TextInput } from "flowbite-react";
 import { LuSearch } from "react-icons/lu";
 import { useQuery } from "@tanstack/react-query";
 import { searchUsers as searchAthletes } from "../../services/api";
-import { Field } from "formik";
-import { MdInfo, MdRemoveCircleOutline } from "react-icons/md";
 import { calculateAge } from "../../utils/formatDates";
 import { useParams } from "react-router-dom";
-import { IoMdArrowRoundBack } from "react-icons/io";
+import { PiMedalFill } from "react-icons/pi";
+import ActionButtons from "../../components/ActionButtons/ActionButtons";
 
 const CategoryWods = ({ setActiveTab }) => {
   // ContestId
@@ -91,69 +89,96 @@ const CategoryWods = ({ setActiveTab }) => {
 
   return (
     <>
-      <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
-        <TableHeader
-          title={`${contest.name} - Registro de atletas`}
-          icon={FaUserShield}
-          actions={[
-            {
-              label: "Volver",
-              action: () => window.history.back(),
-              icon: IoMdArrowRoundBack,
-              color: "neutral",
-            },
-          ]}
-        />
-        <div className="h-full grid grid-cols-2 xl:grid-cols-3 gap-8 p-2 pt-4 pb-0">
-          <div className="col-span-1 lg:col-span-1">
-            <div className="md:mb-4">
-              <h3 className="text-sm lg:text-lg font-semibold">Categorías</h3>
+      <section className="flex flex-col gap-3 min-h-full h-full rounded-md dark:bg-neutral-900 text-neutral-700 p-2 pb-0 antialiased">
+        <div className="bg-white rounded-md p-2 border border-neutral-200">
+          <TableHeader
+            title={`${contest.name} - Registro de atletas`}
+            backAction={true}
+            icon={LiaDumbbellSolid}
+          />
+        </div>
+        <div className="h-full grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-4 pb-0">
+          <div className="hidden lg:block col-span-1 lg:col-span-1 bg-white p-4 rounded-md border border-neutral-200">
+            <div className="md:pb-4">
+              <div className="flex items-center gap-2">
+                <i className="inline-block">
+                  <PiMedalFill size={24} />
+                </i>
+                <h3 className="text-lg lg:text-2xl font-semibold">
+                  Categorías
+                </h3>
+              </div>
               <p className="text-sm text-neutral-500">
                 Estás son las categorías disponibles en está competencia
               </p>
             </div>
-            {contestCategories &&
-              contestCategories?.length > 0 &&
-              contestCategories
-                ?.sort((a, b) => a.name.localeCompare(b.name))
-                .map((category) => (
-                  <div
-                    key={category.id}
-                    onClick={() => changeActiveCategory(category)}
-                    className={classNames(
-                      "group p-4 border-b border-neutral-100 flex justify-between items-center text-neutral-700 hover:bg-neutral-100 cursor-pointer",
-                      activeCategory === category.conCatId
-                        ? "text-neutral-600 font-bold opacity-80 bg-neutral-700/10"
-                        : ""
-                    )}
-                  >
-                    <div className="flex gap-4 items-center">
-                      <LiaDumbbellSolid size={20} />
-                      <h3 className="text-sm lg:text-lg font-semibold capitalize">
-                        {category.name}
-                      </h3>
-                    </div>
-                    {/* {!contestCategoriesFiltered?.includes(category.id) && (
-                      <i
+            <div className="flex flex-col gap-2">
+              {contestCategories &&
+                contestCategories?.length > 0 &&
+                contestCategories
+                  ?.sort((a, b) => a.name.localeCompare(b.name))
+                  .map((category) => (
+                    <div
+                      key={category.id}
+                      onClick={() => changeActiveCategory(category)}
                       className={classNames(
-                        'group-hover:text-neutral-800 transition-all duration-200',
-                        activeTab == category?.id ? '' : 'text-white',
+                        "group px-4 py-3 rounded-md border-neutral-100 flex justify-between items-center text-neutral-700  cursor-pointer",
+                        activeCategory === category.conCatId
+                          ? "text-white font-bold opacity-80 bg-neutral-900 hover:opacity-75"
+                          : "hover:bg-neutral-100"
                       )}
                     >
-                      <FaChevronRight size={18} className="text-lg mt-0.5" />
-                    </i>
-                    )} */}
-                  </div>
-                ))}
+                      <div className="flex gap-4 items-center">
+                        <LiaDumbbellSolid size={20} />
+                        <h3 className="text-sm lg:text-lg font-semibold capitalize">
+                          {category.name}
+                        </h3>
+                      </div>
+                    </div>
+                  ))}
+            </div>
           </div>
-          <div className="col-span-1 lg:col-span-1 xl:col-span-2 h-full lg:max-h-[76dvh] overflow-hidden">
-            <div className="mb-4 flex flex-col justify-between">
-              <div className="w-full flex justify-between flex-col md:flex-row gap-2">
-                <div className="mb-2 md:mb-4">
-                  <h3 className="text-sm lg:text-lg font-semibold">Atletas</h3>
+          <div className="col-span-1 md:col-span-3 lg:col-span-2 h-full max-h-[83.5dvh] overflow-hidden bg-white p-4 pb-0 rounded-md border border-neutral-200">
+            <div className=" flex flex-col justify-between">
+              <div className="w-full flex justify-between flex-col pb-4 xl:pb-2 xl:flex-row gap-2">
+                <div>
+                  <div className="flex gap-3 items-center">
+                    <FaUser size={20} />
+                    <h3 className="text-sm lg:text-lg font-semibold">
+                      Atletas
+                    </h3>
+                  </div>
                   <p className="text-sm text-neutral-500">
                     Incriba los atletas a la categoría seleccionada
                   </p>
+                </div>
+                <div>
+                  <Select
+                    className="lg:min-w-48"
+                    icon={PiMedalFill}
+                    value={activeCategory || ""}
+                    onChange={(e) => {
+                      const selectedCategoryId = e.target.value;
+                      const selectedCategory = contestCategories.find(
+                        (cat) => cat.conCatId == selectedCategoryId
+                      );
+
+                      changeActiveCategory(selectedCategory);
+                    }}
+                  >
+                    <option value="" disabled>
+                      Seleccione una categoría
+                    </option>
+                    {contestCategories &&
+                      contestCategories.length > 0 &&
+                      contestCategories
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((category) => (
+                          <option key={category.id} value={category.conCatId}>
+                            {category.name}
+                          </option>
+                        ))}
+                  </Select>
                 </div>
               </div>
               <div className="relative w-full pb-4">
@@ -170,7 +195,7 @@ const CategoryWods = ({ setActiveTab }) => {
                   }}
                 />
               </div>
-              <div className="h-full max-h-[30dvh] md:max-h-[67dvh] pb-4 overflow-auto flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:grid-rows-[repeat(auto-fill,_minmax(50px,_1fr))] gap-1 md:gap-2">
+              <div className="h-full max-h-[63.5dvh] xl:max-h-[68dvh] overflow-auto flex flex-col gap-1 md:gap-2">
                 {activeCategory &&
                   athletes?.data &&
                   athletes?.data?.length > 0 &&
@@ -198,46 +223,60 @@ const CategoryWods = ({ setActiveTab }) => {
                               );
                         }}
                         className={classNames(
-                          "group transition-all ease-in-out duration-200 pl-6 pr-2 hover:bg-purple-50/80 cursor-pointer py-2 border border-neutral-200 rounded-md flex justify-between items-center",
+                          "group transition-all ease-in-out duration-200 px-4  cursor-pointer py-2 border border-neutral-200 rounded-md flex justify-between items-center",
                           athlete.contestCategoryAthlete[0]
                             ?.contestCategoryId === activeCategory
-                            ? "bg-green-500 text-white"
-                            : "text-neutral-600"
+                            ? "bg-green-100 text-neutral-700 hover:bg-purple-50/80"
+                            : "text-neutral-800 hover:bg-green-200"
                         )}
                       >
                         <div
                           className={classNames(
-                            "flex gap-4 items-center ",
+                            "flex flex-col",
                             athlete.contestCategoryAthlete[0]
                               ?.contestCategoryId === activeCategory
-                              ? "group-hover:text-red-500"
-                              : "text-neutral-600 group-hover:text-blue-500"
+                              ? "group-hover:text-crossfit-danger"
+                              : "text-neutral-800"
                           )}
                         >
-                          <FaUser size={20} />
                           <h3 className="text-sm lg:text-lg font-semibold capitalize">
-                            {`${athlete?.firstName} ${athlete?.lastName} - ${
+                            {`${athlete?.firstName} ${athlete?.lastName}`}
+                          </h3>
+                          <p>
+                            {`${
                               calculateAge(athlete.birthdate)
                                 ? calculateAge(athlete.birthdate) + " años"
                                 : "N/A"
                             }`}
-                          </h3>
+                          </p>
                         </div>
-                        <i className="flex items-center mb-1">
-                          <FaRegCheckCircle
-                            size={22}
-                            className="text-lg mt-0.5 group-hover:hidden"
-                          />
+                        <i className="flex items-center pb-1">
                           {athlete.contestCategoryAthlete[0]
                             ?.contestCategoryId === activeCategory ? (
-                            <FaMinusCircle
-                              size={22}
-                              className="text-lg mt-0.5 text-red-500 hidden group-hover:block"
+                            <ActionButtons
+                              extraActions={[
+                                {
+                                  label: "Remover",
+                                  type: "button",
+                                  icon: FaUserMinus,
+                                  action: () => {},
+                                  filled: true,
+                                  color: "danger",
+                                },
+                              ]}
                             />
                           ) : (
-                            <FaPlusCircle
-                              size={22}
-                              className="text-lg text-blue-500 mt-0.5 hidden group-hover:block"
+                            <ActionButtons
+                              extraActions={[
+                                {
+                                  label: "Inscribir",
+                                  type: "button",
+                                  icon: FaUserPlus,
+                                  action: () => {},
+                                  filled: true,
+                                  color: "dark",
+                                },
+                              ]}
                             />
                           )}
                         </i>

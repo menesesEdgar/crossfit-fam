@@ -9,6 +9,7 @@ import { CategoryFormSchema } from "../../components/Catalogs/Category/CategoryF
 import ModalFormikForm from "../../components/Modals/ModalFormikForm";
 import ModalRemove from "../../components/Modals/ModalRemove";
 import { LiaDumbbellSolid } from "react-icons/lia";
+import { PiMedalFill } from "react-icons/pi";
 
 const Categories = () => {
   const isCreatePermission = useCheckPermissions("create_category");
@@ -99,7 +100,7 @@ const Categories = () => {
     <div className="flex flex-col h-full flex-1 overflow-hidden">
       {categories && !loading ? (
         <CatalogCardList
-          icon={LiaDumbbellSolid}
+          icon={PiMedalFill}
           data={categories}
           title="Categorias"
           onCreate={

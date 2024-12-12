@@ -5,6 +5,7 @@ import { BiSolidZap } from "react-icons/bi";
 import useCheckPermissions from "../../hooks/useCheckPermissions";
 import NotFound from "../notFound/NotFound";
 import LoadingModal from "../../components/LoadingModal/LoadingModal";
+import { PiMedalFill } from "react-icons/pi";
 
 const Categories = lazy(() => import("./Categories"));
 const Wods = lazy(() => import("./Wods"));
@@ -30,7 +31,7 @@ const Catalogs = () => {
     {
       id: 1,
       title: "Categorías",
-      icon: <LiaDumbbellSolid size={24} />,
+      icon: <PiMedalFill size={24} />,
       component: <Categories />,
       permission: isViewCategoriesPermission,
     },

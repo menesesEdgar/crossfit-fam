@@ -22,6 +22,9 @@ import {
   FaTrophy,
   FaCheck,
   FaFlagCheckered,
+  FaRunning,
+  FaUsers,
+  FaCalendarCheck,
 } from "react-icons/fa";
 import CardContest from "../../components/Card/CardContest";
 import ModalViewer from "../../components/Modals/ModalViewer";
@@ -38,10 +41,6 @@ import { MdInfo, MdOutlineFilterList } from "react-icons/md";
 import { Checkbox, Dropdown, Label } from "flowbite-react";
 import { useAuthContext } from "../../context/AuthContext";
 import ContestRegisterFields from "../../components/ContestComponents/ContestRegisterFields";
-import { useContestContext } from "../../context/ContestContext";
-import { getContests } from "../../services/api";
-import { useQuery } from "@tanstack/react-query";
-import { BsFileBarGraphFill } from "react-icons/bs";
 
 // import BgPublicContest from "../../assets/bg/bg-public-contest.webp";
 
@@ -55,7 +54,7 @@ const initValues = {
   id: "",
 };
 const Contest = () => {
-  const { contests: allContests } = useCatalogContext();
+  const { contests: allContests, fetchContests } = useCatalogContext();
 
   const {
     createContest,
@@ -98,11 +97,20 @@ const Contest = () => {
   const [contestToUpdateStep, setContestToUpdateStep] = useState(null);
   const navigate = useNavigate();
   const filteredContests = contests?.filter(
-    (contest) =>
-      JSON.stringify(contest).toLowerCase().includes(search.toLowerCase()) &&
-      (statusFilter.length === 0 || statusFilter.includes(contest.status))
-  );
+    (contest) => {
+      if (role === "Athlete") {
+        return JSON.stringify(contest).toLowerCase().includes(search.toLowerCase()) &&
+        (statusFilter.length === 0 || statusFilter.includes(contest.status)) && contest.status !== "Borrador"
+      } else {
+        return JSON.stringify(contest).toLowerCase().includes(search.toLowerCase()) &&
+        (statusFilter.length === 0 || statusFilter.includes(contest.status))
+      }
+    }
 
+  );
+  useEffect(() => {
+    fetchContests()
+  }, [])
   useEffect(() => {
     setContests(allContests);
   }, [allContests]);
@@ -120,6 +128,7 @@ const Contest = () => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       editMode ? await updateContest(values) : await createContest(values);
+      fetchContests()
       resetForm();
       setInitialValues({
         ...initValues,
@@ -163,23 +172,20 @@ const Contest = () => {
     setRemoveContestId(contestId);
   };
 
-  const extractAthletesFromCategories = (categories) => {
-    return categories?.reduce((acc, category) => {
-      return acc + category?.athletes?.length;
-    }, 0);
-  };
-
   const extractCategoryNames = (categories) => {
     return categories?.map((category) => category?.category?.name);
   };
 
   const handleContestNextStep = useCallback(async () => {
     try {
-      await setContestNextStep({
+      const response = await setContestNextStep({
         id: contestToUpdateStep.id,
         step: contestToUpdateStep.status,
       });
-      setModalNextStep(false);
+      if (response) {
+        setModalNextStep(false);
+        fetchContests()
+      }
     } catch (error) {
       console.error(error);
     }
@@ -267,7 +273,6 @@ const Contest = () => {
       setSubmitting(false);
     }
   };
-  console.log("all contest ", allContests);
   return (
     <div className="flex min-h-[77dvh] h-full bg-white max-h-[90.5dvh] md:max-h-[91.5dvh] overflow-hidden flex-col md:gap-4  shadow-md rounded-md dark:bg-gray-900 antialiased">
       <div className="flex flex-col gap-2 px-2 md:px-4 pt-4">
@@ -408,22 +413,32 @@ const Contest = () => {
                   ]}
                   actions={
                     role !== "Athlete"
-                      ? [
+                       ? [
+                        ["Borrador"].includes(contest.status) &&
                           {
                             label: "Editar",
                             action: () => navigate(`/contest/${contest.id}`),
                             color: "neutral",
                             icon: FaEdit,
                           },
-                          // {
-                          //   label: "Publicar",
-                          //   action: () => {
-                          //     setContestToUpdateStep(contest);
-                          //     setModalNextStep(true);
-                          //   },
-                          //   color: "neutral",
-                          //   icon: HiOutlineSpeakerphone,
-                          // },
+                          (["Borrador"].includes(contest.status) && contest?.categories?.length > 0 && contest?.wods?.length > 0) &&
+                          {
+                            label: "Publicar",
+                            action: () => {
+                              setContestToUpdateStep(contest);
+                              setModalNextStep(true);
+                            },
+                            color: "neutral",
+                            icon: HiOutlineSpeakerphone,
+                          },
+                          ["Abierta"].includes(contest?.status) &&
+                          {
+                            label: "Atletas",
+                            action: () => navigate(`/contest/${contest.id}/register`),
+                            color: "neutral",
+                            icon: FaUsers,
+                          },
+                          ["Finalizada", "En curso"].includes(contest.status) &&
                           {
                             label: "Puntajes",
                             action: () =>
@@ -431,8 +446,32 @@ const Contest = () => {
                             color: "neutral",
                             icon: FaFlagCheckered,
                           },
+                          ["Abierta"].includes(contest?.status) && contest?.athletes?.length > 0 &&
+                          {
+                            label: "Comenzar",
+                            action: () => {
+                              setContestToUpdateStep(contest);
+                              setModalNextStep(true);
+                            },
+                            filled: true,
+                            color: "green",
+                            icon: FaRunning,
+                          },
+                          ["En curso"].includes(contest?.status) && contest?.athletes?.length > 0 &&
+                          {
+                            label: "Finalizar",
+                            action: () => {
+                              setContestToUpdateStep(contest);
+                              setModalNextStep(true);
+                            },
+                            filled: true,
+                            color: "red",
+                            icon: FaCalendarCheck,
+                          },
                         ]
-                      : [
+                      : 
+                      [
+                        ["Abierta"].includes(contest?.status) &&
                           {
                             label: !contest.isRegistered
                               ? "Inscribirse"
@@ -441,6 +480,14 @@ const Contest = () => {
                             action: () => handleRegister(contest),
                             color: !contest.isRegistered ? "neutral" : "red",
                             icon: FaEdit,
+                          },
+                          ["Finalizada", "En curso"].includes(contest.status) &&
+                          {
+                            label: "Puntajes",
+                            action: () =>
+                              navigate(`/contest/${contest.id}/scores`),
+                            color: "neutral",
+                            icon: FaFlagCheckered,
                           },
                         ]
                   }
@@ -486,7 +533,7 @@ const Contest = () => {
           saveLabel={editMode ? "Actualizar" : "Guardar"}
         />
       )}
-      {modalNextStep && (
+      {modalNextStep && contestToUpdateStep?.status === "Borrador" && (
         <ModalViewer
           isOpenModal={modalNextStep}
           onCloseModal={() => {
@@ -543,6 +590,132 @@ const Contest = () => {
                     color: "crossfit",
                     filled: true,
                     icon: HiOutlineSpeakerphone,
+                    className: "min-w-full",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </ModalViewer>
+      )}
+      {modalNextStep && contestToUpdateStep?.status === "Abierta" && (
+        <ModalViewer
+          isOpenModal={modalNextStep}
+          onCloseModal={() => {
+            setModalNextStep(false), setContestToUpdateStep(null);
+          }}
+          title={
+            <span>
+              <HiOutlineSpeakerphone size={32} className="inline-block mr-2" />
+              Comenzar Competencia
+            </span>
+          }
+        >
+          <div className="w-full flex flex-col gap-4">
+            <div>
+              <img
+                src={PublishImage}
+                alt="Publicar Competencia"
+                className="w-1/2 mx-auto"
+              />
+              <h3 className="text-2xl text-center font-semibold text-neutral-800">
+                ¿Deseas comenzar la competencia?
+              </h3>
+              <p className="text-center text-neutral-600 mb-4">
+                Al comenzar la competencia, ya no podrás registrar más atletas y el estatus cambiará a en curso.
+              </p>
+              <div className="flex gap-4 p-2 rounded-md items-center text-white bg-crossfit-info/80">
+                <i>
+                  <MdInfo size={24} />
+                </i>
+                <p>
+                  <strong>¡Atención! </strong>
+                  Recuerda que una vez que la competencía este en curso, no podrás agregar o modificar los atletas inscritos.
+                </p>
+              </div>
+            </div>
+            <div className="grid items-center justify-center grid-cols-1 md:grid-cols-2 gap-4">
+              <ActionButtons
+                extraActions={[
+                  {
+                    label: "Cancelar",
+                    action: () => {
+                      setContestNextStep(contestToUpdateStep.id);
+                      setModalNextStep(false);
+                    },
+                    color: "neutral",
+                    icon: TbArrowBackUp,
+                    className: "min-w-full",
+                  },
+                  {
+                    label: "Comenzar",
+                    action: handleContestNextStep,
+                    color: "green",
+                    filled: true,
+                    icon: FaRunning,
+                    className: "min-w-full",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </ModalViewer>
+      )}
+      {modalNextStep && contestToUpdateStep?.status === "En curso" && (
+        <ModalViewer
+          isOpenModal={modalNextStep}
+          onCloseModal={() => {
+            setModalNextStep(false), setContestToUpdateStep(null);
+          }}
+          title={
+            <span>
+              <HiOutlineSpeakerphone size={32} className="inline-block mr-2" />
+              Finalizar Competencia
+            </span>
+          }
+        >
+          <div className="w-full flex flex-col gap-4">
+            <div>
+              <img
+                src={PublishImage}
+                alt="Publicar Competencia"
+                className="w-1/2 mx-auto"
+              />
+              <h3 className="text-2xl text-center font-semibold text-neutral-800">
+                ¿Deseas finalizar la competencia?
+              </h3>
+              <p className="text-center text-neutral-600 mb-4">
+                Al finalizar la competencia, ya no podrás editar el registro de puntajes.
+              </p>
+              {/* <div className="flex gap-4 p-2 rounded-md items-center text-white bg-crossfit-info/80">
+                <i>
+                  <MdInfo size={24} />
+                </i>
+                <p>
+                  <strong>¡Atención! </strong>
+                  Recuerda que una vez que la competencía este en curso, no podrás agregar o modificar los atletas inscritos.
+                </p>
+              </div> */}
+            </div>
+            <div className="grid items-center justify-center grid-cols-1 md:grid-cols-2 gap-4">
+              <ActionButtons
+                extraActions={[
+                  {
+                    label: "Cancelar",
+                    action: () => {
+                      setContestNextStep(contestToUpdateStep.id);
+                      setModalNextStep(false);
+                    },
+                    color: "neutral",
+                    icon: TbArrowBackUp,
+                    className: "min-w-full",
+                  },
+                  {
+                    label: "Finalizar",
+                    action: handleContestNextStep,
+                    color: "red",
+                    filled: true,
+                    icon: FaCalendarCheck,
                     className: "min-w-full",
                   },
                 ]}

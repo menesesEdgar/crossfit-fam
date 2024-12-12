@@ -63,7 +63,7 @@ const AuthorizedRoute = ({ user }) => {
           <Sidebar>
             <Routes>
               <Route element={<ProtectedRoute user={user} />}>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={<Contest />} />
                 <Route path="/contest" element={<Contest />} />
                 <Route
                   path="/contest/:id"
@@ -89,7 +89,7 @@ const AuthorizedRoute = ({ user }) => {
                     </ContestProvider>
                   }
                 />
-                <Route path="/scores" element={<Score />} />
+                {/* <Route path="/scores" element={<Score />} /> */}
                 <Route path="/catalogs" element={<Catalogs />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/account-settings" element={<Account />} />
@@ -116,6 +116,11 @@ const PublicRoutes = () => {
   return (
     <Routes>
       <Route path="/contest" element={<PublicContest />} />
+      <Route path="/contest/:id/scores" element={
+      <ContestProvider>
+        <ContestScores />
+      </ContestProvider>
+      } />
     </Routes>
   );
 };

@@ -67,14 +67,9 @@ const ContestWods = ({ setActiveTab, setBackTab }) => {
       <section className="flex h-full max-h-[81dvh] md:max-h-[82dvh] overflow-hidden flex-col gap-3 p-3 antialiased">
         <TableHeader
           title="Wods registrados"
+          backAction
           icon={FaUserShield}
           actions={[
-            {
-              label: "Volver",
-              action: () => setBackTab(),
-              icon: FaChevronLeft,
-              color: "indigo",
-            },
             {
               label: "Siguiente",
               disabled: isNextButtonDisabled(),

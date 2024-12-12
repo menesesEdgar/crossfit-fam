@@ -17,7 +17,7 @@ import {
   addAthleteToContest,
   removeAthleteFromContest,
   getAthletesByCategory,
-  addScoreToAthlete
+  addScoreToAthlete,
 } from "../services/api";
 import { useLoading } from "../context/LoadingContext";
 import Notifies from "../components/Notifies/Notifies";
@@ -86,6 +86,7 @@ const useContest = (dispatch) => {
     },
     onError: (error) => {
       console.log("error on delete category", error);
+      Notifies("error", error?.response?.data?.message);
       setLoading(false);
     },
     onSettled: () => {
@@ -163,6 +164,7 @@ const useContest = (dispatch) => {
       Notifies("success", "Wod eliminado correctamente");
     },
     onError: (error) => {
+      Notifies("error", error?.response?.data?.message);
       console.log("error on delete wod", error);
       setLoading(false);
     },

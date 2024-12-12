@@ -1,5 +1,5 @@
 import TableHeader from "../../../components/Table/TableHeader";
-import { FaChevronLeft, FaChevronRight, FaUserShield } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
 import useCheckPermissions from "../../../hooks/useCheckPermissions";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { useContestContext } from "../../../context/ContestContext";
 import { useCatalogContext } from "../../../context/CatalogContext";
 import { MdRemoveCircleOutline } from "react-icons/md";
 import { TextInput } from "flowbite-react";
+import { PiMedalFill } from "react-icons/pi";
 
 const ContestCategories = ({ setActiveTab }) => {
   const {
@@ -54,14 +55,9 @@ const ContestCategories = ({ setActiveTab }) => {
       <section className="flex h-full max-h-[79.5dvh] md:max-h-[82dvh] overflow-hidden flex-col gap-3 p-3 antialiased">
         <TableHeader
           title="Categorías registradas"
-          icon={FaUserShield}
+          icon={PiMedalFill}
+          backAction
           actions={[
-            {
-              label: "Volver",
-              action: () => window.history.back(),
-              icon: FaChevronLeft,
-              color: "indigo",
-            },
             {
               label: "Siguiente",
               disabled: isNextButtonDisabled(),

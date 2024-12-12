@@ -144,14 +144,9 @@ const CategoryWods = ({ setActiveTab, setBackTab }) => {
       <section className="flex flex-col gap-3 min-h-full h-full bg-white shadow-md rounded-md dark:bg-neutral-900 p-3 pb-0 antialiased">
         <TableHeader
           title="Wods por categoría"
+          backAction
           icon={FaUserShield}
           actions={[
-            {
-              label: "Volver",
-              action: () => setBackTab(),
-              icon: FaChevronLeft,
-              color: "indigo",
-            },
             {
               label: "Finalizar",
               disabled: isNextButtonDisabled(),

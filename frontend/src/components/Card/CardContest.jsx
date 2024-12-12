@@ -3,17 +3,16 @@ import { FaRegCalendar } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
-import { Dropdown } from "flowbite-react";
+import { Dropdown, Tooltip } from "flowbite-react";
 import classNames from "classnames";
 import { IoLocationOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 const CardContest = ({ contest, actions, collapsedActions, role }) => {
-
   return (
     <article
       className={classNames(
-        "flex rounded-lg rounded-l-xl shadow-sm h-full md:max-h-[38dvh] 2xl:max-h-[38dvh] hover:shadow-lg transition ease-in-out duration-200",
+        "flex rounded-lg rounded-l-xl shadow-sm h-full max-h-[38dvh] 2xl:max-h-[38dvh] hover:shadow-lg transition ease-in-out duration-200",
         { "bg-crossfit-gray-dark": contest?.status === "Borrador" },
         { "bg-crossfit-primary": contest?.status === "Abierta" },
         { "bg-crossfit-info/70": contest?.status === "En curso" },
@@ -70,18 +69,27 @@ const CardContest = ({ contest, actions, collapsedActions, role }) => {
             <span>
               <FiUsers size={20} className="text-neutral-400" />
             </span>
-            <p className="text-sm md:text-base text-neutral-800">
-              {role === "Athlete" ? (
+            {(role === "Athlete" || contest.categories?.length === 0 || ["Finalizada", "Borrador", "En curso"].includes(contest?.status)) ? (
+              <p className="text-sm md:text-base text-neutral-800">
                 <span>{contest?.quantityAthletes} atletas inscritos</span>
-              ) : (
-                <Link
-                  className="hover:underline hover:text-blue-400"
-                  to={`/contest/${contest.id}/register`}
-                >
-                  {contest?.quantityAthletes} atletas inscritos
-                </Link>
-              )}
-            </p>
+              </p>
+            ) : (
+              <Tooltip
+              content="Registrar atletas"
+              placement="right"
+              animation="duration-500"
+            >
+              <p className="text-sm md:text-base text-neutral-800">
+                  <Link
+                    className="hover:underline hover:text-blue-400"
+                    to={`/contest/${contest.id}/register`}
+                  >
+                    {contest?.quantityAthletes} atletas inscritos
+                  </Link>
+              </p>
+            </Tooltip>
+            )
+            }
           </div>
           <div className="w-full flex gap-2 items-start mt-2">
             {contest?.categories?.map((category, index) => {
