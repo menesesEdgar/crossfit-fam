@@ -24,6 +24,7 @@ import {
   FaFlagCheckered,
   FaRunning,
   FaUsers,
+  FaCalendarCheck,
 } from "react-icons/fa";
 import CardContest from "../../components/Card/CardContest";
 import ModalViewer from "../../components/Modals/ModalViewer";
@@ -437,16 +438,6 @@ const Contest = () => {
                             color: "neutral",
                             icon: FaUsers,
                           },
-                          ["Abierta"].includes(contest?.status) && contest?.athletes?.length > 0 &&
-                          {
-                            label: "Comenzar",
-                            action: () => {
-                              setContestToUpdateStep(contest);
-                              setModalNextStep(true);
-                            },
-                            color: "neutral",
-                            icon: FaRunning,
-                          },
                           ["Finalizada", "En curso"].includes(contest.status) &&
                           {
                             label: "Puntajes",
@@ -454,6 +445,28 @@ const Contest = () => {
                               navigate(`/contest/${contest.id}/scores`),
                             color: "neutral",
                             icon: FaFlagCheckered,
+                          },
+                          ["Abierta"].includes(contest?.status) && contest?.athletes?.length > 0 &&
+                          {
+                            label: "Comenzar",
+                            action: () => {
+                              setContestToUpdateStep(contest);
+                              setModalNextStep(true);
+                            },
+                            filled: true,
+                            color: "green",
+                            icon: FaRunning,
+                          },
+                          ["En curso"].includes(contest?.status) && contest?.athletes?.length > 0 &&
+                          {
+                            label: "Finalizar",
+                            action: () => {
+                              setContestToUpdateStep(contest);
+                              setModalNextStep(true);
+                            },
+                            filled: true,
+                            color: "red",
+                            icon: FaCalendarCheck,
                           },
                         ]
                       : 
@@ -640,6 +653,69 @@ const Contest = () => {
                     color: "green",
                     filled: true,
                     icon: FaRunning,
+                    className: "min-w-full",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </ModalViewer>
+      )}
+      {modalNextStep && contestToUpdateStep?.status === "En curso" && (
+        <ModalViewer
+          isOpenModal={modalNextStep}
+          onCloseModal={() => {
+            setModalNextStep(false), setContestToUpdateStep(null);
+          }}
+          title={
+            <span>
+              <HiOutlineSpeakerphone size={32} className="inline-block mr-2" />
+              Finalizar Competencia
+            </span>
+          }
+        >
+          <div className="w-full flex flex-col gap-4">
+            <div>
+              <img
+                src={PublishImage}
+                alt="Publicar Competencia"
+                className="w-1/2 mx-auto"
+              />
+              <h3 className="text-2xl text-center font-semibold text-neutral-800">
+                ¿Deseas finalizar la competencia?
+              </h3>
+              <p className="text-center text-neutral-600 mb-4">
+                Al finalizar la competencia, ya no podrás editar el registro de puntajes.
+              </p>
+              {/* <div className="flex gap-4 p-2 rounded-md items-center text-white bg-crossfit-info/80">
+                <i>
+                  <MdInfo size={24} />
+                </i>
+                <p>
+                  <strong>¡Atención! </strong>
+                  Recuerda que una vez que la competencía este en curso, no podrás agregar o modificar los atletas inscritos.
+                </p>
+              </div> */}
+            </div>
+            <div className="grid items-center justify-center grid-cols-1 md:grid-cols-2 gap-4">
+              <ActionButtons
+                extraActions={[
+                  {
+                    label: "Cancelar",
+                    action: () => {
+                      setContestNextStep(contestToUpdateStep.id);
+                      setModalNextStep(false);
+                    },
+                    color: "neutral",
+                    icon: TbArrowBackUp,
+                    className: "min-w-full",
+                  },
+                  {
+                    label: "Finalizar",
+                    action: handleContestNextStep,
+                    color: "red",
+                    filled: true,
+                    icon: FaCalendarCheck,
                     className: "min-w-full",
                   },
                 ]}
