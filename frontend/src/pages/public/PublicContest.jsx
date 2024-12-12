@@ -195,6 +195,7 @@ const PublicContest = () => {
                 };
                 return (
                   <CardContest
+                    role="Athlete"
                     key={contest.id}
                     contest={parseContest}
                     actions={[handleAction(contest.status, contest)]}
